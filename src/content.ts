@@ -20,6 +20,8 @@ export const siteContent = {
 		nav: {
 			home: 'Home',
 			projects: 'Projects',
+			resume: 'Resume',
+			downloadResume: 'Download resume PDF',
 			contact: 'Contact',
 			menu: 'Menu',
 			close: 'Close',
@@ -83,6 +85,47 @@ export const siteContent = {
 					available: false,
 				},
 			],
+			resume: {
+				title: 'Resume',
+				startYear: '2019',
+				endYear: '2026',
+				downloadLabel: 'Download PDF',
+				downloadHref: '/assets/ariel-cavalcante-resume.pdf',
+				entries: [
+					{
+						company: 'Somapay',
+						industry: 'Digital banking and HRTech platform',
+						role: 'Senior Product Designer',
+						description:
+							'Led end-to-end design across credit, payments, onboarding, support, and account experiences. Built Crédito do Trabalhador from discovery to launch, evolved the design system, and contributed to a 28% increase in the app’s Google Play rating.',
+						period: 'Nov 2024 – 2026',
+					},
+					{
+						company: 'Instituto Atlântico',
+						industry: 'Technology and innovation consultancy',
+						role: 'UX Designer',
+						description:
+							'Designed complex enterprise products for Dell and other international clients, covering research, user flows, prototyping, accessibility assessments, design systems, and implementation support.',
+						period: 'Nov 2021 – Jul 2024',
+					},
+					{
+						company: 'Garimpo UX',
+						industry: 'UX consultancy',
+						role: 'UX Designer',
+						description:
+							'Designed B2C retail and travel experiences through user research, service mapping, prototyping, responsive UI, usability testing, and data analysis.',
+						period: 'Jan 2020 – Nov 2021',
+					},
+					{
+						company: 'Oowlish',
+						industry: 'Software development company',
+						role: 'Frontend Designer',
+						description:
+							'Designed and implemented responsive interfaces for Petco, building reusable React components and design system patterns with Styled-Components and Storybook.',
+						period: 'Jun 2019 – Dec 2019',
+					},
+				],
+			},
 		},
 	},
 	'pt-BR': {
@@ -98,6 +141,8 @@ export const siteContent = {
 		nav: {
 			home: 'Início',
 			projects: 'Projetos',
+			resume: 'Currículo',
+			downloadResume: 'Baixar currículo em PDF',
 			contact: 'Contato',
 			menu: 'Menu',
 			close: 'Fechar',
@@ -161,6 +206,47 @@ export const siteContent = {
 					available: false,
 				},
 			],
+			resume: {
+				title: 'Currículo',
+				startYear: '2019',
+				endYear: '2026',
+				downloadLabel: 'Baixar PDF',
+				downloadHref: '/assets/ariel-cavalcante-curriculo.pdf',
+				entries: [
+					{
+						company: 'Somapay',
+						industry: 'Plataforma de banco digital e HRTech',
+						role: 'Designer de Produto Sênior',
+						description:
+							'Liderei o design de ponta a ponta em experiências de crédito, pagamentos, onboarding, suporte e conta. Construí o Crédito do Trabalhador da descoberta ao lançamento, evoluí o design system e contribuí para um aumento de 28% na avaliação do app na Google Play.',
+						period: 'Nov 2024 – 2026',
+					},
+					{
+						company: 'Instituto Atlântico',
+						industry: 'Consultoria de tecnologia e inovação',
+						role: 'Designer UX',
+						description:
+							'Projetei produtos corporativos complexos para a Dell e outros clientes internacionais, passando por pesquisa, fluxos de usuário, prototipação, avaliações de acessibilidade, design systems e suporte à implementação.',
+						period: 'Nov 2021 – Jul 2024',
+					},
+					{
+						company: 'Garimpo UX',
+						industry: 'Consultoria de UX',
+						role: 'Designer UX',
+						description:
+							'Projetei experiências B2C para varejo e turismo por meio de pesquisa com usuários, mapeamento de serviços, prototipação, UI responsiva, testes de usabilidade e análise de dados.',
+						period: 'Jan 2020 – Nov 2021',
+					},
+					{
+						company: 'Oowlish',
+						industry: 'Empresa de desenvolvimento de software',
+						role: 'Designer Front-end',
+						description:
+							'Projetei e implementei interfaces responsivas para a Petco, criando componentes React reutilizáveis e padrões de design system com Styled-Components e Storybook.',
+						period: 'Jun 2019 – Dez 2019',
+					},
+				],
+			},
 		},
 	},
 } as const;

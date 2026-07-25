@@ -13,6 +13,7 @@ type HomePageProps = {
 
 export function HomePage({ locale }: HomePageProps) {
 	const content = siteContent[locale];
+	const pageRef = useRef<HTMLDivElement>(null);
 	const titleRef = useRef<HTMLHeadingElement>(null);
 	const heroTitleLines =
 		locale === 'pt-BR'
@@ -48,8 +49,47 @@ export function HomePage({ locale }: HomePageProps) {
 		return () => observer.disconnect();
 	}, [locale]);
 
+	useEffect(() => {
+		const page = pageRef.current;
+		const resume = page?.querySelector<HTMLElement>('#resume');
+		if (!page || !resume) return;
+
+		let animationFrame = 0;
+
+		const updateHeaderColor = () => {
+			const header = page.querySelector<HTMLElement>('.site-header');
+			const probeY = (header?.getBoundingClientRect().height ?? 64) / 2;
+			const resumeRect = resume.getBoundingClientRect();
+			const overResume = resumeRect.top <= probeY && resumeRect.bottom > probeY;
+
+			page.style.setProperty(
+				'--header-text-color',
+				overResume ? 'var(--yellow)' : 'var(--brand-blue)',
+			);
+			page.style.setProperty(
+				'--header-background-color',
+				overResume ? 'var(--navy)' : 'var(--paper)',
+			);
+		};
+
+		const queueHeaderUpdate = () => {
+			cancelAnimationFrame(animationFrame);
+			animationFrame = requestAnimationFrame(updateHeaderColor);
+		};
+
+		window.addEventListener('scroll', queueHeaderUpdate, { passive: true });
+		window.addEventListener('resize', queueHeaderUpdate);
+		updateHeaderColor();
+
+		return () => {
+			cancelAnimationFrame(animationFrame);
+			window.removeEventListener('scroll', queueHeaderUpdate);
+			window.removeEventListener('resize', queueHeaderUpdate);
+		};
+	}, []);
+
 	return (
-		<div className='page-shell home-page'>
+		<div className='page-shell home-page' ref={pageRef}>
 			<SiteHeader locale={locale} currentPage='home' />
 
 			<main>
@@ -109,6 +149,63 @@ export function HomePage({ locale }: HomePageProps) {
 							/>
 						</Reveal>
 					))}
+				</section>
+
+				<section className='resume-section' id='resume'>
+					<div className='resume-section__inner page-width'>
+						<header className='resume-section__heading'>
+							<h2>{content.home.resume.title}</h2>
+							<p className='resume-section__years'>
+								<span>{content.home.resume.startYear}</span>
+								<span className='resume-section__arrow' aria-hidden='true' />
+								<span>{content.home.resume.endYear}</span>
+							</p>
+						</header>
+						<img
+							className='resume-section__wave'
+							src='/assets/icons/long wave.svg'
+							alt=''
+							aria-hidden='true'
+						/>
+						<ol className='resume-list'>
+							{content.home.resume.entries.map((entry, index) => (
+								<li className='resume-entry' key={entry.company}>
+									<Reveal delay={index * 60}>
+										<article>
+											<div className='resume-entry__identity'>
+												<h3>{entry.company}</h3>
+												<p>{entry.industry}</p>
+												<p>{entry.role}</p>
+											</div>
+											<p className='resume-entry__description'>
+												{entry.description}
+											</p>
+											<p className='resume-entry__period'>{entry.period}</p>
+										</article>
+									</Reveal>
+								</li>
+							))}
+						</ol>
+						<div className='resume-actions'>
+							<a
+								className='resume-linkedin'
+								href='https://linkedin.com/in/arielcavalcante'
+								target='_blank'
+								rel='noreferrer'
+							>
+								<span className='resume-linkedin__icon' aria-hidden='true' />
+								<span>LinkedIn</span>
+							</a>
+							<a
+								className='resume-download'
+								href={content.home.resume.downloadHref}
+								download
+							>
+								<span className='resume-download__icon' aria-hidden='true' />
+								<span>{content.home.resume.downloadLabel}</span>
+							</a>
+						</div>
+					</div>
 				</section>
 			</main>
 

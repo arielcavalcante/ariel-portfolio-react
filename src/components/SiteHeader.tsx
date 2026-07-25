@@ -68,7 +68,11 @@ export function SiteHeader({
 	}
 
 	return (
-		<header className={`site-header${menuOpen ? ' is-menu-open' : ''}`}>
+		<header
+			className={`site-header${menuOpen ? ' is-menu-open' : ''}${
+				pastTop ? ' is-scrolled' : ''
+			}`}
+		>
 			<div className='site-header__inner'>
 				<a
 					className={`brand-mark brand-mark--compact${
@@ -148,6 +152,24 @@ export function SiteHeader({
 								))}
 							</ul>
 						</div>
+					</div>
+
+					<div className='resume-nav'>
+						<a
+							className='nav-primary-link'
+							href={`${homeHref}#resume`}
+							onClick={closeMenu}
+						>
+							{nav.resume}
+						</a>
+						<a
+							className='resume-nav__download'
+							href={content.home.resume.downloadHref}
+							download
+							aria-label={nav.downloadResume}
+						>
+							<span aria-hidden='true' />
+						</a>
 					</div>
 
 					<a

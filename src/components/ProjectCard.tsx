@@ -49,10 +49,13 @@ export function ProjectCard({ labels, project }: ProjectCardProps) {
                     {project.available ? (
                         <a className="case-link" href={project.href}>
                             <span>{project.cta}</span>
-                            <span aria-hidden="true">↗</span>
+                            <span className="case-link__icon" aria-hidden="true" />
                         </a>
                     ) : (
-                        <span className="coming-soon">{project.cta}</span>
+                        <span className="coming-soon" aria-disabled="true">
+                            <span>{project.cta}</span>
+                            <span className="case-link__icon" aria-hidden="true" />
+                        </span>
                     )}
                 </div>
             </div>

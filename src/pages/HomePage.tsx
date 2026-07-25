@@ -70,6 +70,10 @@ export function HomePage({ locale }: HomePageProps) {
 				'--header-background-color',
 				overResume ? 'var(--navy)' : 'var(--paper)',
 			);
+			page.style.setProperty(
+				'--header-nav-color',
+				overResume ? 'var(--yellow)' : 'var(--ink)',
+			);
 		};
 
 		const queueHeaderUpdate = () => {

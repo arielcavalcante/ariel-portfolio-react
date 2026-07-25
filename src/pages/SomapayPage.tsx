@@ -1356,6 +1356,12 @@ export function SomapayPage({ locale }: SomapayPageProps) {
 					? 'var(--sp-blue)'
 					: 'var(--sp-black)',
 			);
+			pageElement.style.setProperty(
+				'--language-switch-on-color',
+				styles.background === 'var(--sp-gold)'
+					? 'var(--sp-navy)'
+					: 'var(--gold)',
+			);
 		};
 
 		const queueHeaderUpdate = () => {

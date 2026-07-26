@@ -4,6 +4,8 @@ export const contact = {
 	email: 'hello@arielcavalcante.com',
 	phoneLabel: '+55 85 9 9918 8678',
 	phoneHref: 'https://wa.me/+5585999188678',
+	linkedinLabel: 'Ariel Cavalcante',
+	linkedinHref: 'https://linkedin.com/in/arielcavalcante',
 };
 
 export const siteContent = {
@@ -34,7 +36,6 @@ export const siteContent = {
 			client: 'Client',
 			role: 'My role',
 			projects: 'Projects',
-			contacts: 'Contacts',
 			home: 'Home',
 		},
 		home: {

@@ -100,6 +100,15 @@ export function SiteHeader({
 		});
 	}
 
+	function handleContactClick(event: MouseEvent<HTMLAnchorElement>) {
+		event.preventDefault();
+		closeMenu();
+		document.getElementById('contact')?.scrollIntoView({
+			behavior: 'smooth',
+			block: 'start',
+		});
+	}
+
 	function closeProjectsOnBlur(event: FocusEvent<HTMLDivElement>) {
 		if (!event.currentTarget.contains(event.relatedTarget)) {
 			setProjectsOpen(false);
@@ -296,8 +305,8 @@ export function SiteHeader({
 					<a
 						className='nav-primary-link'
 						data-nav-marker='below'
-						href='mailto:hello@arielcavalcante.com'
-						onClick={closeMenu}
+						href={`${homeHref}#contact`}
+						onClick={handleContactClick}
 					>
 						{nav.contact}
 					</a>

@@ -199,15 +199,6 @@ export function HomePage({ locale }: HomePageProps) {
 						</ol>
 						<div className='resume-actions'>
 							<a
-								className='resume-linkedin'
-								href='https://linkedin.com/in/arielcavalcante'
-								target='_blank'
-								rel='noreferrer'
-							>
-								<span className='resume-linkedin__icon' aria-hidden='true' />
-								<span>LinkedIn</span>
-							</a>
-							<a
 								className='resume-download'
 								href={content.home.resume.downloadHref}
 								download

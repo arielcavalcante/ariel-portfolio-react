@@ -1010,8 +1010,7 @@ ul {
 	margin-top: clamp(56px, 8vw, 104px);
 }
 
-.resume-download,
-.resume-linkedin {
+.resume-download {
 	display: inline-flex;
 	align-items: center;
 	justify-content: center;
@@ -1028,8 +1027,7 @@ ul {
 		color 180ms ease;
 }
 
-.resume-download__icon,
-.resume-linkedin__icon {
+.resume-download__icon {
 	display: block;
 	width: 18px;
 	height: 18px;
@@ -1048,15 +1046,8 @@ ul {
 	mask-image: url('/assets/icons/download.svg');
 }
 
-.resume-linkedin__icon {
-	-webkit-mask-image: url('/assets/icons/linkedin.svg');
-	mask-image: url('/assets/icons/linkedin.svg');
-}
-
 .resume-download:hover,
-.resume-download:focus-visible,
-.resume-linkedin:hover,
-.resume-linkedin:focus-visible {
+.resume-download:focus-visible {
 	background: var(--brand-blue);
 	color: var(--yellow);
 }
@@ -1078,14 +1069,15 @@ ul {
 }
 
 .site-footer__inner {
-	display: grid;
-	grid-template-columns: minmax(120px, 1fr) minmax(420px, 1fr);
+	display: flex;
+	justify-content: space-between;
+	flex-wrap: wrap;
 	align-items: center;
 	gap: 48px;
 	width: min(100%, var(--page-width));
 	min-height: 300px;
 	margin-inline: auto;
-	padding: 48px 32px;
+	padding: clamp(40px, 6vw, 88px);
 }
 
 .footer-brand {
@@ -1256,14 +1248,12 @@ ul {
 		opacity 180ms ease;
 }
 
-.crab-reward:not(.is-expanded) .crab-reward__media:hover
-	.crab-reward__pause,
+.crab-reward:not(.is-expanded) .crab-reward__media:hover .crab-reward__pause,
 .crab-reward__pause:focus-visible {
 	opacity: 0.3;
 }
 
-.crab-reward:not(.is-expanded) .crab-reward__media
-	.crab-reward__pause:hover,
+.crab-reward:not(.is-expanded) .crab-reward__media .crab-reward__pause:hover,
 .crab-reward__media .crab-reward__pause:focus-visible {
 	opacity: 1;
 }
@@ -1343,13 +1333,11 @@ ul {
 }
 
 .crab-reward.is-expanded.is-controls-active .crab-reward__pause:hover,
-.crab-reward.is-expanded.is-controls-active
-	.crab-reward__pause:focus-visible {
+.crab-reward.is-expanded.is-controls-active .crab-reward__pause:focus-visible {
 	opacity: 1;
 }
 
-.crab-reward.is-expanded:not(.is-controls-active)
-	.crab-reward__pause {
+.crab-reward.is-expanded:not(.is-controls-active) .crab-reward__pause {
 	opacity: 0;
 }
 
@@ -1429,16 +1417,15 @@ ul {
 }
 
 .footer-columns {
-	display: grid;
-	grid-template-columns: repeat(2, minmax(0, 1fr));
-	gap: 48px;
+	display: flex;
+	justify-content: flex-end;
 }
 
 .footer-columns section {
 	display: flex;
 	flex-direction: column;
 	align-items: flex-start;
-	gap: 7px;
+	gap: 12px;
 }
 
 .site-footer h2 {
@@ -1449,6 +1436,36 @@ ul {
 .muted-link {
 	font-size: 14px;
 	line-height: 1.4;
+}
+
+.footer-contact-link {
+	display: inline-flex;
+	align-items: center;
+	gap: 10px;
+}
+
+.footer-contact-link__icon {
+	width: 18px;
+	height: 18px;
+	flex: 0 0 auto;
+	background: currentColor;
+	-webkit-mask: center / contain no-repeat;
+	mask: center / contain no-repeat;
+}
+
+.footer-contact-link__icon--mail {
+	-webkit-mask-image: url('/assets/icons/mail.svg');
+	mask-image: url('/assets/icons/mail.svg');
+}
+
+.footer-contact-link__icon--whatsapp {
+	-webkit-mask-image: url('/assets/icons/whatsapp.svg');
+	mask-image: url('/assets/icons/whatsapp.svg');
+}
+
+.footer-contact-link__icon--linkedin {
+	-webkit-mask-image: url('/assets/icons/linkedin.svg');
+	mask-image: url('/assets/icons/linkedin.svg');
 }
 
 .muted-link {
@@ -1841,22 +1858,6 @@ ul {
 	.case-link {
 		width: 100%;
 		max-width: 300px;
-	}
-
-	.site-footer__inner {
-		gap: 24px;
-		grid-template-columns: 1fr;
-		padding: 36px 16px;
-	}
-
-	.footer-columns {
-		gap: 22px;
-	}
-}
-
-@media (max-width: 520px) {
-	.footer-columns {
-		grid-template-columns: 1fr;
 	}
 }
 

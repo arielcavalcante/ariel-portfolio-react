@@ -1,43 +1,64 @@
-import type { Locale } from "../content"
-import { contact, localizedPath, siteContent } from "../content"
-import { FooterCrabGame } from "./FooterCrabGame"
+import type { Locale } from '../content';
+import { contact, localizedPath, siteContent } from '../content';
+import { FooterCrabGame } from './FooterCrabGame';
 
 type SiteFooterProps = {
-    locale: Locale
-}
+	locale: Locale;
+};
 
 export function SiteFooter({ locale }: SiteFooterProps) {
-    const content = siteContent[locale]
+	const content = siteContent[locale];
 
-    return (
-        <footer className="site-footer">
-            <div className="site-footer__inner">
-                <div className="footer-brand">
-                    <a
-                        href={localizedPath(locale, "/")}
-                        className="footer-mark"
-                        aria-label={content.nav.home}
-                    >
-                        <img src="/assets/icons/logo/ariel cavalcante logo.svg" alt="" />
-                    </a>
-                    <FooterCrabGame locale={locale} />
-                </div>
+	return (
+		<footer className='site-footer' id='contact'>
+			<div className='site-footer__inner'>
+				<div className='footer-brand'>
+					<a
+						href={localizedPath(locale, '/')}
+						className='footer-mark'
+						aria-label={content.nav.home}
+					>
+						<img src='/assets/icons/logo/ariel cavalcante logo.svg' alt='' />
+					</a>
+					<FooterCrabGame locale={locale} />
+				</div>
 
-                <div className="footer-columns">
-                    <section>
-                        <h2>{content.common.projects}</h2>
-                        <a href={localizedPath(locale, "/somapay-pf")}>Somapay PF</a>
-                        <span className="muted-link">Somapay PJ</span>
-                    </section>
-                    <section>
-                        <h2>{content.common.contacts}</h2>
-                        <a href={`mailto:${contact.email}`}>{contact.email}</a>
-                        <a href={contact.phoneHref} target="_blank" rel="noreferrer">
-                            {contact.phoneLabel}
-                        </a>
-                    </section>
-                </div>
-            </div>
-        </footer>
-    )
+				<div className='footer-columns'>
+					<section>
+						<a className='footer-contact-link' href={`mailto:${contact.email}`}>
+							<span
+								className='footer-contact-link__icon footer-contact-link__icon--mail'
+								aria-hidden='true'
+							/>
+							<span>{contact.email}</span>
+						</a>
+						<a
+							className='footer-contact-link'
+							href={contact.phoneHref}
+							target='_blank'
+							rel='noreferrer'
+						>
+							<span
+								className='footer-contact-link__icon footer-contact-link__icon--whatsapp'
+								aria-hidden='true'
+							/>
+							{contact.phoneLabel}
+						</a>
+						<a
+							className='footer-contact-link'
+							href={contact.linkedinHref}
+							target='_blank'
+							rel='noreferrer'
+						>
+							<span
+								className='footer-contact-link__icon footer-contact-link__icon--linkedin'
+								aria-hidden='true'
+							/>
+							{contact.linkedinLabel}
+						</a>
+					</section>
+				</div>
+			</div>
+		</footer>
+	);
 }

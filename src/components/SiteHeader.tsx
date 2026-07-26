@@ -87,6 +87,19 @@ export function SiteHeader({
 		setMenuOpen(open => !open);
 	}
 
+	function handleProjectsClick() {
+		if (currentPage !== 'home') {
+			setProjectsOpen(open => !open);
+			return;
+		}
+
+		closeMenu();
+		document.getElementById('projects')?.scrollIntoView({
+			behavior: 'smooth',
+			block: 'start',
+		});
+	}
+
 	function closeProjectsOnBlur(event: FocusEvent<HTMLDivElement>) {
 		if (!event.currentTarget.contains(event.relatedTarget)) {
 			setProjectsOpen(false);
@@ -219,7 +232,7 @@ export function SiteHeader({
 							}
 							aria-expanded={menuOpen || projectsOpen}
 							aria-controls='projects-navigation'
-							onClick={() => setProjectsOpen(open => !open)}
+							onClick={handleProjectsClick}
 						>
 							{nav.projects}
 

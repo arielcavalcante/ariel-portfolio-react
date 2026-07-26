@@ -27,6 +27,26 @@ export function HomePage({ locale }: HomePageProps) {
 				};
 
 	useEffect(() => {
+		const targetId = decodeURIComponent(window.location.hash.slice(1));
+		if (!targetId) return;
+
+		let secondFrame = 0;
+		const firstFrame = requestAnimationFrame(() => {
+			secondFrame = requestAnimationFrame(() => {
+				document.getElementById(targetId)?.scrollIntoView({
+					behavior: 'smooth',
+					block: 'start',
+				});
+			});
+		});
+
+		return () => {
+			cancelAnimationFrame(firstFrame);
+			cancelAnimationFrame(secondFrame);
+		};
+	}, []);
+
+	useEffect(() => {
 		const title = titleRef.current;
 		if (!title) return;
 

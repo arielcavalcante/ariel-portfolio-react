@@ -103,7 +103,7 @@ export function SiteHeader({
 	function handleContactClick(event: MouseEvent<HTMLAnchorElement>) {
 		event.preventDefault();
 		closeMenu();
-		document.getElementById('contact')?.scrollIntoView({
+		document.querySelector<HTMLElement>('.site-footer')?.scrollIntoView({
 			behavior: 'smooth',
 			block: 'start',
 		});

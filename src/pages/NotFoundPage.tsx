@@ -1,5 +1,5 @@
-import type { Locale } from "../content"
-import { localizedPath, siteContent } from "../content"
+import { useState } from "react"
+import { localizedPath, type Locale } from "../content"
 import { SiteFooter } from "../components/SiteFooter"
 import { SiteHeader } from "../components/SiteHeader"
 
@@ -8,17 +8,22 @@ type NotFoundPageProps = {
 }
 
 export function NotFoundPage({ locale }: NotFoundPageProps) {
-    const content = siteContent[locale]
+    const [animationRun] = useState(() => Date.now())
 
     return (
         <div className="page-shell not-found-page">
             <SiteHeader locale={locale} currentPage="404" />
-            <main className="not-found page-width">
-                <div className="not-found__number">404</div>
-                <img className="not-found__mark" src="/assets/ariel-mark.svg" alt="" />
-                <a className="case-link" href={localizedPath(locale, "/")}>
-                    <span>{content.common.home}</span>
-                    <span aria-hidden="true">↗</span>
+            <main className="not-found">
+                <a
+                    className="not-found__home-link"
+                    href={localizedPath(locale, "/")}
+                    aria-label={locale === "pt-BR" ? "Voltar ao início" : "Return home"}
+                >
+                    <img
+                        className="not-found__icon"
+                        src={`/assets/icons/404.svg?play=${animationRun}`}
+                        alt=""
+                    />
                 </a>
             </main>
             <SiteFooter locale={locale} />

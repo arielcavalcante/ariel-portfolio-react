@@ -36,6 +36,24 @@
 	position: relative;
 }
 
+.somapay-case main > section:not(.sp-hero) {
+	content-visibility: auto;
+	contain-intrinsic-size: auto 1000px;
+}
+
+.somapay-case .sp-pix {
+	contain-intrinsic-size: auto 3000px;
+}
+
+.somapay-case .sp-help,
+.somapay-case .sp-dark-mode {
+	contain-intrinsic-size: auto 1600px;
+}
+
+.somapay-case .sp-nda {
+	contain-intrinsic-size: auto 320px;
+}
+
 .somapay-case .brand-mark,
 .somapay-case .language-switch,
 .somapay-case .desktop-nav a {
@@ -833,8 +851,15 @@
 	border-radius: 50%;
 	background: var(--sp-white);
 	color: var(--sp-black);
-	font-size: 20px;
 	box-shadow: 0 10px 30px color-mix(in srgb, var(--sp-black) 25%, transparent);
+}
+
+.sp-before-after__handle-icon {
+	width: 24px;
+	height: 12px;
+	background: currentColor;
+	-webkit-mask: url('/assets/icons/double arrow.svg') center / contain no-repeat;
+	mask: url('/assets/icons/double arrow.svg') center / contain no-repeat;
 }
 
 .sp-nda {

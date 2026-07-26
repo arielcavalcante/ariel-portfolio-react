@@ -586,22 +586,35 @@ function BubbleMatrix({
 	const isMobile = containerWidth <= 809;
 	const width = isMobile ? Math.max(containerWidth, 280) : 960;
 	const height = isMobile ? 360 : 520;
-	const plot = isMobile
-		? { left: 42, right: width - 20, top: 20, bottom: 308 }
-		: { left: 78, right: 915, top: 48, bottom: 448 };
-	const mapX = (x: number) => plot.left + (x / 950) * (plot.right - plot.left);
-	const mapY = (y: number) =>
-		plot.bottom - ((y - 1.2) / (3.1 - 1.2)) * (plot.bottom - plot.top);
-	const radius = (reviews: number) => {
-		const baseRadius = 10 + ((reviews - 66) / (868 - 66)) * 35;
-		return isMobile ? baseRadius * 0.55 : baseRadius;
-	};
+	const plot = useMemo(
+		() =>
+			isMobile
+				? { left: 42, right: width - 20, top: 20, bottom: 308 }
+				: { left: 78, right: 915, top: 48, bottom: 448 },
+		[isMobile, width],
+	);
+	const mapX = useCallback(
+		(x: number) => plot.left + (x / 950) * (plot.right - plot.left),
+		[plot],
+	);
+	const mapY = useCallback(
+		(y: number) =>
+			plot.bottom - ((y - 1.2) / (3.1 - 1.2)) * (plot.bottom - plot.top),
+		[plot],
+	);
+	const radius = useCallback(
+		(reviews: number) => {
+			const baseRadius = 10 + ((reviews - 66) / (868 - 66)) * 35;
+			return isMobile ? baseRadius * 0.55 : baseRadius;
+		},
+		[isMobile],
+	);
 	const centerX = mapX(200);
 	const centerY = mapY(2.5);
 	const xTicks = isMobile ? [0, 200, 950] : [0, 200, 400, 600, 800, 950];
 	const yTicks = isMobile ? [1.2, 2.5, 3.1] : [1.2, 1.5, 2, 2.5, 3, 3.1];
 
-	const bubbleLayout = (() => {
+	const bubbleLayout = useMemo(() => {
 		const occupied: Array<{
 			left: number;
 			right: number;
@@ -696,7 +709,7 @@ function BubbleMatrix({
 
 			return { bubble, x, y, r, lines, ...position, lineHeight };
 		});
-	})();
+	}, [bubbles, isMobile, mapX, mapY, radius, width]);
 	const tooltipPosition = active
 		? (() => {
 				const scale = containerWidth / width;
@@ -1182,20 +1195,51 @@ function PhoneVideo({
 	pauseLabel: string;
 }) {
 	const videoRef = useRef<HTMLVideoElement>(null);
+	const figureRef = useRef<HTMLElement>(null);
 	const [playing, setPlaying] = useState(false);
+	const [shouldLoad, setShouldLoad] = useState(false);
+	const pendingPlayRef = useRef(false);
+
+	useEffect(() => {
+		const figure = figureRef.current;
+		if (!figure || shouldLoad) return;
+
+		const observer = new IntersectionObserver(
+			([entry]) => {
+				if (!entry.isIntersecting) return;
+				setShouldLoad(true);
+				observer.disconnect();
+			},
+			{ rootMargin: '500px 0px' },
+		);
+
+		observer.observe(figure);
+		return () => observer.disconnect();
+	}, [shouldLoad]);
+
+	useEffect(() => {
+		if (!shouldLoad || !pendingPlayRef.current) return;
+		pendingPlayRef.current = false;
+		videoRef.current?.play().catch(() => setPlaying(false));
+	}, [shouldLoad]);
 
 	const toggle = useCallback(async () => {
 		const video = videoRef.current;
 		if (!video) return;
+		if (!shouldLoad) {
+			pendingPlayRef.current = true;
+			setShouldLoad(true);
+			return;
+		}
 		if (video.paused) {
 			await video.play().catch(() => setPlaying(false));
 		} else {
 			video.pause();
 		}
-	}, []);
+	}, [shouldLoad]);
 
 	return (
-		<figure className='sp-flow-card'>
+		<figure className='sp-flow-card' ref={figureRef}>
 			<button
 				className='sp-phone'
 				type='button'
@@ -1205,8 +1249,8 @@ function PhoneVideo({
 				<span className='sp-phone__screen'>
 					<video
 						ref={videoRef}
-						src={src}
-						poster={poster}
+						src={shouldLoad ? src : undefined}
+						poster={shouldLoad ? poster : undefined}
 						muted
 						loop
 						playsInline
@@ -1245,14 +1289,31 @@ function BeforeAfter({
 	const rootRef = useRef<HTMLDivElement>(null);
 	const [position, setPosition] = useState(50);
 	const [dragging, setDragging] = useState(false);
+	const frameRef = useRef(0);
+	const pendingClientXRef = useRef<number | null>(null);
 
 	const update = useCallback((clientX: number) => {
-		const node = rootRef.current;
-		if (!node) return;
-		const rect = node.getBoundingClientRect();
-		const next = ((clientX - rect.left) / rect.width) * 100;
-		setPosition(Math.min(98, Math.max(2, next)));
+		pendingClientXRef.current = clientX;
+		if (frameRef.current) return;
+
+		frameRef.current = requestAnimationFrame(() => {
+			frameRef.current = 0;
+			const node = rootRef.current;
+			const pendingClientX = pendingClientXRef.current;
+			if (!node || pendingClientX === null) return;
+
+			const rect = node.getBoundingClientRect();
+			const next = ((pendingClientX - rect.left) / rect.width) * 100;
+			setPosition(Math.min(98, Math.max(2, next)));
+		});
 	}, []);
+
+	useEffect(
+		() => () => {
+			cancelAnimationFrame(frameRef.current);
+		},
+		[],
+	);
 
 	const pointerDown = (event: ReactPointerEvent<HTMLDivElement>) => {
 		setDragging(true);
@@ -1310,15 +1371,29 @@ function BeforeAfter({
 			onPointerCancel={pointerUp}
 			onPointerLeave={() => setDragging(false)}
 		>
-			<img src={before} alt={beforeAlt} draggable={false} />
+			<img
+				src={before}
+				alt={beforeAlt}
+				draggable={false}
+				loading='lazy'
+				decoding='async'
+			/>
 			<div
 				className='sp-before-after__top'
 				style={{ clipPath: `inset(0 ${100 - position}% 0 0)` }}
 			>
-				<img src={after} alt={afterAlt} draggable={false} />
+				<img
+					src={after}
+					alt={afterAlt}
+					draggable={false}
+					loading='lazy'
+					decoding='async'
+				/>
 			</div>
 			<span className='sp-before-after__line' style={{ left: `${position}%` }}>
-				<span className='sp-before-after__handle'>↔</span>
+				<span className='sp-before-after__handle'>
+					<span className='sp-before-after__handle-icon' />
+				</span>
 			</span>
 		</div>
 	);
@@ -1389,14 +1464,12 @@ export function SomapayPage({ locale }: SomapayPageProps) {
 		const updateHeaderColor = () => {
 			const header = pageElement.querySelector<HTMLElement>('.site-header');
 			const probeY = (header?.getBoundingClientRect().height ?? 64) / 2;
-			const pageAreas = Array.from(
-				pageElement.querySelectorAll<HTMLElement>('section[id], .site-footer'),
-			);
-			const currentArea =
-				pageAreas.find(area => {
-					const rect = area.getBoundingClientRect();
-					return rect.top <= probeY && rect.bottom > probeY;
-				}) ?? pageAreas[0];
+			const currentArea = document
+				.elementsFromPoint(window.innerWidth / 2, probeY)
+				.map(element =>
+					element.closest<HTMLElement>('section[id], .site-footer'),
+				)
+				.find(area => area && pageElement.contains(area));
 
 			const sectionId = currentArea?.id || 'footer';
 			const styles = sectionStyles[sectionId] || sectionStyles.start;
@@ -1561,7 +1634,12 @@ export function SomapayPage({ locale }: SomapayPageProps) {
 								<p>{text.pix.modernization.description}</p>
 							</Reveal>
 							<Reveal className='sp-feature__media' delay={80}>
-								<img src={media.pixModernization} alt='' />
+								<img
+									src={media.pixModernization}
+									alt=''
+									loading='lazy'
+									decoding='async'
+								/>
 							</Reveal>
 						</div>
 
@@ -1576,7 +1654,12 @@ export function SomapayPage({ locale }: SomapayPageProps) {
 								className='sp-feature__media sp-feature__media--phone'
 								delay={80}
 							>
-								<img src={media.pixReceiving} alt='' />
+								<img
+									src={media.pixReceiving}
+									alt=''
+									loading='lazy'
+									decoding='async'
+								/>
 							</Reveal>
 						</div>
 
@@ -1615,7 +1698,12 @@ export function SomapayPage({ locale }: SomapayPageProps) {
 						<div className='sp-help__screens'>
 							<Reveal className='sp-help__screen'>
 								<figure>
-									<img src={media.helpBefore} alt='' />
+									<img
+										src={media.helpBefore}
+										alt=''
+										loading='lazy'
+										decoding='async'
+									/>
 									<figcaption>{text.help.beforeCaption}</figcaption>
 								</figure>
 							</Reveal>
@@ -1624,7 +1712,12 @@ export function SomapayPage({ locale }: SomapayPageProps) {
 								delay={80}
 							>
 								<figure>
-									<img src={media.helpAfter} alt='' />
+									<img
+										src={media.helpAfter}
+										alt=''
+										loading='lazy'
+										decoding='async'
+									/>
 									<figcaption>{text.help.afterCaption}</figcaption>
 								</figure>
 							</Reveal>
@@ -1645,7 +1738,12 @@ export function SomapayPage({ locale }: SomapayPageProps) {
 
 						<div className='sp-dark-mode__visuals'>
 							<Reveal className='sp-token-graphic'>
-								<img src={media.tokens} alt='' />
+								<img
+									src={media.tokens}
+									alt=''
+									loading='lazy'
+									decoding='async'
+								/>
 							</Reveal>
 							<Reveal className='sp-comparison' delay={850}>
 								<figure>

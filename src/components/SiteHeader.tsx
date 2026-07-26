@@ -1,4 +1,10 @@
-import { useEffect, useState, type FocusEvent } from 'react';
+import {
+	useEffect,
+	useRef,
+	useState,
+	type FocusEvent,
+	type MouseEvent,
+} from 'react';
 import type { Locale } from '../content';
 import { localizedPath, pathWithoutLocale, siteContent } from '../content';
 import LanguageSwitch from './LanguageSwitch';
@@ -19,6 +25,8 @@ export function SiteHeader({
 	const [menuOpen, setMenuOpen] = useState(false);
 	const [projectsOpen, setProjectsOpen] = useState(false);
 	const [pastTop, setPastTop] = useState(false);
+	const navigationRef = useRef<HTMLElement>(null);
+	const navigationMarkerRef = useRef<HTMLSpanElement>(null);
 
 	const content = siteContent[locale];
 	const nav = content.nav;
@@ -67,6 +75,69 @@ export function SiteHeader({
 		}
 	}
 
+	function moveNavigationMarker(target: HTMLElement | null) {
+		const navigation = navigationRef.current;
+		const marker = navigationMarkerRef.current;
+		if (!navigation || !marker || !target) {
+			marker?.classList.remove('is-ready');
+			return;
+		}
+
+		const navigationRect = navigation.getBoundingClientRect();
+		const targetRect = target.getBoundingClientRect();
+		const placement = target.dataset.navMarker || 'below';
+
+		if (placement === 'left') {
+			marker.style.left = `${targetRect.left - navigationRect.left - 13}px`;
+			marker.style.top = `${
+				targetRect.top - navigationRect.top + targetRect.height / 2
+			}px`;
+		} else {
+			marker.style.left = `${
+				targetRect.left - navigationRect.left + targetRect.width / 2
+			}px`;
+			marker.style.top = `${targetRect.bottom - navigationRect.top + 7}px`;
+		}
+
+		marker.dataset.placement = placement;
+		marker.style.setProperty(
+			'--nav-marker-color',
+			getComputedStyle(target).color,
+		);
+		marker.classList.add('is-ready');
+	}
+
+	function restoreNavigationMarker() {
+		const currentTarget =
+			navigationRef.current?.querySelector<HTMLElement>('[data-nav-current]');
+		moveNavigationMarker(currentTarget ?? null);
+	}
+
+	function moveMarkerFromEvent(event: MouseEvent<HTMLElement>) {
+		const eventTarget = event.target;
+		if (!(eventTarget instanceof Element)) return;
+
+		const target = eventTarget.closest<HTMLElement>('[data-nav-marker]');
+		if (target && navigationRef.current?.contains(target)) {
+			moveNavigationMarker(target);
+		}
+	}
+
+	function moveMarkerFromFocus(event: FocusEvent<HTMLElement>) {
+		const target = event.target.closest<HTMLElement>('[data-nav-marker]');
+		if (target) moveNavigationMarker(target);
+	}
+
+	useEffect(() => {
+		const animationFrame = requestAnimationFrame(restoreNavigationMarker);
+		window.addEventListener('resize', restoreNavigationMarker);
+
+		return () => {
+			cancelAnimationFrame(animationFrame);
+			window.removeEventListener('resize', restoreNavigationMarker);
+		};
+	}, [currentPage, locale]);
+
 	return (
 		<header
 			className={`site-header${menuOpen ? ' is-menu-open' : ''}${
@@ -90,12 +161,18 @@ export function SiteHeader({
 				</a>
 
 				<nav
+					ref={navigationRef}
 					id='primary-navigation'
 					className={`desktop-nav${menuOpen ? ' is-open' : ''}`}
 					aria-label='Primary navigation'
+					onMouseOver={moveMarkerFromEvent}
+					onMouseLeave={restoreNavigationMarker}
+					onFocusCapture={moveMarkerFromFocus}
 				>
 					<a
 						href={homeHref}
+						data-nav-marker='below'
+						data-nav-current={currentPage === 'home' ? '' : undefined}
 						className={`nav-primary-link${
 							currentPage === 'home' ? ' is-active' : ''
 						}`}
@@ -114,6 +191,12 @@ export function SiteHeader({
 						<button
 							className='projects-trigger'
 							type='button'
+							data-nav-marker='below'
+							data-nav-current={
+								currentPage === 'projects' || currentPage === 'somapay-pf'
+									? ''
+									: undefined
+							}
 							aria-expanded={menuOpen || projectsOpen}
 							aria-controls='projects-navigation'
 							onClick={() => setProjectsOpen(open => !open)}
@@ -137,6 +220,7 @@ export function SiteHeader({
 												className={
 													currentPage === project.id ? 'is-active' : undefined
 												}
+												data-nav-marker='left'
 												href={localizedPath(locale, project.href)}
 												onClick={closeMenu}
 											>
@@ -157,6 +241,7 @@ export function SiteHeader({
 					<div className='resume-nav'>
 						<a
 							className='nav-primary-link'
+							data-nav-marker='below'
 							href={`${homeHref}#resume`}
 							onClick={closeMenu}
 						>
@@ -174,6 +259,7 @@ export function SiteHeader({
 
 					<a
 						className='nav-primary-link'
+						data-nav-marker='below'
 						href='mailto:hello@arielcavalcante.com'
 						onClick={closeMenu}
 					>
@@ -184,6 +270,12 @@ export function SiteHeader({
 						locale={locale}
 						languageHref={languageHref}
 						label={nav.language}
+					/>
+
+					<span
+						ref={navigationMarkerRef}
+						className='desktop-nav__marker'
+						aria-hidden='true'
 					/>
 				</nav>
 

@@ -309,55 +309,44 @@ ul {
 }
 
 @media (min-width: 810px) {
-	.desktop-nav > .nav-primary-link,
-	.projects-trigger,
-	.resume-nav > .nav-primary-link {
+	.desktop-nav {
 		position: relative;
 	}
 
-	.desktop-nav > .nav-primary-link::before,
-	.projects-trigger::before,
-	.resume-nav > .nav-primary-link::before {
-		content: '';
+	.desktop-nav .is-active::after {
+		display: none;
+	}
+
+	.desktop-nav__marker {
 		position: absolute;
-		right: 0;
-		bottom: -9px;
-		left: 0;
-		height: 7px;
-		background: currentColor;
+		z-index: 2;
+		display: block;
+		width: 14px;
+		height: 11px;
+		background: var(--nav-marker-color, currentColor);
 		opacity: 0;
 		pointer-events: none;
-		transform: translateY(3px);
+		-webkit-mask: url('/assets/icons/single shell.svg') center / contain no-repeat;
+		mask: url('/assets/icons/single shell.svg') center / contain no-repeat;
 		transition:
+			left 420ms cubic-bezier(0.22, 1.22, 0.36, 1),
+			top 420ms cubic-bezier(0.22, 1.22, 0.36, 1),
 			opacity 180ms ease,
-			transform 180ms ease;
-		-webkit-mask-image: url('/assets/icons/long wave.svg');
-		mask-image: url('/assets/icons/long wave.svg');
-		-webkit-mask-position: center;
-		mask-position: center;
-		-webkit-mask-repeat: no-repeat;
-		mask-repeat: no-repeat;
-		-webkit-mask-size: 100% 100%;
-		mask-size: 100% 100%;
+			background-color 180ms ease;
 	}
 
-	.desktop-nav > .nav-primary-link:hover::before,
-	.desktop-nav > .nav-primary-link:focus-visible::before,
-	.projects-trigger:hover::before,
-	.projects-trigger:focus-visible::before,
-	.resume-nav > .nav-primary-link:hover::before,
-	.resume-nav > .nav-primary-link:focus-visible::before {
+	.desktop-nav__marker[data-placement='below'] {
+		transform: translateX(-50%);
+	}
+
+	.desktop-nav__marker[data-placement='left'] {
+		transform: translate(-50%, -50%);
+	}
+
+	.site-header:not(.is-scrolled) .desktop-nav__marker.is-ready,
+	.desktop-nav:hover .desktop-nav__marker.is-ready,
+	.desktop-nav:focus-within .desktop-nav__marker.is-ready {
 		opacity: 1;
-		transform: translateY(0);
-	}
-
-	.desktop-nav > .nav-primary-link.is-active::before {
-		opacity: 0;
-		transform: translateY(3px);
-	}
-
-	.site-header.is-scrolled .desktop-nav .is-active::after {
-		opacity: 0;
 	}
 }
 

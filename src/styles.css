@@ -326,7 +326,8 @@ ul {
 		background: var(--nav-marker-color, currentColor);
 		opacity: 0;
 		pointer-events: none;
-		-webkit-mask: url('/assets/icons/single shell.svg') center / contain no-repeat;
+		-webkit-mask: url('/assets/icons/single shell.svg') center / contain
+			no-repeat;
 		mask: url('/assets/icons/single shell.svg') center / contain no-repeat;
 		transition:
 			left 420ms cubic-bezier(0.22, 1.22, 0.36, 1),
@@ -813,13 +814,13 @@ ul {
 	justify-content: space-between;
 	gap: 22px;
 	width: max-content;
-	min-width: 210px;
-	padding: 13px 16px;
+	min-width: 300px;
+	padding: 12px 16px;
 	border: 1px solid currentColor;
 	border-radius: 999px;
 	font-family: 'Clash Grotesk', Arial, sans-serif;
-	font-size: 11px;
-	font-weight: 600;
+	font-size: 16px;
+	font-weight: 500;
 	text-transform: none;
 	text-decoration: none;
 	color: inherit;
@@ -830,13 +831,12 @@ ul {
 }
 
 .case-link__icon {
-	width: 13px;
-	height: 13px;
+	width: 12px;
+	height: 12px;
 	flex: 0 0 auto;
 	background: currentColor;
 	-webkit-mask: url('/assets/icons/arrow right.svg') center / contain no-repeat;
 	mask: url('/assets/icons/arrow right.svg') center / contain no-repeat;
-	transform: rotate(-45deg);
 }
 
 .case-link:hover,
@@ -1135,9 +1135,214 @@ ul {
 	animation: crab-jump 340ms ease-out;
 }
 
+.footer-crab.is-winning {
+	animation-play-state: paused;
+}
+
+.footer-crab.is-walking.has-jumped.is-winning .footer-crab__jump {
+	animation: crab-win-fall 980ms cubic-bezier(0.42, 0, 0.85, 0.72) forwards;
+}
+
 .footer-crab.has-left {
 	pointer-events: none;
 	visibility: hidden;
+}
+
+.crab-reward {
+	position: fixed;
+	z-index: 300;
+	right: 16px;
+	bottom: 16px;
+	left: 16px;
+	overflow: hidden;
+	max-height: calc(50svh - 32px);
+	aspect-ratio: 16 / 9;
+	border-radius: 8px;
+	background: var(--ink);
+	box-shadow: 0 18px 54px color-mix(in srgb, var(--ink) 28%, transparent);
+	animation: crab-reward-in 380ms cubic-bezier(0.22, 1, 0.36, 1) both;
+	outline: none;
+}
+
+.crab-reward__media,
+.crab-reward__media video {
+	display: block;
+	width: 100%;
+	height: 100%;
+}
+
+.crab-reward__media video {
+	object-fit: cover;
+	cursor: pointer;
+}
+
+.crab-reward__play,
+.crab-reward__pause,
+.crab-reward__control {
+	position: absolute;
+	z-index: 2;
+	display: grid;
+	place-items: center;
+	width: 42px;
+	height: 42px;
+	padding: 0;
+	border: 0;
+	border-radius: 50%;
+	background: color-mix(in srgb, var(--ink) 76%, transparent);
+	color: var(--paper);
+	cursor: pointer;
+	transition:
+		background-color 180ms ease,
+		opacity 180ms ease;
+}
+
+.crab-reward__play:hover,
+.crab-reward__play:focus-visible,
+.crab-reward__pause:hover,
+.crab-reward__pause:focus-visible,
+.crab-reward__control:hover,
+.crab-reward__control:focus-visible {
+	background: var(--paper);
+	color: var(--ink);
+}
+
+.crab-reward__play {
+	top: 50%;
+	left: 50%;
+	width: 58px;
+	height: 58px;
+	transform: translate(-50%, -50%);
+}
+
+.crab-reward__pause {
+	top: 50%;
+	left: 50%;
+	width: 58px;
+	height: 58px;
+	opacity: 0;
+	transform: translate(-50%, -50%);
+	transition:
+		background-color 180ms ease,
+		opacity 180ms ease;
+}
+
+.crab-reward:not(.is-expanded) .crab-reward__media:hover
+	.crab-reward__pause,
+.crab-reward__pause:focus-visible {
+	opacity: 0.3;
+}
+
+.crab-reward:not(.is-expanded) .crab-reward__media
+	.crab-reward__pause:hover,
+.crab-reward__media .crab-reward__pause:focus-visible {
+	opacity: 1;
+}
+
+.crab-reward__play > span {
+	width: 20px;
+	height: 28px;
+	margin-left: 3px;
+	background: currentColor;
+	-webkit-mask: url('/assets/icons/play.svg') center / contain no-repeat;
+	mask: url('/assets/icons/play.svg') center / contain no-repeat;
+}
+
+.crab-reward__pause > span {
+	width: 20px;
+	height: 24px;
+	background: currentColor;
+	-webkit-mask: url('/assets/icons/pause.svg') center / contain no-repeat;
+	mask: url('/assets/icons/pause.svg') center / contain no-repeat;
+}
+
+.crab-reward__close {
+	top: 12px;
+	right: 12px;
+}
+
+.crab-reward__close > span {
+	width: 17px;
+	height: 17px;
+	background: currentColor;
+	-webkit-mask: url('/assets/icons/x.svg') center / contain no-repeat;
+	mask: url('/assets/icons/x.svg') center / contain no-repeat;
+}
+
+.crab-reward__external {
+	left: 12px;
+	bottom: 12px;
+}
+
+.crab-reward__external > span {
+	width: 12px;
+	height: 12px;
+	background: currentColor;
+	-webkit-mask: url('/assets/icons/arrow top right.svg') center / contain
+		no-repeat;
+	mask: url('/assets/icons/arrow top right.svg') center / contain no-repeat;
+}
+
+.crab-reward__expand {
+	right: 12px;
+	bottom: 12px;
+}
+
+.crab-reward__expand > span {
+	width: 18px;
+	height: 18px;
+	background: currentColor;
+	-webkit-mask: url('/assets/icons/expand.svg') center / contain no-repeat;
+	mask: url('/assets/icons/expand.svg') center / contain no-repeat;
+}
+
+.crab-reward.is-expanded {
+	inset: 0;
+	width: 100vw;
+	height: 100svh;
+	max-height: none;
+	aspect-ratio: auto;
+	border-radius: 0;
+}
+
+.crab-reward.is-expanded .crab-reward__media video {
+	object-fit: contain;
+}
+
+.crab-reward.is-expanded.is-controls-active .crab-reward__pause {
+	opacity: 0.3;
+}
+
+.crab-reward.is-expanded.is-controls-active .crab-reward__pause:hover,
+.crab-reward.is-expanded.is-controls-active
+	.crab-reward__pause:focus-visible {
+	opacity: 1;
+}
+
+.crab-reward.is-expanded:not(.is-controls-active)
+	.crab-reward__pause {
+	opacity: 0;
+}
+
+.crab-reward.is-expanded .crab-reward__expand > span {
+	-webkit-mask-image: url('/assets/icons/contract.svg');
+	mask-image: url('/assets/icons/contract.svg');
+}
+
+@keyframes crab-reward-in {
+	from {
+		opacity: 0;
+		transform: translateY(18px);
+	}
+}
+
+@media (min-width: 810px) {
+	.crab-reward {
+		right: 24px;
+		bottom: 24px;
+		left: auto;
+		width: min(40vw, 640px);
+		max-height: calc(100svh - 48px);
+	}
 }
 
 .home-page .footer-crab__still {
@@ -1157,6 +1362,25 @@ ul {
 	}
 	45% {
 		transform: translateY(-18px);
+	}
+}
+
+@keyframes crab-win-fall {
+	0% {
+		opacity: 1;
+		transform: translateY(0) rotate(0);
+	}
+	34% {
+		opacity: 1;
+		transform: translateY(-72px) rotate(-8deg);
+	}
+	48% {
+		opacity: 1;
+		transform: translateY(-62px) rotate(4deg);
+	}
+	100% {
+		opacity: 0;
+		transform: translateY(180px) rotate(18deg);
 	}
 }
 
@@ -1598,7 +1822,6 @@ ul {
 	.footer-columns {
 		gap: 22px;
 	}
-
 }
 
 @media (max-width: 520px) {

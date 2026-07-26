@@ -1199,7 +1199,11 @@ function PhoneVideo({
 				</span>
 				<span className='sp-phone__speaker' aria-hidden='true' />
 				<span className='sp-phone__play' aria-hidden='true'>
-					{playing ? 'Ⅱ' : '▶'}
+					{playing ? (
+						<span className='sp-phone__pause-symbol'>Ⅱ</span>
+					) : (
+						<span className='sp-phone__play-symbol' />
+					)}
 				</span>
 			</button>
 			<figcaption>{label}</figcaption>

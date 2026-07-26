@@ -647,6 +647,20 @@
 	opacity: 1;
 }
 
+.sp-phone__play-symbol {
+	display: block;
+	width: 18px;
+	height: 22px;
+	background: currentColor;
+	-webkit-mask: url('/assets/icons/play.svg') center / contain no-repeat;
+	mask: url('/assets/icons/play.svg') center / contain no-repeat;
+}
+
+.sp-phone__pause-symbol {
+	display: block;
+	line-height: 1;
+}
+
 .sp-help {
 	padding: 150px 0;
 	background: var(--sp-gold);

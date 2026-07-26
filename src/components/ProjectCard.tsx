@@ -19,7 +19,11 @@ type ProjectCardProps = {
 
 export function ProjectCard({ labels, project }: ProjectCardProps) {
     return (
-        <article className={`project-card project-card--${project.id}`} id={project.id}>
+        <article
+            className={`project-card project-card--${project.id}`}
+            id={project.id}
+            aria-labelledby={`${project.id}-title`}
+        >
             <div className="project-card__visual">
                 <img src={project.art} alt="" />
             </div>
@@ -43,7 +47,7 @@ export function ProjectCard({ labels, project }: ProjectCardProps) {
                 <div className="project-card__summary">
                     <div className="project-card__name">
                         <img src={project.icon} alt="" />
-                        <h2>{project.name}</h2>
+                        <h2 id={`${project.id}-title`}>{project.name}</h2>
                     </div>
                     <h3>{project.title}</h3>
                     {project.available ? (
@@ -52,7 +56,7 @@ export function ProjectCard({ labels, project }: ProjectCardProps) {
                             <span className="case-link__icon" aria-hidden="true" />
                         </a>
                     ) : (
-                        <span className="coming-soon" aria-disabled="true">
+                        <span className="coming-soon">
                             <span>{project.cta}</span>
                             <span className="case-link__icon" aria-hidden="true" />
                         </span>

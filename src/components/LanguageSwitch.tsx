@@ -27,6 +27,7 @@ export default function LanguageSwitch({
 		<a
 			className={classes}
 			href={languageHref}
+			hrefLang={isEnglish ? 'pt-BR' : 'en'}
 			onClick={onClick}
 			aria-label={
 				isEnglish ? 'Mudar idioma para português' : 'Switch language to English'

@@ -4,9 +4,10 @@ import {
 	useMemo,
 	useRef,
 	useState,
+	type KeyboardEvent as ReactKeyboardEvent,
 	type PointerEvent as ReactPointerEvent,
 } from 'react';
-import type { Locale } from '../content';
+import { siteContent, type Locale } from '../content';
 import { Reveal } from '../components/Reveal';
 import { SiteFooter } from '../components/SiteFooter';
 import { SiteHeader } from '../components/SiteHeader';
@@ -81,6 +82,7 @@ type Copy = {
 		darkAlt: string;
 		lightAlt: string;
 	};
+	ndaLabel: string;
 	nda: string;
 	thanks: string;
 };
@@ -226,6 +228,7 @@ const copy: Record<Locale, Copy> = {
 			darkAlt: 'A phone showing the black and orange Somapay PF banking app.',
 			lightAlt: 'A phone showing the orange and white Somapay PF banking app.',
 		},
+		ndaLabel: 'Disclosure',
 		nda: 'This case study contains information from projects completed under non-disclosure agreements (NDAs). Some sensitive details were changed or omitted to respect those commitments. The content presented here reflects my own analysis and contributions and does not necessarily represent Somapay’s official views or positioning.',
 		thanks: 'Thanks for your time!',
 	},
@@ -371,6 +374,7 @@ const copy: Record<Locale, Copy> = {
 			lightAlt:
 				'Um celular com o aplicativo do banco aberto. É o app laranja e branco do Somapay PF.',
 		},
+		ndaLabel: 'Aviso de confidencialidade',
 		nda: 'Este estudo de caso contém informações de projetos realizados sob acordos de confidencialidade (NDA). Alguns detalhes sensíveis foram alterados ou omitidos para respeitar esses compromissos. O conteúdo apresentado aqui reflete minhas análises e contribuições pessoais, não representando necessariamente a opinião ou posicionamento oficial da Somapay.',
 		thanks: 'Obrigado pelo seu tempo!',
 	},
@@ -799,7 +803,7 @@ function BubbleMatrix({
 							key={bubble.name}
 							className='sp-chart__bubble'
 							tabIndex={0}
-							role='button'
+							role='img'
 							aria-label={`${bubble.name}. ${labels.reviews}: ${bubble.reviews}. ${labels.rating}: ${bubble.y}`}
 							onPointerEnter={() => setActive(bubble)}
 							onFocus={() => setActive(bubble)}
@@ -926,6 +930,20 @@ function OnboardingStepper({ locale }: { locale: Locale }) {
 
 	return (
 		<div className='sp-stepper' ref={rootRef}>
+			<ol className='visually-hidden'>
+				{steps.map(step => (
+					<li key={`${step.id}-accessible`}>
+						{step.label}
+						{step.branch && (
+							<ul>
+								{step.branch.map((branch, index) => (
+									<li key={`${step.id}-${branch}-${index}`}>{branch}</li>
+								))}
+							</ul>
+						)}
+					</li>
+				))}
+			</ol>
 			{width < 560 ? (
 				<VerticalFlow steps={steps} />
 			) : (
@@ -1170,7 +1188,7 @@ function PhoneVideo({
 		const video = videoRef.current;
 		if (!video) return;
 		if (video.paused) {
-			await video.play();
+			await video.play().catch(() => setPlaying(false));
 		} else {
 			video.pause();
 		}
@@ -1247,13 +1265,45 @@ function BeforeAfter({
 	};
 
 	const pointerUp = () => setDragging(false);
+	const keyDown = (event: ReactKeyboardEvent<HTMLDivElement>) => {
+		let nextPosition = position;
+
+		switch (event.key) {
+			case 'ArrowLeft':
+			case 'ArrowDown':
+				nextPosition -= 2;
+				break;
+			case 'ArrowRight':
+			case 'ArrowUp':
+				nextPosition += 2;
+				break;
+			case 'Home':
+				nextPosition = 2;
+				break;
+			case 'End':
+				nextPosition = 98;
+				break;
+			default:
+				return;
+		}
+
+		event.preventDefault();
+		setPosition(Math.min(98, Math.max(2, nextPosition)));
+	};
 
 	return (
 		<div
 			ref={rootRef}
 			className='sp-before-after'
-			role='img'
+			role='slider'
+			tabIndex={0}
 			aria-label={label}
+			aria-valuemin={2}
+			aria-valuemax={98}
+			aria-valuenow={Math.round(position)}
+			aria-valuetext={`${Math.round(position)}%`}
+			aria-orientation='horizontal'
+			onKeyDown={keyDown}
 			onPointerDown={pointerDown}
 			onPointerMove={pointerMove}
 			onPointerUp={pointerUp}
@@ -1276,6 +1326,7 @@ function BeforeAfter({
 
 export function SomapayPage({ locale }: SomapayPageProps) {
 	const text = copy[locale];
+	const site = siteContent[locale];
 	const pageRef = useRef<HTMLDivElement>(null);
 
 	useEffect(() => {
@@ -1386,9 +1437,12 @@ export function SomapayPage({ locale }: SomapayPageProps) {
 
 	return (
 		<div className='page-shell somapay-case' ref={pageRef}>
+			<a className='skip-link' href='#main-content'>
+				{site.common.skipToContent}
+			</a>
 			<SiteHeader locale={locale} currentPage='somapay-pf' />
 
-			<main>
+			<main id='main-content' tabIndex={-1}>
 				<section className='sp-hero' id='start'>
 					<div className='sp-shell sp-hero__inner'>
 						<Reveal className='sp-hero__logo'>
@@ -1412,7 +1466,7 @@ export function SomapayPage({ locale }: SomapayPageProps) {
 									delay={index * 55}
 									key={item.title}
 								>
-									<h2>{item.title}</h2>
+									<h3 className='sp-copy-block__title'>{item.title}</h3>
 									{item.paragraphs.map(paragraph => (
 										<p key={paragraph}>{paragraph}</p>
 									))}
@@ -1460,17 +1514,21 @@ export function SomapayPage({ locale }: SomapayPageProps) {
 								{text.goals.title}
 							</SectionTitle>
 						</Reveal>
-						<div className='sp-goals__items'>
+						<ol className='sp-goals__items'>
 							{text.goals.items.map((item, index) => (
-								<Reveal className='sp-goal' delay={index * 70} key={item.title}>
-									<span className='sp-index'>0{index + 1}</span>
-									<div>
-										<h3>{item.title}</h3>
-										<p>{item.description}</p>
-									</div>
-								</Reveal>
+								<li key={item.title}>
+									<Reveal className='sp-goal' delay={index * 70}>
+										<span className='sp-index' aria-hidden='true'>
+											0{index + 1}
+										</span>
+										<div>
+											<h3>{item.title}</h3>
+											<p>{item.description}</p>
+										</div>
+									</Reveal>
+								</li>
 							))}
-						</div>
+						</ol>
 					</div>
 				</section>
 
@@ -1605,7 +1663,7 @@ export function SomapayPage({ locale }: SomapayPageProps) {
 					</div>
 				</section>
 
-				<section className='sp-nda' id='nda'>
+				<section className='sp-nda' id='nda' aria-label={text.ndaLabel}>
 					<div className='sp-shell sp-nda__inner'>
 						<Reveal>
 							<p>{text.nda}</p>

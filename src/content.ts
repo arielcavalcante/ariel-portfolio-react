@@ -16,8 +16,10 @@ export const siteContent = {
 			caseDescription:
 				'+24% increase in Play Store rating through research and end-to-end product redesign',
 			notFoundTitle: '404 · Ariel Cavalcante',
+			notFoundDescription: 'The requested page could not be found.',
 		},
 		nav: {
+			primaryLabel: 'Primary navigation',
 			home: 'Home',
 			projects: 'Projects',
 			resume: 'Resume',
@@ -28,6 +30,7 @@ export const siteContent = {
 			language: 'Come to Brazil',
 		},
 		common: {
+			skipToContent: 'Skip to main content',
 			client: 'Client',
 			role: 'My role',
 			projects: 'Projects',
@@ -137,8 +140,10 @@ export const siteContent = {
 			caseDescription:
 				'+24% de aumento na nota da Play Store por meio de pesquisa e redesign de produto de ponta a ponta',
 			notFoundTitle: '404 · Ariel Cavalcante',
+			notFoundDescription: 'A página solicitada não foi encontrada.',
 		},
 		nav: {
+			primaryLabel: 'Navegação principal',
 			home: 'Início',
 			projects: 'Projetos',
 			resume: 'Currículo',
@@ -149,6 +154,7 @@ export const siteContent = {
 			language: 'Come to Brazil',
 		},
 		common: {
+			skipToContent: 'Pular para o conteúdo principal',
 			client: 'Cliente',
 			role: 'Meu papel',
 			projects: 'Projetos',

@@ -27,6 +27,8 @@ export function SiteHeader({
 	const [pastTop, setPastTop] = useState(false);
 	const navigationRef = useRef<HTMLElement>(null);
 	const navigationMarkerRef = useRef<HTMLSpanElement>(null);
+	const menuButtonRef = useRef<HTMLButtonElement>(null);
+	const projectsTriggerRef = useRef<HTMLButtonElement>(null);
 
 	const content = siteContent[locale];
 	const nav = content.nav;
@@ -58,6 +60,22 @@ export function SiteHeader({
 			document.body.classList.remove('menu-open');
 		};
 	}, [menuOpen]);
+
+	useEffect(() => {
+		if (!menuOpen && !projectsOpen) return;
+
+		const handleEscape = (event: KeyboardEvent) => {
+			if (event.key !== 'Escape') return;
+
+			event.preventDefault();
+			setMenuOpen(false);
+			setProjectsOpen(false);
+			(menuOpen ? menuButtonRef : projectsTriggerRef).current?.focus();
+		};
+
+		window.addEventListener('keydown', handleEscape);
+		return () => window.removeEventListener('keydown', handleEscape);
+	}, [menuOpen, projectsOpen]);
 
 	function closeMenu() {
 		setMenuOpen(false);
@@ -164,7 +182,7 @@ export function SiteHeader({
 					ref={navigationRef}
 					id='primary-navigation'
 					className={`desktop-nav${menuOpen ? ' is-open' : ''}`}
-					aria-label='Primary navigation'
+					aria-label={nav.primaryLabel}
 					onMouseOver={moveMarkerFromEvent}
 					onMouseLeave={restoreNavigationMarker}
 					onFocusCapture={moveMarkerFromFocus}
@@ -176,6 +194,7 @@ export function SiteHeader({
 						className={`nav-primary-link${
 							currentPage === 'home' ? ' is-active' : ''
 						}`}
+						aria-current={currentPage === 'home' ? 'page' : undefined}
 						onClick={closeMenu}
 					>
 						{nav.home}
@@ -189,6 +208,7 @@ export function SiteHeader({
 						onBlur={closeProjectsOnBlur}
 					>
 						<button
+							ref={projectsTriggerRef}
 							className='projects-trigger'
 							type='button'
 							data-nav-marker='below'
@@ -220,6 +240,9 @@ export function SiteHeader({
 												className={
 													currentPage === project.id ? 'is-active' : undefined
 												}
+												aria-current={
+													currentPage === project.id ? 'page' : undefined
+												}
 												data-nav-marker='left'
 												href={localizedPath(locale, project.href)}
 												onClick={closeMenu}
@@ -227,7 +250,7 @@ export function SiteHeader({
 												{project.name}
 											</a>
 										) : (
-											<span className='project-link is-disabled' aria-disabled='true'>
+											<span className='project-link is-disabled'>
 												<span>{project.name}</span>
 												<span className='project-status'>{project.cta}</span>
 											</span>
@@ -280,6 +303,7 @@ export function SiteHeader({
 				</nav>
 
 				<button
+					ref={menuButtonRef}
 					className='menu-button'
 					type='button'
 					aria-label={menuOpen ? nav.close : nav.menu}

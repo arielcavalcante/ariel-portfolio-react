@@ -6,7 +6,7 @@
 
 # Larger improvements
 
-- Check correct syntax of html tags, if its correct for accessibility and SEO, and adjust styles so the appearence stays the same
+- Create some tests and implement safety protocols for downtime, links breaking and such
 
 # Next page
 

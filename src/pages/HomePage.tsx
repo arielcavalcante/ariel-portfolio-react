@@ -94,12 +94,15 @@ export function HomePage({ locale }: HomePageProps) {
 
 	return (
 		<div className='page-shell home-page' ref={pageRef}>
+			<a className='skip-link' href='#main-content'>
+				{content.common.skipToContent}
+			</a>
 			<SiteHeader locale={locale} currentPage='home' />
 
-			<main>
+			<main id='main-content' tabIndex={-1}>
 				<section className='home-hero page-width'>
 					<div className='availability'>
-						<span className='availability__dot' />
+						<span className='availability__dot' aria-hidden='true' />
 						<span>{content.home.available}</span>
 					</div>
 
@@ -136,7 +139,11 @@ export function HomePage({ locale }: HomePageProps) {
 					<SkillMarquee items={content.home.skills} />
 				</section>
 
-				<section className='projects-section page-width' id='projects'>
+				<section
+					className='projects-section page-width'
+					id='projects'
+					aria-label={content.common.projects}
+				>
 					{content.home.projects.map((project, index) => (
 						<Reveal key={project.id} delay={index * 80}>
 							<ProjectCard

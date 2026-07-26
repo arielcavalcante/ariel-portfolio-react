@@ -83,6 +83,10 @@ export default function App() {
 			canonicalPath,
 			'https://arielcavalcante.com',
 		).href;
+		const socialImageUrl =
+			'https://arielcavalcante.com/assets/social-preview.jpg';
+		const socialImageAlt =
+			'Ariel Cavalcante logo with a merman illustration and geometric red shapes.';
 
 		setMeta('meta[name="description"]', 'name', 'description', description);
 		setMeta(
@@ -99,12 +103,79 @@ export default function App() {
 			description,
 		);
 		setMeta('meta[property="og:type"]', 'property', 'og:type', 'website');
+		setMeta(
+			'meta[property="og:site_name"]',
+			'property',
+			'og:site_name',
+			'Ariel Cavalcante',
+		);
 		setMeta('meta[property="og:url"]', 'property', 'og:url', canonicalUrl);
+		setMeta(
+			'meta[property="og:image"]',
+			'property',
+			'og:image',
+			socialImageUrl,
+		);
+		setMeta(
+			'meta[property="og:image:secure_url"]',
+			'property',
+			'og:image:secure_url',
+			socialImageUrl,
+		);
+		setMeta(
+			'meta[property="og:image:type"]',
+			'property',
+			'og:image:type',
+			'image/jpeg',
+		);
+		setMeta(
+			'meta[property="og:image:width"]',
+			'property',
+			'og:image:width',
+			'1200',
+		);
+		setMeta(
+			'meta[property="og:image:height"]',
+			'property',
+			'og:image:height',
+			'630',
+		);
+		setMeta(
+			'meta[property="og:image:alt"]',
+			'property',
+			'og:image:alt',
+			socialImageAlt,
+		);
 		setMeta(
 			'meta[property="og:locale"]',
 			'property',
 			'og:locale',
 			route.locale === 'pt-BR' ? 'pt_BR' : 'en_US',
+		);
+		setMeta(
+			'meta[name="twitter:card"]',
+			'name',
+			'twitter:card',
+			'summary_large_image',
+		);
+		setMeta('meta[name="twitter:title"]', 'name', 'twitter:title', title);
+		setMeta(
+			'meta[name="twitter:description"]',
+			'name',
+			'twitter:description',
+			description,
+		);
+		setMeta(
+			'meta[name="twitter:image"]',
+			'name',
+			'twitter:image',
+			socialImageUrl,
+		);
+		setMeta(
+			'meta[name="twitter:image:alt"]',
+			'name',
+			'twitter:image:alt',
+			socialImageAlt,
 		);
 		setLink('link[rel="canonical"]', {
 			rel: 'canonical',

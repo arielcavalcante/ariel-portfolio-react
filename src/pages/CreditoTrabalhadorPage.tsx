@@ -30,12 +30,196 @@ const workerCreditScreens = [
 	'/assets/3d/images/04.webp',
 ];
 
+type WorkerCreditContentSection = {
+	title?: string;
+	paragraphs: string[];
+};
+
+type WorkerCreditScreenContent = {
+	sections: WorkerCreditContentSection[];
+};
+
+type WorkerCreditMobileStep = {
+	screenIndex: number;
+	screenStepIndex: number;
+	screenStepCount: number;
+	title?: string;
+	paragraph: string;
+};
+
+const workerCreditContent: Record<Locale, WorkerCreditScreenContent[]> = {
+	en: [
+		{
+			sections: [
+				{
+					title: 'Context',
+					paragraphs: [
+						'Is a payroll-deducted loan programme for private-sector employees, including workers hired under the CLT regime (Brazil’s main formal employment framework). Approval follows government regulations and uses official employment data, accessed through an integration with Dataprev (Brazil’s public social security technology provider), to verify eligibility.',
+						'Instalments are deducted directly from the employee’s salary, within their payroll-deduction limit. The programme aims to expand access to credit at more competitive rates through platforms connected to Brazilian government systems.',
+					],
+				},
+				{
+					title: 'Challenges',
+					paragraphs: [
+						'The project timeline was one of its main challenges: we had only seven days to conduct research, gather references, develop the wireframes, and create the final high-fidelity screens, with stakeholder reviews at each stage.',
+						'Requirements definition was another significant challenge. Due to the urgency of the project, there was not enough time to fully refine the requirements before development began, leading to misalignment and rework throughout the process. At critical moments, we set up a war room involving Product, Legal, Regulatory Compliance, and Information Security teams to accelerate decision-making and ensure the solution met all regulatory requirements.',
+					],
+				},
+			],
+		},
+		{
+			sections: [
+				{
+					title: 'Business priority',
+					paragraphs: [
+						"One of the stakeholders' priorities was to accelerate the project's financial return. To support this goal, I proposed giving greater visual prominence to the option most strategic for the business right at the start of the sign-up flow. Placing it at the top of the screen and assigning it the primary CTA made it more attractive, yet did not prevent users from comparing other available alternatives or simulating customized amounts and terms.",
+					],
+				},
+			],
+		},
+		{
+			sections: [
+				{
+					title: 'Review and choice',
+					paragraphs: [
+						'At the final stage of the application flow, I organised the information into a review screen so users could verify the main loan terms before confirming. Details such as the number and value of instalments, the amount to be received, fees and interest, and the total borrowed were presented with a clear hierarchy. I also reinforced that instalments would be deducted directly from the employee’s payroll, improving transparency throughout the process.',
+						'The insured and uninsured options were not part of the initial requirements. Since stakeholders also had a parallel goal of increasing insurance profitability, I used this stage as an opportunity to propose both alternatives. The insured option received greater visual prominence, while the uninsured option remained accessible, allowing users to make an informed choice before confirming.',
+					],
+				},
+			],
+		},
+		{
+			sections: [
+				{
+					title: 'Loan management',
+					paragraphs: [
+						'After completing the application, users can track their payments, review contract and disbursement details, check the outstanding balance, and download their CCB (Brazilian bank credit note). Values are presented clearly, and colour is used to support comprehension without compromising accessibility, since all information is also communicated through text.',
+					],
+				},
+			],
+		},
+	],
+	'pt-BR': [
+		{
+			sections: [
+				{
+					title: 'Contexto',
+					paragraphs: [
+						'É uma modalidade de empréstimo consignado para trabalhadores do setor privado, incluindo funcionários contratados pelo regime CLT. A concessão segue regulamentações governamentais e utiliza dados oficiais do vínculo empregatício, por meio de integração com a Dataprev, para verificar a elegibilidade.',
+						'As parcelas são descontadas diretamente da folha de pagamento, dentro da margem consignável. A modalidade busca ampliar o acesso a crédito com taxas mais competitivas por meio de plataformas integradas aos sistemas do governo.',
+					],
+				},
+				{
+					title: 'Desafios',
+					paragraphs: [
+						'O cronograma foi um dos principais desafios do projeto: tivemos apenas sete dias para conduzir a pesquisa, reunir referências, desenvolver os wireframes e criar as telas finais em alta fidelidade, com validações dos stakeholders em cada etapa.',
+						'A definição dos requisitos também exigiu atenção. Como a demanda era urgente, não houve tempo suficiente para amadurecê-los antes do início do desenvolvimento, o que gerou desalinhamentos e retrabalho ao longo do processo. Em momentos críticos, foi necessário organizar uma war room envolvendo os times de Produto, Jurídico, Compliance Regulatório e Segurança da Informação para acelerar decisões e garantir a conformidade da solução.',
+					],
+				},
+			],
+		},
+		{
+			sections: [
+				{
+					title: 'Prioridade do negócio',
+					paragraphs: [
+						'Uma das prioridades dos stakeholders era acelerar o retorno financeiro do projeto. Para apoiar esse objetivo, propus que, logo no início do fluxo de contratação, a opção mais estratégica para o negócio recebesse maior destaque visual. O posicionamento no topo da tela e associada ao CTA primário oferecia maior atratividade mas não impedia que o usuário comparasse as demais alternativas disponíveis ou simulasse valores e condições customizadas.',
+					],
+				},
+			],
+		},
+		{
+			sections: [
+				{
+					title: 'Revisão e escolha',
+					paragraphs: [
+						'Na etapa final da contratação, organizei as informações em uma tela de revisão para que o usuário pudesse conferir as principais condições antes de confirmar o empréstimo. Dados como número e valor das parcelas, valor a receber, taxas/juros e valor total contratado, além de um reforço de que as parcelas seriam descontadas diretamente da folha de pagamento, foram apresentados de forma hierarquizada, reforçando a transparência da operação.',
+						'As opções de contratação com e sem seguro não existiam nos requisitos iniciais. Como havia uma demanda paralela dos stakeholders para aumentar a rentabilidade dos seguros, aproveitei esta etapa para propor a inclusão das duas alternativas. A opção com seguro recebeu maior destaque visual, enquanto a contratação sem seguro permaneceu acessível, permitindo uma escolha consciente antes da confirmação.',
+					],
+				},
+			],
+		},
+		{
+			sections: [
+				{
+					title: 'Gestão do empréstimo',
+					paragraphs: [
+						'Após a contratação, o usuário pode acompanhar os pagamentos, consultar as informações do contrato e da liberação do crédito, verificar o saldo pendente e fazer o download da CCB. Os valores são apresentados de forma clara, e o uso de cores facilita a compreensão sem comprometer a acessibilidade, já que todas as informações também são comunicadas por texto.',
+					],
+				},
+			],
+		},
+	],
+};
+
+const workerCreditMobileSteps = Object.fromEntries(
+	Object.entries(workerCreditContent).map(([locale, screens]) => [
+		locale,
+		screens.flatMap((screen, screenIndex) => {
+			const screenSteps = screen.sections.flatMap(section =>
+				section.paragraphs.map((paragraph, paragraphIndex) => ({
+					title: paragraphIndex === 0 ? section.title : undefined,
+					paragraph,
+				})),
+			);
+
+			return screenSteps.map((step, screenStepIndex) => ({
+				...step,
+				screenIndex,
+				screenStepIndex,
+				screenStepCount: screenSteps.length,
+			}));
+		}),
+	]),
+) as Record<Locale, WorkerCreditMobileStep[]>;
+
+function WorkerCreditCopySection({
+	section,
+}: {
+	section: WorkerCreditContentSection;
+}) {
+	const paragraphs = section.paragraphs.map((paragraph, index) => (
+		<p key={index}>{paragraph}</p>
+	));
+
+	if (!section.title) {
+		return <div className='worker-credit-case__copy-section'>{paragraphs}</div>;
+	}
+
+	return (
+		<section className='worker-credit-case__copy-section'>
+			<h2>{section.title}</h2>
+			{paragraphs}
+		</section>
+	);
+}
+
+function useMediaQuery(query: string) {
+	const [matches, setMatches] = useState(false);
+
+	useEffect(() => {
+		const mediaQuery = window.matchMedia(query);
+		const update = () => setMatches(mediaQuery.matches);
+		update();
+		mediaQuery.addEventListener('change', update);
+		return () => mediaQuery.removeEventListener('change', update);
+	}, [query]);
+
+	return matches;
+}
+
 export function CreditoTrabalhadorPage({
 	locale,
 }: CreditoTrabalhadorPageProps) {
 	const site = siteContent[locale];
 	const sequenceRef = useRef<HTMLDivElement>(null);
+	const mobileProgressRef = useRef<HTMLDivElement>(null);
 	const [screenIndex, setScreenIndex] = useState(0);
+	const [mobileStepIndex, setMobileStepIndex] = useState(0);
+	const [copyVisible, setCopyVisible] = useState(false);
+	const [progressVisible, setProgressVisible] = useState(false);
+	const isMobile = useMediaQuery('(max-width: 900px)');
+	const mobileSteps = workerCreditMobileSteps[locale];
 
 	useEffect(() => {
 		document.body.classList.add('somapay-case-open');
@@ -63,12 +247,42 @@ export function CreditoTrabalhadorPage({
 				1,
 			);
 			const progress = Math.min(Math.max(-bounds.top / scrollDistance, 0), 1);
-			const nextIndex = Math.min(
-				workerCreditScreens.length - 1,
-				Math.floor(progress * workerCreditScreens.length),
+			setProgressVisible(current => {
+				const next = window.scrollY > 1 && (current || progress > 0);
+				return current === next ? current : next;
+			});
+			if (mobileProgressRef.current) {
+				mobileProgressRef.current.style.setProperty(
+					'--worker-credit-progress',
+					String(progress),
+				);
+				mobileProgressRef.current.setAttribute(
+					'aria-valuenow',
+					String(Math.round(progress * 100)),
+				);
+			}
+			const stepCount = isMobile
+				? mobileSteps.length
+				: workerCreditScreens.length;
+			const sequenceProgress = progress * stepCount;
+			const nextStepIndex = Math.min(
+				stepCount - 1,
+				Math.floor(sequenceProgress),
 			);
+			const nextIndex = isMobile
+				? mobileSteps[nextStepIndex].screenIndex
+				: nextStepIndex;
+			const phase =
+				sequenceProgress >= stepCount ? 1 : sequenceProgress - nextStepIndex;
 
 			setScreenIndex(current => (current === nextIndex ? current : nextIndex));
+			setMobileStepIndex(current =>
+				current === nextStepIndex ? current : nextStepIndex,
+			);
+			setCopyVisible(current => {
+				const next = isMobile ? sequenceProgress >= 0.58 : phase >= 0.58;
+				return current === next ? current : next;
+			});
 		};
 
 		const queueUpdate = () => {
@@ -85,16 +299,33 @@ export function CreditoTrabalhadorPage({
 			window.removeEventListener('scroll', queueUpdate);
 			window.removeEventListener('resize', queueUpdate);
 		};
-	}, []);
+	}, [isMobile, mobileSteps]);
 
+	const sequenceStepCount = isMobile
+		? mobileSteps.length
+		: workerCreditScreens.length;
 	const sequenceStyle = {
-		'--phone-screen-count': workerCreditScreens.length,
+		'--phone-sequence-height': `${(sequenceStepCount + 1) * 100}svh`,
 	} as CSSProperties;
-	const phoneRotation: [number, number, number] = [
-		Math.PI,
-		screenIndex % 2 === 0 ? 0.1 : -0.8,
-		0,
-	];
+	const activeMobileStep =
+		mobileSteps[Math.min(mobileStepIndex, mobileSteps.length - 1)];
+	const getScreenAngle = (index: number) => (index % 2 === 0 ? 0.1 : -0.8);
+	const currentScreenAngle = getScreenAngle(activeMobileStep.screenIndex);
+	const nextScreenAngle = getScreenAngle(activeMobileStep.screenIndex + 1);
+	const mobileParagraphProgress =
+		activeMobileStep.screenStepIndex / activeMobileStep.screenStepCount;
+	const phoneRotation: [number, number, number] = isMobile
+		? [
+				Math.PI,
+				currentScreenAngle +
+					(nextScreenAngle - currentScreenAngle) * mobileParagraphProgress,
+				0,
+			]
+		: [Math.PI, getScreenAngle(screenIndex), 0];
+	const phonePosition: [number, number, number] = isMobile
+		? [0, copyVisible ? 6 : 4, 0]
+		: [0, 0, 0];
+	const phoneScale = isMobile ? (copyVisible ? 0.62 : 0.92) : 1;
 
 	return (
 		<div className='page-shell somapay-case worker-credit-case'>
@@ -125,8 +356,13 @@ export function CreditoTrabalhadorPage({
 									}
 								>
 									<IPhoneMockup
+										className={`worker-credit-case__mockup ${
+											screenIndex % 2 === 0 ? 'is-phone-right' : 'is-phone-left'
+										}`}
 										screenImage={workerCreditScreens[screenIndex]}
+										position={phonePosition}
 										rotation={phoneRotation}
+										scale={phoneScale}
 										alt={
 											locale === 'pt-BR'
 												? `Mockup 3D interativo de um iPhone 17 Pro exibindo a tela ${screenIndex + 1} de ${workerCreditScreens.length} do aplicativo Somapay`
@@ -134,6 +370,59 @@ export function CreditoTrabalhadorPage({
 										}
 									/>
 								</Suspense>
+								<div
+									className={`worker-credit-case__copy ${
+										screenIndex % 2 === 0 ? 'is-copy-left' : 'is-copy-right'
+									} ${copyVisible ? 'is-visible' : ''}`}
+								>
+									{isMobile ? (
+										<article
+											key={`${locale}-${mobileStepIndex}`}
+											className={`worker-credit-case__copy-item is-active ${
+												screenIndex % 2 === 0 ? 'is-left' : 'is-right'
+											}`}
+										>
+											{activeMobileStep.title && (
+												<h2>{activeMobileStep.title}</h2>
+											)}
+											<p>{activeMobileStep.paragraph}</p>
+										</article>
+									) : (
+										workerCreditContent[locale].map((screen, index) => (
+											<article
+												key={`${locale}-${index}`}
+												className={`worker-credit-case__copy-item ${
+													index === screenIndex ? 'is-active' : ''
+												} ${index % 2 === 0 ? 'is-left' : 'is-right'}`}
+												aria-hidden={index !== screenIndex}
+											>
+												{screen.sections.map((section, sectionIndex) => (
+													<WorkerCreditCopySection
+														key={`${section.title ?? 'copy'}-${sectionIndex}`}
+														section={section}
+													/>
+												))}
+											</article>
+										))
+									)}
+								</div>
+								<div
+									ref={mobileProgressRef}
+									className={`worker-credit-case__mobile-progress ${
+										progressVisible ? 'is-visible' : ''
+									}`}
+									role='progressbar'
+									aria-label={
+										locale === 'pt-BR'
+											? 'Progresso do conteúdo'
+											: 'Content progress'
+									}
+									aria-valuemin={0}
+									aria-valuemax={100}
+									aria-valuenow={0}
+								>
+									<span aria-hidden='true' />
+								</div>
 							</figure>
 						</div>
 					</div>

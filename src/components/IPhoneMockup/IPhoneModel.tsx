@@ -8,6 +8,7 @@ import {
 	Group,
 	MathUtils,
 	SRGBColorSpace,
+	Vector3,
 	type Material,
 	type Mesh,
 	type MeshStandardMaterial,
@@ -20,6 +21,7 @@ type Vector3Tuple = [number, number, number];
 type IPhoneModelProps = {
 	modelUrl: string;
 	screenImage: string;
+	position: Vector3Tuple;
 	rotation: Vector3Tuple;
 	scale: number | Vector3Tuple;
 	animateRotation: boolean;
@@ -122,6 +124,7 @@ function applyScreenTexture(material: Material, texture: Texture) {
 export function IPhoneModel({
 	modelUrl,
 	screenImage,
+	position,
 	rotation,
 	scale,
 	animateRotation,
@@ -129,13 +132,23 @@ export function IPhoneModel({
 	const { scene: sourceScene } = useGLTF(modelUrl);
 	const sourceTexture = useTexture(screenImage);
 	const groupRef = useRef<Group>(null);
+	const initialPosition = useRef(position);
 	const initialRotation = useRef(rotation);
+	const initialScale = useRef(1);
 	const invalidate = useThree(state => state.invalidate);
 	const prepared = useMemo(() => prepareModel(sourceScene), [sourceScene]);
+	const targetPosition = useMemo(
+		() => new Vector3(position[0], position[1], position[2]),
+		[position[0], position[1], position[2]],
+	);
 	const targetRotation = useMemo(
 		() => new Euler(rotation[0], rotation[1], rotation[2]),
 		[rotation[0], rotation[1], rotation[2]],
 	);
+	const targetScale = useMemo(() => {
+		if (typeof scale === 'number') return new Vector3(scale, scale, scale);
+		return new Vector3(scale[0], scale[1], scale[2]);
+	}, [scale]);
 	const screenTexture = useMemo(() => {
 		const texture = sourceTexture.clone();
 		configureTexture(texture);
@@ -144,17 +157,37 @@ export function IPhoneModel({
 
 	useEffect(() => {
 		invalidate();
-	}, [invalidate, targetRotation]);
+	}, [invalidate, targetPosition, targetRotation, targetScale]);
 
 	useFrame((state, delta) => {
 		const group = groupRef.current;
 		if (!group) return;
 
 		if (!animateRotation) {
+			group.position.copy(targetPosition);
 			group.rotation.copy(targetRotation);
+			group.scale.copy(targetScale);
 			return;
 		}
 
+		group.position.x = MathUtils.damp(
+			group.position.x,
+			targetPosition.x,
+			7,
+			delta,
+		);
+		group.position.y = MathUtils.damp(
+			group.position.y,
+			targetPosition.y,
+			7,
+			delta,
+		);
+		group.position.z = MathUtils.damp(
+			group.position.z,
+			targetPosition.z,
+			7,
+			delta,
+		);
 		group.rotation.x = MathUtils.damp(
 			group.rotation.x,
 			targetRotation.x,
@@ -173,11 +206,31 @@ export function IPhoneModel({
 			7,
 			delta,
 		);
+		group.scale.x = MathUtils.damp(
+			group.scale.x,
+			targetScale.x,
+			7,
+			delta,
+		);
+		group.scale.y = MathUtils.damp(
+			group.scale.y,
+			targetScale.y,
+			7,
+			delta,
+		);
+		group.scale.z = MathUtils.damp(
+			group.scale.z,
+			targetScale.z,
+			7,
+			delta,
+		);
 
 		const distance =
+			group.position.distanceTo(targetPosition) +
 			Math.abs(group.rotation.x - targetRotation.x) +
 			Math.abs(group.rotation.y - targetRotation.y) +
-			Math.abs(group.rotation.z - targetRotation.z);
+			Math.abs(group.rotation.z - targetRotation.z) +
+			group.scale.distanceTo(targetScale);
 
 		if (distance > 0.0005) state.invalidate();
 	});
@@ -208,8 +261,9 @@ export function IPhoneModel({
 	return (
 		<group
 			ref={groupRef}
+			position={initialPosition.current}
 			rotation={initialRotation.current}
-			scale={scale}
+			scale={initialScale.current}
 		>
 			<primitive object={prepared.scene} />
 		</group>

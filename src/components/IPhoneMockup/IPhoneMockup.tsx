@@ -29,6 +29,7 @@ export type IPhoneMockupProps = {
 	modelUrl?: string;
 	className?: string;
 	alt?: string;
+	position?: Vector3Tuple;
 	rotation?: Vector3Tuple;
 	scale?: number | Vector3Tuple;
 	cameraPosition?: Vector3Tuple;
@@ -123,15 +124,18 @@ function PhoneCameraFit({
 			size.x / (2 * Math.tan(halfVerticalFov) * camera.aspect);
 		const distance =
 			Math.max(distanceForHeight, distanceForWidth) * margin + size.z / 2;
-		const direction = camera.position.clone().sub(center);
+		const framingCenter = new Vector3(0, center.y, center.z);
+		const direction = camera.position.clone().sub(framingCenter);
 
 		if (direction.lengthSq() === 0) direction.copy(new Vector3(0, 0, 1));
 		direction.normalize();
 
-		camera.position.copy(center).addScaledVector(direction, distance);
+		camera.position
+			.copy(framingCenter)
+			.addScaledVector(direction, distance);
 		camera.near = Math.max(0.01, distance / 100);
 		camera.far = Math.max(100, distance * 100);
-		camera.lookAt(center);
+		camera.lookAt(framingCenter);
 		camera.updateProjectionMatrix();
 		camera.updateMatrixWorld();
 
@@ -139,7 +143,7 @@ function PhoneCameraFit({
 			| { target?: Vector3; update?: () => void }
 			| undefined;
 		if (orbitControls?.target && orbitControls.update) {
-			orbitControls.target.copy(center);
+			orbitControls.target.copy(framingCenter);
 			orbitControls.update();
 		}
 
@@ -164,6 +168,7 @@ export function IPhoneMockup({
 	modelUrl = '/assets/3d/models/iphone-17-pro-web.glb',
 	className = '',
 	alt = 'Interactive 3D iPhone mockup',
+	position = [0, 0, 0],
 	rotation = [Math.PI, 0, 0],
 	scale = 1,
 	cameraPosition = [0, 0, 6],
@@ -283,6 +288,7 @@ export function IPhoneMockup({
 								<IPhoneModel
 									modelUrl={modelUrl}
 									screenImage={screenImage}
+									position={position}
 									rotation={rotation}
 									scale={scale}
 									animateRotation={!reducedMotion}

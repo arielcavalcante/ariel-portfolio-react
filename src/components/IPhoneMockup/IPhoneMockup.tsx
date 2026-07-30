@@ -18,7 +18,7 @@ import {
 	useGLTF,
 	useTexture,
 } from '@react-three/drei';
-import { Canvas, useThree } from '@react-three/fiber';
+import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { MathUtils, PerspectiveCamera, Vector3 } from 'three';
 import { useMediaQuery } from '../../hooks/useMediaQuery';
 import { IPhoneModel } from './IPhoneModel';
@@ -39,6 +39,8 @@ export type IPhoneMockupProps = {
 	enableInteraction?: boolean;
 	autoRotate?: boolean;
 	fallbackImage?: string;
+	loadingLabel?: string;
+	loadingStartedAt?: number;
 };
 
 type ErrorBoundaryProps = {
@@ -78,20 +80,37 @@ class MockupErrorBoundary extends Component<
 	}
 }
 
-function StaticFallback({ src }: { src?: string }) {
+function StaticFallback({
+	src,
+	loadingLabel,
+	showLoading,
+}: {
+	src?: string;
+	loadingLabel: string;
+	showLoading: boolean;
+}) {
 	return (
 		<div className='iphone-mockup__fallback' aria-hidden='true'>
-			{src && <img src={src} alt='' decoding='async' />}
+			{src ? (
+				<img src={src} alt='' decoding='async' />
+			) : showLoading ? (
+				<div className='iphone-mockup__loading'>
+					<span>{loadingLabel}</span>
+					<img
+						src='/assets/icons/loading-waves-paper.svg'
+						alt=''
+						decoding='async'
+					/>
+				</div>
+			) : null}
 		</div>
 	);
 }
 
 function PhoneCameraFit({
 	margin,
-	onReady,
 }: {
 	margin: number;
-	onReady: () => void;
 }) {
 	const bounds = useBounds();
 	const camera = useThree(state => state.camera);
@@ -132,17 +151,115 @@ function PhoneCameraFit({
 		}
 
 		invalidate();
-		onReady();
 	}, [
 		bounds,
 		camera,
 		controls,
 		invalidate,
 		margin,
-		onReady,
 		viewportSize.height,
 		viewportSize.width,
 	]);
+
+	return null;
+}
+
+function SceneRenderReady({
+	onReady,
+	onWaiting,
+}: {
+	onReady: () => void;
+	onWaiting: () => void;
+}) {
+	const renderer = useThree(state => state.gl);
+	const scene = useThree(state => state.scene);
+	const camera = useThree(state => state.camera);
+	const invalidate = useThree(state => state.invalidate);
+	const [shadersReady, setShadersReady] = useState(false);
+	const renderedFrames = useRef(0);
+	const hasReportedReady = useRef(false);
+	const revealFrame = useRef<number | null>(null);
+
+	useEffect(() => {
+		let active = true;
+		const canvas = renderer.domElement;
+
+		const prepareShaders = async () => {
+			setShadersReady(false);
+			renderedFrames.current = 0;
+			hasReportedReady.current = false;
+
+			try {
+				await renderer.compileAsync(scene, camera);
+			} catch (error) {
+				if (import.meta.env.DEV) {
+					console.warn(
+						'[IPhoneMockup] Asynchronous shader compilation failed; using synchronous compilation.',
+						error,
+					);
+				}
+				renderer.compile(scene, camera);
+			}
+
+			if (!active) return;
+			setShadersReady(true);
+			invalidate();
+		};
+
+		const handleContextLost = (event: Event) => {
+			event.preventDefault();
+			if (revealFrame.current !== null) {
+				window.cancelAnimationFrame(revealFrame.current);
+				revealFrame.current = null;
+			}
+			setShadersReady(false);
+			renderedFrames.current = 0;
+			hasReportedReady.current = false;
+			onWaiting();
+		};
+
+		const handleContextRestored = () => {
+			void prepareShaders();
+		};
+
+		canvas.addEventListener('webglcontextlost', handleContextLost);
+		canvas.addEventListener('webglcontextrestored', handleContextRestored);
+		void prepareShaders();
+
+		return () => {
+			active = false;
+			canvas.removeEventListener('webglcontextlost', handleContextLost);
+			canvas.removeEventListener(
+				'webglcontextrestored',
+				handleContextRestored,
+			);
+		};
+	}, [camera, invalidate, onWaiting, renderer, scene]);
+
+	useFrame(state => {
+		if (!shadersReady || hasReportedReady.current) return;
+
+		renderedFrames.current += 1;
+		if (renderedFrames.current < 3) {
+			state.invalidate();
+			return;
+		}
+
+		hasReportedReady.current = true;
+
+		// Reveal after several post-compilation frames so Mobile Safari has time
+		// to upload textures and composite the WebGL canvas.
+		revealFrame.current = window.requestAnimationFrame(onReady);
+	});
+
+	useEffect(
+		() => () => {
+			if (revealFrame.current !== null) {
+				window.cancelAnimationFrame(revealFrame.current);
+			}
+		},
+		[],
+	);
 
 	return null;
 }
@@ -160,8 +277,15 @@ export function IPhoneMockup({
 	enableInteraction = true,
 	autoRotate = false,
 	fallbackImage,
+	loadingLabel = 'Loading',
+	loadingStartedAt,
 }: IPhoneMockupProps) {
 	const rootRef = useRef<HTMLDivElement>(null);
+	const loadingStart = useRef(loadingStartedAt ?? Date.now());
+	const readyTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+	const [showLoading, setShowLoading] = useState(
+		() => Date.now() - loadingStart.current >= 1000,
+	);
 	const [shouldRender, setShouldRender] = useState(false);
 	const [sceneReady, setSceneReady] = useState(false);
 	const reducedMotion = useMediaQuery('(prefers-reduced-motion: reduce)');
@@ -169,8 +293,37 @@ export function IPhoneMockup({
 	const canInteract = enableInteraction && finePointer;
 	const shouldAutoRotate = autoRotate && !reducedMotion;
 	const resetKey = `${modelUrl}|${screenImage}`;
-	const fallback = <StaticFallback src={fallbackImage} />;
-	const handleSceneReady = useCallback(() => setSceneReady(true), []);
+	const fallback = (
+		<StaticFallback
+			src={fallbackImage}
+			loadingLabel={loadingLabel}
+			showLoading={showLoading}
+		/>
+	);
+	const handleSceneReady = useCallback(() => {
+		const elapsed = Date.now() - loadingStart.current;
+		const remaining = elapsed <= 1000 ? 0 : Math.max(0, 3000 - elapsed);
+
+		if (readyTimer.current) clearTimeout(readyTimer.current);
+		readyTimer.current = setTimeout(() => setSceneReady(true), remaining);
+	}, []);
+	const handleSceneWaiting = useCallback(() => {
+		if (readyTimer.current) clearTimeout(readyTimer.current);
+		setSceneReady(false);
+	}, []);
+
+	useEffect(() => {
+		const remaining = Math.max(0, 1000 - (Date.now() - loadingStart.current));
+		const timer = setTimeout(() => setShowLoading(true), remaining);
+		return () => clearTimeout(timer);
+	}, []);
+
+	useEffect(
+		() => () => {
+			if (readyTimer.current) clearTimeout(readyTimer.current);
+		},
+		[],
+	);
 
 	useEffect(() => {
 		const root = rootRef.current;
@@ -282,8 +435,12 @@ export function IPhoneMockup({
 										scale={scale}
 										animateTransforms={!reducedMotion}
 									/>
-									<PhoneCameraFit margin={1.04} onReady={handleSceneReady} />
+									<PhoneCameraFit margin={1.04} />
 								</Bounds>
+								<SceneRenderReady
+									onReady={handleSceneReady}
+									onWaiting={handleSceneWaiting}
+								/>
 
 								{(canInteract || shouldAutoRotate) && (
 									<OrbitControls

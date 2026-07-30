@@ -12,6 +12,7 @@ import { SiteFooter } from '../components/SiteFooter';
 import { SiteHeader } from '../components/SiteHeader';
 import { siteContent, type Locale } from '../content';
 import { useMediaQuery } from '../hooks/useMediaQuery';
+import '../components/IPhoneMockup/iphoneMockup.css';
 import './SomapayPage.css';
 import './CreditoTrabalhadorPage.css';
 
@@ -35,6 +36,42 @@ const workerCreditScreens = [
 	'/assets/3d/images/03.webp',
 	'/assets/3d/images/04.webp',
 ] as const;
+
+function PhoneLoadingFallback({
+	locale,
+	loadingStartedAt,
+}: {
+	locale: Locale;
+	loadingStartedAt: number;
+}) {
+	const [showLoading, setShowLoading] = useState(
+		() => Date.now() - loadingStartedAt >= 1000,
+	);
+
+	useEffect(() => {
+		const remaining = Math.max(0, 1000 - (Date.now() - loadingStartedAt));
+		const timer = setTimeout(() => setShowLoading(true), remaining);
+		return () => clearTimeout(timer);
+	}, [loadingStartedAt]);
+
+	return (
+		<div
+			className='worker-credit-case__phone-placeholder iphone-mockup__fallback'
+			aria-hidden='true'
+		>
+			{showLoading && (
+				<div className='iphone-mockup__loading'>
+					<span>{locale === 'pt-BR' ? 'Carregando' : 'Loading'}</span>
+					<img
+						src='/assets/icons/loading-waves-paper.svg'
+						alt=''
+						decoding='async'
+					/>
+				</div>
+			)}
+		</div>
+	);
+}
 
 type WorkerCreditContentSection = {
 	title?: string;
@@ -333,6 +370,7 @@ function useWorkerCreditSequence({
 export function CreditoTrabalhadorPage({
 	locale,
 }: CreditoTrabalhadorPageProps) {
+	const modelLoadingStartedAt = useRef(Date.now());
 	const site = siteContent[locale];
 	const isMobile = useMediaQuery(MOBILE_LAYOUT_QUERY);
 	const mobileSteps = workerCreditMobileSteps[locale];
@@ -405,9 +443,9 @@ export function CreditoTrabalhadorPage({
 							<figure className='worker-credit-case__phone'>
 								<Suspense
 									fallback={
-										<div
-											className='worker-credit-case__phone-placeholder'
-											aria-hidden='true'
+										<PhoneLoadingFallback
+											locale={locale}
+											loadingStartedAt={modelLoadingStartedAt.current}
 										/>
 									}
 								>
@@ -421,6 +459,10 @@ export function CreditoTrabalhadorPage({
 										position={phonePosition}
 										rotation={phoneRotation}
 										scale={phoneScale}
+										loadingLabel={
+											locale === 'pt-BR' ? 'Carregando' : 'Loading'
+										}
+										loadingStartedAt={modelLoadingStartedAt.current}
 										alt={
 											locale === 'pt-BR'
 												? `Mockup 3D interativo de um iPhone 17 Pro exibindo a tela ${screenIndex + 1} de ${workerCreditScreens.length} do aplicativo Somapay`

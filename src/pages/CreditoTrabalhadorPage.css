@@ -26,8 +26,15 @@
 	hyphens: none;
 }
 
+.worker-credit-case__phone-sequence {
+	height: calc(var(--phone-screen-count) * 100svh);
+}
+
 .worker-credit-case__phone {
+	position: sticky;
+	top: 0;
 	display: grid;
+	height: 100svh;
 	place-items: center;
 }
 

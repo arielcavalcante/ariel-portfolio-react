@@ -285,6 +285,7 @@ export function IPhoneMockup({
 									screenImage={screenImage}
 									rotation={rotation}
 									scale={scale}
+									animateRotation={!reducedMotion}
 								/>
 								<PhoneCameraFit
 									margin={1.04}

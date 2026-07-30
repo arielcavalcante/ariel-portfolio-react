@@ -7,7 +7,7 @@ import {
 	type KeyboardEvent as ReactKeyboardEvent,
 	type PointerEvent as ReactPointerEvent,
 } from 'react';
-import { siteContent, type Locale } from '../content';
+import { localizedPath, siteContent, type Locale } from '../content';
 import { Reveal } from '../components/Reveal';
 import { SiteFooter } from '../components/SiteFooter';
 import { SiteHeader } from '../components/SiteHeader';
@@ -67,6 +67,13 @@ type Copy = {
 		receivingFlow: string;
 		play: string;
 		pause: string;
+	};
+	workerCredit: {
+		overline: string;
+		title: string;
+		paragraphs: string[];
+		imageAlt: string;
+		cta: string;
 	};
 	help: {
 		title: string;
@@ -206,6 +213,15 @@ const copy: Record<Locale, Copy> = {
 			receivingFlow: 'Receiving a Pix',
 			play: 'Play flow',
 			pause: 'Pause flow',
+		},
+		workerCredit: {
+			overline: 'Dive deeper',
+			title: 'Crédito do\nTrabalhador',
+			paragraphs: [
+				'Crédito do Trabalhador is a payroll-deducted loan programme for private-sector employees, with repayments taken directly from their salaries. The project required the creation of a new application flow in just seven days, balancing government regulations, integration with Dataprev (Brazil’s public social security technology provider), business goals and transparency for users.',
+			],
+			imageAlt: 'Interface screens from the Crédito do Trabalhador experience.',
+			cta: 'View full project',
 		},
 		help: {
 			title: 'Help',
@@ -351,6 +367,15 @@ const copy: Record<Locale, Copy> = {
 			play: 'Reproduzir fluxo',
 			pause: 'Pausar fluxo',
 		},
+		workerCredit: {
+			overline: 'Aprofunde-se',
+			title: 'Crédito do\nTrabalhador',
+			paragraphs: [
+				'O Crédito do Trabalhador é uma modalidade de empréstimo consignado voltada a trabalhadores do setor privado, com parcelas descontadas diretamente da folha de pagamento. O projeto exigiu a criação de um novo fluxo em apenas sete dias, conciliando regulamentações governamentais, integração com a Dataprev, objetivos de negócio e transparência para o usuário.',
+			],
+			imageAlt: 'Telas da experiência do produto Crédito do Trabalhador.',
+			cta: 'Ver projeto completo',
+		},
 		help: {
 			title: 'Ajuda',
 			paragraphs: [
@@ -387,6 +412,7 @@ const media = {
 	sendVideo: '/assets/somapay-pix-send.webm',
 	receivePoster: '/assets/somapay-pix-receive-poster.jpg',
 	receiveVideo: '/assets/somapay-pix-receive.webm',
+	workerCredit: '/assets/credito do trabalhador.webp',
 	helpBefore: '/assets/somapay-help-before.webp',
 	helpAfter: '/assets/somapay-help-after.webp',
 	tokens: '/assets/somapay-image-grid.svg',
@@ -1417,44 +1443,48 @@ export function SomapayPage({ locale }: SomapayPageProps) {
 		const sectionStyles: Record<string, { color: string; background: string }> =
 			{
 				start: {
-					color: 'var(--sp-white)',
-					background: 'var(--sp-black)',
+					color: 'var(--paper)',
+					background: 'var(--ink)',
 				},
 				intro: {
-					color: 'var(--sp-white)',
-					background: 'var(--sp-blue)',
+					color: 'var(--paper)',
+					background: 'var(--brand-blue)',
 				},
 				data: {
-					color: 'var(--sp-navy)',
-					background: 'var(--sp-gold)',
+					color: 'var(--navy)',
+					background: 'var(--gold)',
 				},
 				goals: {
-					color: 'var(--sp-white)',
-					background: 'var(--sp-blue)',
+					color: 'var(--paper)',
+					background: 'var(--brand-blue)',
 				},
 				onboarding: {
-					color: 'var(--sp-white)',
-					background: 'var(--sp-black)',
+					color: 'var(--paper)',
+					background: 'var(--ink)',
 				},
 				pix: {
-					color: 'var(--sp-white)',
-					background: 'var(--sp-blue)',
+					color: 'var(--paper)',
+					background: 'var(--brand-blue)',
+				},
+				'worker-credit': {
+					color: 'var(--paper)',
+					background: 'var(--navy)',
 				},
 				faq: {
-					color: 'var(--sp-navy)',
-					background: 'var(--sp-gold)',
+					color: 'var(--navy)',
+					background: 'var(--gold)',
 				},
 				'dark-mode': {
-					color: 'var(--sp-white)',
-					background: 'var(--sp-black)',
+					color: 'var(--paper)',
+					background: 'var(--ink)',
 				},
 				nda: {
-					color: 'var(--sp-yellow)',
-					background: 'var(--sp-red)',
+					color: 'var(--yellow)',
+					background: 'var(--orange)',
 				},
 				footer: {
-					color: 'var(--sp-black)',
-					background: 'var(--sp-white)',
+					color: 'var(--ink)',
+					background: 'var(--paper)',
 				},
 			};
 
@@ -1480,15 +1510,11 @@ export function SomapayPage({ locale }: SomapayPageProps) {
 			);
 			pageElement.style.setProperty(
 				'--language-switch-off-color',
-				styles.background === 'var(--sp-black)'
-					? 'var(--sp-blue)'
-					: 'var(--sp-black)',
+				styles.background === 'var(--ink)' ? 'var(--brand-blue)' : 'var(--ink)',
 			);
 			pageElement.style.setProperty(
 				'--language-switch-on-color',
-				styles.background === 'var(--sp-gold)'
-					? 'var(--sp-navy)'
-					: 'var(--gold)',
+				styles.background === 'var(--gold)' ? 'var(--navy)' : 'var(--gold)',
 			);
 		};
 
@@ -1756,6 +1782,46 @@ export function SomapayPage({ locale }: SomapayPageProps) {
 									/>
 									<figcaption>{text.darkMode.note}</figcaption>
 								</figure>
+							</Reveal>
+						</div>
+					</div>
+				</section>
+
+				<section className='sp-worker-credit' id='worker-credit'>
+					<div className='sp-shell sp-worker-credit__grid'>
+						<Reveal className='sp-worker-credit__heading'>
+							<p className='sp-worker-credit__overline'>
+								{text.workerCredit.overline}
+							</p>
+							<SectionTitle className='sp-worker-credit__title'>
+								{text.workerCredit.title}
+							</SectionTitle>
+						</Reveal>
+						<div className='sp-worker-credit__content'>
+							<Reveal className='sp-worker-credit__copy'>
+								{text.workerCredit.paragraphs.map(paragraph => (
+									<p key={paragraph}>{paragraph}</p>
+								))}
+							</Reveal>
+							<Reveal className='sp-worker-credit__image' delay={80}>
+								<img
+									src={media.workerCredit}
+									alt={text.workerCredit.imageAlt}
+									loading='lazy'
+									decoding='async'
+								/>
+							</Reveal>
+							<Reveal className='sp-worker-credit__action' delay={120}>
+								<a
+									className='case-link sp-worker-credit__link'
+									href={localizedPath(
+										locale,
+										'/somapay-pf/cred-trabalhador',
+									)}
+								>
+									<span>{text.workerCredit.cta}</span>
+									<span className='case-link__icon' aria-hidden='true' />
+								</a>
 							</Reveal>
 						</div>
 					</div>

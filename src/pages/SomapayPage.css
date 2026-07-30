@@ -1,17 +1,10 @@
 .somapay-case {
-	--sp-red: var(--orange);
-	--sp-yellow: var(--yellow);
-	--sp-blue: var(--brand-blue);
-	--sp-gold: var(--gold);
-	--sp-navy: var(--navy);
-	--sp-black: var(--ink);
-	--sp-white: var(--paper);
 	--sp-shell: 1160px;
 	--sp-phone-max-width: 420px;
-	--header-text-color: var(--sp-white);
-	--header-background-color: var(--sp-black);
-	--language-switch-off-color: var(--sp-blue);
-	background: var(--sp-black);
+	--header-text-color: var(--paper);
+	--header-background-color: var(--ink);
+	--language-switch-off-color: var(--brand-blue);
+	background: var(--ink);
 }
 
 .somapay-case .site-header {
@@ -22,7 +15,7 @@
 	left: 0;
 	right: 0;
 	z-index: 100;
-	color: var(--header-text-color, var(--sp-white));
+	color: var(--header-text-color, var(--paper));
 	background: transparent;
 	border: 0;
 	backdrop-filter: none;
@@ -55,8 +48,8 @@
 	height: 98svh;
 	display: flex;
 	align-items: stretch;
-	background: var(--sp-black);
-	color: var(--sp-white);
+	background: var(--ink);
+	color: var(--paper);
 }
 
 .sp-hero__inner {
@@ -115,13 +108,13 @@
 }
 
 .sp-data {
-	background: var(--sp-gold);
-	color: var(--sp-navy);
+	background: var(--gold);
+	color: var(--navy);
 }
 
 .sp-intro {
-	background: var(--sp-blue);
-	color: var(--sp-white);
+	background: var(--brand-blue);
+	color: var(--paper);
 	padding: 160px 0 120px;
 }
 
@@ -207,7 +200,8 @@
 
 .sp-intro-title,
 .sp-section-lead > h2,
-.sp-display-title {
+.sp-display-title,
+.sp-worker-credit__title {
 	width: auto;
 	max-width: 100%;
 	font-size: clamp(40px, 8vw, 124px);
@@ -299,9 +293,9 @@
 	min-width: 190px;
 	padding: 14px 16px;
 	border-radius: 8px;
-	background: color-mix(in srgb, var(--sp-navy) 82%, transparent);
-	color: var(--sp-gold);
-	box-shadow: 0 10px 30px color-mix(in srgb, var(--sp-black) 18%, transparent);
+	background: color-mix(in srgb, var(--navy) 82%, transparent);
+	color: var(--gold);
+	box-shadow: 0 10px 30px color-mix(in srgb, var(--ink) 18%, transparent);
 	backdrop-filter: blur(12px);
 	-webkit-backdrop-filter: blur(12px);
 	font-family: 'Clash Grotesk', Arial, sans-serif;
@@ -343,8 +337,8 @@
 
 .sp-goals {
 	padding: 150px 0 90px;
-	background: var(--sp-blue);
-	color: var(--sp-white);
+	background: var(--brand-blue);
+	color: var(--paper);
 }
 
 .sp-goals__grid {
@@ -403,8 +397,8 @@
 
 .sp-onboarding {
 	padding: 110px 0 150px;
-	background: var(--sp-black);
-	color: var(--sp-white);
+	background: var(--ink);
+	color: var(--paper);
 }
 
 .sp-section-lead--red {
@@ -487,8 +481,8 @@
 
 .sp-pix {
 	padding: 150px 0;
-	background: var(--sp-blue);
-	color: var(--sp-white);
+	background: var(--brand-blue);
+	color: var(--paper);
 }
 
 .sp-section-lead--white {
@@ -598,8 +592,8 @@
 	padding: 8px;
 	border: 0;
 	border-radius: 58px;
-	background: var(--sp-black);
-	box-shadow: 0 26px 65px color-mix(in srgb, var(--sp-black) 25%, transparent);
+	background: var(--ink);
+	box-shadow: 0 26px 65px color-mix(in srgb, var(--ink) 25%, transparent);
 	cursor: pointer;
 	overflow: hidden;
 }
@@ -609,7 +603,7 @@
 	inset: 8px;
 	overflow: hidden;
 	border-radius: 50px;
-	background: var(--sp-black);
+	background: var(--ink);
 }
 
 .sp-phone video {
@@ -629,7 +623,7 @@
 	height: 27px;
 	transform: translateX(-50%);
 	border-radius: 999px;
-	background: var(--sp-black);
+	background: var(--ink);
 }
 
 .sp-phone__play {
@@ -643,8 +637,8 @@
 	height: 56px;
 	transform: translate(-50%, -50%);
 	border-radius: 50%;
-	background: color-mix(in srgb, var(--sp-black) 62%, transparent);
-	color: var(--sp-white);
+	background: color-mix(in srgb, var(--ink) 62%, transparent);
+	color: var(--paper);
 	font-size: 18px;
 	opacity: 0;
 	transition: opacity 180ms ease;
@@ -669,10 +663,19 @@
 	line-height: 1;
 }
 
+.sp-worker-credit,
 .sp-help {
 	padding: 150px 0;
-	background: var(--sp-gold);
-	color: var(--sp-navy);
+}
+
+.sp-worker-credit {
+	background: var(--navy);
+	color: var(--paper);
+}
+
+.sp-help {
+	background: var(--gold);
+	color: var(--navy);
 }
 
 .sp-help__grid {
@@ -697,6 +700,76 @@
 	transform: translateY(-52px);
 }
 
+.sp-worker-credit__grid {
+	display: grid;
+	gap: 72px;
+}
+
+.sp-worker-credit__heading {
+	display: grid;
+	gap: 18px;
+}
+
+.sp-worker-credit__overline {
+	font-size: 16px;
+	font-weight: 600;
+	line-height: 1.2;
+}
+
+.sp-worker-credit__title {
+	white-space: nowrap;
+}
+
+.sp-worker-credit__content {
+	display: grid;
+	grid-template-columns: minmax(0, 1.1fr) minmax(320px, 0.9fr);
+	grid-template-areas:
+		'copy image'
+		'. action';
+	align-items: start;
+	column-gap: 70px;
+	row-gap: 34px;
+}
+
+.sp-worker-credit__copy {
+	grid-area: copy;
+}
+
+.sp-worker-credit__copy p {
+	font-size: clamp(16px, 1.55vw, 20px);
+	line-height: 1.62;
+	letter-spacing: 0.006em;
+}
+
+.sp-worker-credit__image {
+	grid-area: image;
+}
+
+.sp-worker-credit__image img {
+	display: block;
+	width: min(100%, 920px);
+	height: auto;
+}
+
+.sp-worker-credit__action {
+	grid-area: action;
+	display: grid;
+	justify-items: center;
+	width: 100%;
+}
+
+.sp-worker-credit__link {
+	width: min(100%, 300px);
+	min-width: 0;
+}
+
+.sp-worker-credit .sp-worker-credit__link:hover,
+.sp-worker-credit .sp-worker-credit__link:focus-visible {
+	border-color: var(--paper);
+	background: var(--paper);
+	color: var(--navy);
+}
+
 .sp-help__screen img {
 	display: block;
 	width: min(100%, var(--sp-phone-max-width), 45.98vh);
@@ -708,8 +781,8 @@
 
 .sp-dark-mode {
 	padding: 0;
-	background: var(--sp-black);
-	color: var(--sp-white);
+	background: var(--ink);
+	color: var(--paper);
 	overflow: visible;
 }
 
@@ -784,7 +857,7 @@
 	aspect-ratio: 0.479;
 	overflow: hidden;
 	border-radius: 57px;
-	background: var(--sp-black);
+	background: var(--ink);
 	touch-action: none;
 	cursor: ew-resize;
 	isolation: isolate;
@@ -817,7 +890,7 @@
 	bottom: 0;
 	width: 2px;
 	transform: translateX(-50%);
-	background: var(--sp-white);
+	background: var(--paper);
 	pointer-events: none;
 }
 
@@ -831,9 +904,9 @@
 	height: 44px;
 	transform: translate(-50%, -50%);
 	border-radius: 50%;
-	background: var(--sp-white);
-	color: var(--sp-black);
-	box-shadow: 0 10px 30px color-mix(in srgb, var(--sp-black) 25%, transparent);
+	background: var(--paper);
+	color: var(--ink);
+	box-shadow: 0 10px 30px color-mix(in srgb, var(--ink) 25%, transparent);
 }
 
 .sp-before-after__handle-icon {
@@ -846,8 +919,8 @@
 
 .sp-nda {
 	padding: 125px 0 110px;
-	background: var(--sp-red);
-	color: var(--sp-yellow);
+	background: var(--orange);
+	color: var(--yellow);
 }
 
 .sp-nda__inner {
@@ -869,7 +942,7 @@
 }
 
 .somapay-case .site-footer {
-	background: var(--sp-white);
+	background: var(--paper);
 }
 
 @media (max-width: 900px) {
@@ -885,6 +958,18 @@
 	.sp-dark-mode__visuals,
 	.sp-nda__inner {
 		grid-template-columns: 1fr;
+	}
+
+	.sp-worker-credit__title {
+		white-space: pre-line;
+	}
+
+	.sp-worker-credit__content {
+		grid-template-columns: 1fr;
+		grid-template-areas:
+			'image'
+			'copy'
+			'action';
 	}
 
 	.sp-hero__copy {
@@ -964,8 +1049,8 @@
 
 @media (max-width: 720px) {
 	.somapay-case .mobile-menu {
-		background: var(--sp-red);
-		color: var(--sp-white);
+		background: var(--orange);
+		color: var(--paper);
 	}
 
 	.sp-intro,
@@ -973,6 +1058,7 @@
 	.sp-goals,
 	.sp-onboarding,
 	.sp-pix,
+	.sp-worker-credit,
 	.sp-help {
 		padding-top: 92px;
 		padding-bottom: 92px;
@@ -983,7 +1069,8 @@
 	}
 
 	.sp-intro-title,
-	.sp-display-title {
+	.sp-display-title,
+	.sp-worker-credit__title {
 		font-size: clamp(44px, 14vw, 76px);
 	}
 

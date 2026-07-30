@@ -1,0 +1,56 @@
+.worker-credit-case {
+	--header-text-color: var(--paper);
+	--header-background-color: var(--navy);
+	--language-switch-off-color: var(--ink);
+	background: var(--navy);
+}
+
+.worker-credit-case__hero {
+	min-height: 100svh;
+	padding: clamp(136px, 16vh, 190px) 0 clamp(80px, 10vh, 130px);
+	background: var(--navy);
+	color: var(--paper);
+}
+
+.worker-credit-case__hero-inner {
+	display: grid;
+	gap: clamp(64px, 9vw, 130px);
+}
+
+.worker-credit-case__hero h1 {
+	max-width: 100%;
+	font-size: clamp(44px, 8vw, 124px);
+	line-height: 0.92;
+	overflow-wrap: normal;
+	word-break: keep-all;
+	hyphens: none;
+}
+
+.worker-credit-case__phone {
+	display: grid;
+	place-items: center;
+}
+
+.worker-credit-case__phone-placeholder {
+	display: grid;
+	width: min(100vw, 900px, 46.75svh);
+	height: min(96svh, 205.3vw, 1848px);
+	aspect-ratio: 0.487;
+	place-items: center;
+	margin-inline: auto;
+}
+
+@media (max-width: 900px) {
+	.worker-credit-case__hero {
+		padding: 116px 0 80px;
+	}
+
+	.worker-credit-case__hero h1 {
+		font-size: clamp(44px, 14vw, 76px);
+	}
+
+	.worker-credit-case__hero-inner {
+		gap: 64px;
+	}
+
+}

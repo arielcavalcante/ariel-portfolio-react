@@ -3,11 +3,12 @@ import type { Locale } from './content';
 import { localizedPath, pathWithoutLocale, siteContent } from './content';
 import { HomePage } from './pages/HomePage';
 import { NotFoundPage } from './pages/NotFoundPage';
+import { CreditoTrabalhadorPage } from './pages/CreditoTrabalhadorPage';
 import { SomapayPage } from './pages/SomapayPage';
 
 type Route = {
 	locale: Locale;
-	page: 'home' | 'somapay' | '404';
+	page: 'home' | 'somapay' | 'workerCredit' | '404';
 };
 
 function resolveRoute(pathname: string): Route {
@@ -21,6 +22,9 @@ function resolveRoute(pathname: string): Route {
 
 	if (localPath === '/') return { locale, page: 'home' };
 	if (localPath === '/somapay-pf') return { locale, page: 'somapay' };
+	if (localPath === '/somapay-pf/cred-trabalhador') {
+		return { locale, page: 'workerCredit' };
+	}
 	return { locale, page: '404' };
 }
 
@@ -33,11 +37,11 @@ export default function App() {
 		const title =
 			route.page === 'home'
 				? content.seo.homeTitle
-				: route.page === 'somapay'
+				: route.page === 'somapay' || route.page === 'workerCredit'
 					? content.seo.caseTitle
 					: content.seo.notFoundTitle;
 		const description =
-			route.page === 'somapay'
+			route.page === 'somapay' || route.page === 'workerCredit'
 				? content.seo.caseDescription
 				: route.page === 'home'
 					? content.seo.homeDescription
@@ -78,6 +82,11 @@ export default function App() {
 				? localizedPath(route.locale, '/')
 				: route.page === 'somapay'
 					? localizedPath(route.locale, '/somapay-pf')
+					: route.page === 'workerCredit'
+						? localizedPath(
+								route.locale,
+								'/somapay-pf/cred-trabalhador',
+							)
 					: window.location.pathname;
 		const canonicalUrl = new URL(
 			canonicalPath,
@@ -205,5 +214,8 @@ export default function App() {
 
 	if (route.page === 'home') return <HomePage locale={route.locale} />;
 	if (route.page === 'somapay') return <SomapayPage locale={route.locale} />;
+	if (route.page === 'workerCredit') {
+		return <CreditoTrabalhadorPage locale={route.locale} />;
+	}
 	return <NotFoundPage locale={route.locale} />;
 }

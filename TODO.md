@@ -1,9 +1,3 @@
-# Next version
-
-- Add Créd. Trabalhador section to somapay pf
-
-- Create contact area
-
 # Larger improvements
 
 - Create some tests and implement safety protocols for downtime, links breaking and such

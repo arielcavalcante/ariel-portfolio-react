@@ -1,0 +1,55 @@
+.iphone-mockup {
+	position: relative;
+	width: min(100vw, 900px, 46.75svh);
+	height: min(96svh, 205.3vw, 1848px);
+	aspect-ratio: 0.487;
+	margin-inline: auto;
+	touch-action: pan-y;
+}
+
+.iphone-mockup canvas {
+	display: block;
+	width: 100% !important;
+	height: 100% !important;
+	opacity: 0;
+	outline: 0;
+}
+
+.iphone-mockup.is-scene-ready canvas {
+	opacity: 1;
+}
+
+@media (pointer: fine) {
+	.iphone-mockup canvas {
+		cursor: grab;
+	}
+
+	.iphone-mockup canvas:active {
+		cursor: grabbing;
+	}
+}
+
+@media (pointer: coarse) {
+	.iphone-mockup canvas {
+		pointer-events: none;
+	}
+}
+
+.iphone-mockup__fallback {
+	position: absolute;
+	inset: 0;
+	z-index: 1;
+	display: grid;
+	width: 100%;
+	height: 100%;
+	place-items: center;
+}
+
+.iphone-mockup__fallback img {
+	display: block;
+	width: auto;
+	max-width: 100%;
+	height: auto;
+	max-height: 96%;
+	object-fit: contain;
+}

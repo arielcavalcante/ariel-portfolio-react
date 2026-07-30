@@ -3,10 +3,8 @@ import { useGLTF, useTexture } from '@react-three/drei';
 import { useFrame, useThree } from '@react-three/fiber';
 import {
 	ClampToEdgeWrapping,
-	Color,
 	Euler,
 	Group,
-	MathUtils,
 	SRGBColorSpace,
 	Vector3,
 	type Material,
@@ -24,13 +22,16 @@ type IPhoneModelProps = {
 	position: Vector3Tuple;
 	rotation: Vector3Tuple;
 	scale: number | Vector3Tuple;
-	animateRotation: boolean;
+	animateTransforms: boolean;
 };
 
 type PreparedModel = {
 	scene: Object3D;
 	screenMaterials: Material[];
 };
+
+const TRANSFORM_DAMPING = 7;
+const TRANSFORM_EPSILON = 0.0005;
 
 function materialSlots(material: Material | Material[]) {
 	return Array.isArray(material) ? material : [material];
@@ -110,10 +111,10 @@ function applyScreenTexture(material: Material, texture: Texture) {
 	screenMaterial.map = texture;
 	// Render the UI through the display's emissive channel so scene lights do
 	// not lift its blacks or add a second, washed-out copy of the screenshot.
-	screenMaterial.color = new Color(0x000000);
+	screenMaterial.color.set(0x000000);
 	screenMaterial.metalness = 0;
 	screenMaterial.roughness = 0.2;
-	screenMaterial.emissive = new Color(0xffffff);
+	screenMaterial.emissive.set(0xffffff);
 	screenMaterial.emissiveMap = texture;
 	screenMaterial.emissiveIntensity = 1;
 	screenMaterial.envMapIntensity = 0;
@@ -127,14 +128,14 @@ export function IPhoneModel({
 	position,
 	rotation,
 	scale,
-	animateRotation,
+	animateTransforms,
 }: IPhoneModelProps) {
 	const { scene: sourceScene } = useGLTF(modelUrl);
 	const sourceTexture = useTexture(screenImage);
 	const groupRef = useRef<Group>(null);
 	const initialPosition = useRef(position);
 	const initialRotation = useRef(rotation);
-	const initialScale = useRef(1);
+	const initialScale = useRef(scale);
 	const invalidate = useThree(state => state.invalidate);
 	const prepared = useMemo(() => prepareModel(sourceScene), [sourceScene]);
 	const targetPosition = useMemo(
@@ -163,67 +164,22 @@ export function IPhoneModel({
 		const group = groupRef.current;
 		if (!group) return;
 
-		if (!animateRotation) {
+		if (!animateTransforms) {
 			group.position.copy(targetPosition);
 			group.rotation.copy(targetRotation);
 			group.scale.copy(targetScale);
 			return;
 		}
 
-		group.position.x = MathUtils.damp(
-			group.position.x,
-			targetPosition.x,
-			7,
-			delta,
-		);
-		group.position.y = MathUtils.damp(
-			group.position.y,
-			targetPosition.y,
-			7,
-			delta,
-		);
-		group.position.z = MathUtils.damp(
-			group.position.z,
-			targetPosition.z,
-			7,
-			delta,
-		);
-		group.rotation.x = MathUtils.damp(
-			group.rotation.x,
-			targetRotation.x,
-			7,
-			delta,
-		);
-		group.rotation.y = MathUtils.damp(
-			group.rotation.y,
-			targetRotation.y,
-			7,
-			delta,
-		);
-		group.rotation.z = MathUtils.damp(
-			group.rotation.z,
-			targetRotation.z,
-			7,
-			delta,
-		);
-		group.scale.x = MathUtils.damp(
-			group.scale.x,
-			targetScale.x,
-			7,
-			delta,
-		);
-		group.scale.y = MathUtils.damp(
-			group.scale.y,
-			targetScale.y,
-			7,
-			delta,
-		);
-		group.scale.z = MathUtils.damp(
-			group.scale.z,
-			targetScale.z,
-			7,
-			delta,
-		);
+		const dampingAlpha = 1 - Math.exp(-TRANSFORM_DAMPING * delta);
+		group.position.lerp(targetPosition, dampingAlpha);
+		group.rotation.x +=
+			(targetRotation.x - group.rotation.x) * dampingAlpha;
+		group.rotation.y +=
+			(targetRotation.y - group.rotation.y) * dampingAlpha;
+		group.rotation.z +=
+			(targetRotation.z - group.rotation.z) * dampingAlpha;
+		group.scale.lerp(targetScale, dampingAlpha);
 
 		const distance =
 			group.position.distanceTo(targetPosition) +
@@ -232,7 +188,7 @@ export function IPhoneModel({
 			Math.abs(group.rotation.z - targetRotation.z) +
 			group.scale.distanceTo(targetScale);
 
-		if (distance > 0.0005) state.invalidate();
+		if (distance > TRANSFORM_EPSILON) state.invalidate();
 	});
 
 	useLayoutEffect(() => {
@@ -250,12 +206,13 @@ export function IPhoneModel({
 		};
 	}, [prepared.screenMaterials, screenTexture]);
 
+	useLayoutEffect(() => () => screenTexture.dispose(), [screenTexture]);
+
 	useLayoutEffect(
 		() => () => {
-			screenTexture.dispose();
 			prepared.screenMaterials.forEach(material => material.dispose());
 		},
-		[prepared.screenMaterials, screenTexture],
+		[prepared],
 	);
 
 	return (

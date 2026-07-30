@@ -2,6 +2,7 @@ import {
 	lazy,
 	Suspense,
 	useEffect,
+	useLayoutEffect,
 	useRef,
 	useState,
 	type CSSProperties,
@@ -10,12 +11,17 @@ import { Reveal } from '../components/Reveal';
 import { SiteFooter } from '../components/SiteFooter';
 import { SiteHeader } from '../components/SiteHeader';
 import { siteContent, type Locale } from '../content';
+import { useMediaQuery } from '../hooks/useMediaQuery';
 import './SomapayPage.css';
 import './CreditoTrabalhadorPage.css';
 
 type CreditoTrabalhadorPageProps = {
 	locale: Locale;
 };
+
+const MOBILE_LAYOUT_QUERY = '(max-width: 900px)';
+const COPY_REVEAL_PHASE = 0.58;
+const SCREEN_ANGLES = [0.1, -0.8] as const;
 
 const IPhoneMockup = lazy(() =>
 	import('../components/IPhoneMockup/IPhoneMockup').then(module => ({
@@ -28,7 +34,7 @@ const workerCreditScreens = [
 	'/assets/3d/images/02.webp',
 	'/assets/3d/images/03.webp',
 	'/assets/3d/images/04.webp',
-];
+] as const;
 
 type WorkerCreditContentSection = {
 	title?: string;
@@ -45,6 +51,12 @@ type WorkerCreditMobileStep = {
 	screenStepCount: number;
 	title?: string;
 	paragraph: string;
+};
+
+type WorkerCreditSequenceState = {
+	screenIndex: number;
+	mobileStepIndex: number;
+	copyVisible: boolean;
 };
 
 const workerCreditContent: Record<Locale, WorkerCreditScreenContent[]> = {
@@ -152,34 +164,42 @@ const workerCreditContent: Record<Locale, WorkerCreditScreenContent[]> = {
 	],
 };
 
-const workerCreditMobileSteps = Object.fromEntries(
-	Object.entries(workerCreditContent).map(([locale, screens]) => [
-		locale,
-		screens.flatMap((screen, screenIndex) => {
-			const screenSteps = screen.sections.flatMap(section =>
-				section.paragraphs.map((paragraph, paragraphIndex) => ({
-					title: paragraphIndex === 0 ? section.title : undefined,
-					paragraph,
-				})),
-			);
+function createMobileSteps(
+	screens: WorkerCreditScreenContent[],
+): WorkerCreditMobileStep[] {
+	return screens.flatMap((screen, screenIndex) => {
+		const screenSteps = screen.sections.flatMap(section =>
+			section.paragraphs.map((paragraph, paragraphIndex) => ({
+				title: paragraphIndex === 0 ? section.title : undefined,
+				paragraph,
+			})),
+		);
 
-			return screenSteps.map((step, screenStepIndex) => ({
-				...step,
-				screenIndex,
-				screenStepIndex,
-				screenStepCount: screenSteps.length,
-			}));
-		}),
-	]),
-) as Record<Locale, WorkerCreditMobileStep[]>;
+		return screenSteps.map((step, screenStepIndex) => ({
+			...step,
+			screenIndex,
+			screenStepIndex,
+			screenStepCount: screenSteps.length,
+		}));
+	});
+}
+
+const workerCreditMobileSteps: Record<Locale, WorkerCreditMobileStep[]> = {
+	en: createMobileSteps(workerCreditContent.en),
+	'pt-BR': createMobileSteps(workerCreditContent['pt-BR']),
+};
+
+function getScreenAngle(index: number) {
+	return SCREEN_ANGLES[index % SCREEN_ANGLES.length];
+}
 
 function WorkerCreditCopySection({
 	section,
 }: {
 	section: WorkerCreditContentSection;
 }) {
-	const paragraphs = section.paragraphs.map((paragraph, index) => (
-		<p key={index}>{paragraph}</p>
+	const paragraphs = section.paragraphs.map(paragraph => (
+		<p key={paragraph}>{paragraph}</p>
 	));
 
 	if (!section.title) {
@@ -194,52 +214,34 @@ function WorkerCreditCopySection({
 	);
 }
 
-function useMediaQuery(query: string) {
-	const [matches, setMatches] = useState(false);
-
-	useEffect(() => {
-		const mediaQuery = window.matchMedia(query);
-		const update = () => setMatches(mediaQuery.matches);
-		update();
-		mediaQuery.addEventListener('change', update);
-		return () => mediaQuery.removeEventListener('change', update);
-	}, [query]);
-
-	return matches;
-}
-
-export function CreditoTrabalhadorPage({
-	locale,
-}: CreditoTrabalhadorPageProps) {
-	const site = siteContent[locale];
+function useWorkerCreditSequence({
+	isMobile,
+	mobileSteps,
+}: {
+	isMobile: boolean;
+	mobileSteps: WorkerCreditMobileStep[];
+}) {
 	const sequenceRef = useRef<HTMLDivElement>(null);
-	const mobileProgressRef = useRef<HTMLDivElement>(null);
-	const [screenIndex, setScreenIndex] = useState(0);
-	const [mobileStepIndex, setMobileStepIndex] = useState(0);
-	const [copyVisible, setCopyVisible] = useState(false);
+	const progressRef = useRef<HTMLDivElement>(null);
+	const stateRef = useRef<WorkerCreditSequenceState>({
+		screenIndex: 0,
+		mobileStepIndex: 0,
+		copyVisible: false,
+	});
+	const progressVisibleRef = useRef(false);
+	const [sequenceState, setSequenceState] =
+		useState<WorkerCreditSequenceState>(stateRef.current);
 	const [progressVisible, setProgressVisible] = useState(false);
-	const isMobile = useMediaQuery('(max-width: 900px)');
-	const mobileSteps = workerCreditMobileSteps[locale];
-
-	useEffect(() => {
-		document.body.classList.add('somapay-case-open');
-		return () => document.body.classList.remove('somapay-case-open');
-	}, []);
-
-	useEffect(() => {
-		workerCreditScreens.forEach(src => {
-			const image = new Image();
-			image.src = src;
-		});
-	}, []);
+	const stepCount = isMobile ? mobileSteps.length : workerCreditScreens.length;
 
 	useEffect(() => {
 		const sequence = sequenceRef.current;
 		if (!sequence) return;
 
 		let animationFrame = 0;
+		let lastProgressPercentage = -1;
 
-		const updateScreen = () => {
+		const updateSequence = () => {
 			animationFrame = 0;
 			const bounds = sequence.getBoundingClientRect();
 			const scrollDistance = Math.max(
@@ -247,69 +249,123 @@ export function CreditoTrabalhadorPage({
 				1,
 			);
 			const progress = Math.min(Math.max(-bounds.top / scrollDistance, 0), 1);
-			setProgressVisible(current => {
-				const next = window.scrollY > 1 && (current || progress > 0);
-				return current === next ? current : next;
-			});
-			if (mobileProgressRef.current) {
-				mobileProgressRef.current.style.setProperty(
+			const progressPercentage = Math.round(progress * 100);
+			const nextProgressVisible =
+				window.scrollY > 1 &&
+				(progressVisibleRef.current || progress > 0);
+
+			if (nextProgressVisible !== progressVisibleRef.current) {
+				progressVisibleRef.current = nextProgressVisible;
+				setProgressVisible(nextProgressVisible);
+			}
+
+			if (progressRef.current) {
+				progressRef.current.style.setProperty(
 					'--worker-credit-progress',
 					String(progress),
 				);
-				mobileProgressRef.current.setAttribute(
-					'aria-valuenow',
-					String(Math.round(progress * 100)),
-				);
+
+				if (progressPercentage !== lastProgressPercentage) {
+					lastProgressPercentage = progressPercentage;
+					progressRef.current.setAttribute(
+						'aria-valuenow',
+						String(progressPercentage),
+					);
+				}
 			}
-			const stepCount = isMobile
-				? mobileSteps.length
-				: workerCreditScreens.length;
+
 			const sequenceProgress = progress * stepCount;
 			const nextStepIndex = Math.min(
 				stepCount - 1,
 				Math.floor(sequenceProgress),
 			);
-			const nextIndex = isMobile
+			const screenIndex = isMobile
 				? mobileSteps[nextStepIndex].screenIndex
 				: nextStepIndex;
 			const phase =
-				sequenceProgress >= stepCount ? 1 : sequenceProgress - nextStepIndex;
+				sequenceProgress >= stepCount
+					? 1
+					: sequenceProgress - nextStepIndex;
+			const nextState: WorkerCreditSequenceState = {
+				screenIndex,
+				mobileStepIndex: nextStepIndex,
+				copyVisible: isMobile
+					? sequenceProgress >= COPY_REVEAL_PHASE
+					: phase >= COPY_REVEAL_PHASE,
+			};
+			const currentState = stateRef.current;
 
-			setScreenIndex(current => (current === nextIndex ? current : nextIndex));
-			setMobileStepIndex(current =>
-				current === nextStepIndex ? current : nextStepIndex,
-			);
-			setCopyVisible(current => {
-				const next = isMobile ? sequenceProgress >= 0.58 : phase >= 0.58;
-				return current === next ? current : next;
-			});
+			if (
+				currentState.screenIndex !== nextState.screenIndex ||
+				currentState.mobileStepIndex !== nextState.mobileStepIndex ||
+				currentState.copyVisible !== nextState.copyVisible
+			) {
+				stateRef.current = nextState;
+				setSequenceState(nextState);
+			}
 		};
 
 		const queueUpdate = () => {
 			if (animationFrame) return;
-			animationFrame = requestAnimationFrame(updateScreen);
+			animationFrame = requestAnimationFrame(updateSequence);
 		};
 
 		window.addEventListener('scroll', queueUpdate, { passive: true });
 		window.addEventListener('resize', queueUpdate);
-		updateScreen();
+		updateSequence();
 
 		return () => {
 			cancelAnimationFrame(animationFrame);
 			window.removeEventListener('scroll', queueUpdate);
 			window.removeEventListener('resize', queueUpdate);
 		};
-	}, [isMobile, mobileSteps]);
+	}, [isMobile, mobileSteps, stepCount]);
 
-	const sequenceStepCount = isMobile
-		? mobileSteps.length
-		: workerCreditScreens.length;
+	return {
+		...sequenceState,
+		progressRef,
+		progressVisible,
+		sequenceRef,
+		stepCount,
+	};
+}
+
+export function CreditoTrabalhadorPage({
+	locale,
+}: CreditoTrabalhadorPageProps) {
+	const site = siteContent[locale];
+	const isMobile = useMediaQuery(MOBILE_LAYOUT_QUERY);
+	const mobileSteps = workerCreditMobileSteps[locale];
+	const {
+		copyVisible,
+		mobileStepIndex,
+		progressRef,
+		progressVisible,
+		screenIndex,
+		sequenceRef,
+		stepCount,
+	} = useWorkerCreditSequence({ isMobile, mobileSteps });
+
+	useLayoutEffect(() => {
+		const previousScrollRestoration = window.history.scrollRestoration;
+		window.history.scrollRestoration = 'manual';
+		window.scrollTo({ top: 0, left: 0, behavior: 'auto' });
+
+		return () => {
+			window.history.scrollRestoration = previousScrollRestoration;
+		};
+	}, []);
+
+	useEffect(() => {
+		document.body.classList.add('somapay-case-open');
+		return () => document.body.classList.remove('somapay-case-open');
+	}, []);
+
 	const sequenceStyle = {
-		'--phone-sequence-height': `${(sequenceStepCount + 1) * 100}svh`,
+		'--phone-sequence-height': `${(stepCount + 1) * 100}svh`,
 	} as CSSProperties;
 	const activeMobileStep =
 		mobileSteps[Math.min(mobileStepIndex, mobileSteps.length - 1)];
-	const getScreenAngle = (index: number) => (index % 2 === 0 ? 0.1 : -0.8);
 	const currentScreenAngle = getScreenAngle(activeMobileStep.screenIndex);
 	const nextScreenAngle = getScreenAngle(activeMobileStep.screenIndex + 1);
 	const mobileParagraphProgress =
@@ -356,10 +412,12 @@ export function CreditoTrabalhadorPage({
 									}
 								>
 									<IPhoneMockup
+										key={`iphone-${isMobile ? 'mobile' : 'desktop'}`}
 										className={`worker-credit-case__mockup ${
 											screenIndex % 2 === 0 ? 'is-phone-right' : 'is-phone-left'
 										}`}
 										screenImage={workerCreditScreens[screenIndex]}
+										preloadScreenImages={workerCreditScreens}
 										position={phonePosition}
 										rotation={phoneRotation}
 										scale={phoneScale}
@@ -406,28 +464,27 @@ export function CreditoTrabalhadorPage({
 										))
 									)}
 								</div>
-								<div
-									ref={mobileProgressRef}
-									className={`worker-credit-case__mobile-progress ${
-										progressVisible ? 'is-visible' : ''
-									}`}
-									role='progressbar'
-									aria-label={
-										locale === 'pt-BR'
-											? 'Progresso do conteúdo'
-											: 'Content progress'
-									}
-									aria-valuemin={0}
-									aria-valuemax={100}
-									aria-valuenow={0}
-								>
-									<span aria-hidden='true' />
-								</div>
 							</figure>
 						</div>
 					</div>
 				</section>
 			</main>
+
+			<div
+				ref={progressRef}
+				className={`worker-credit-case__progress ${
+					progressVisible ? 'is-visible' : ''
+				}`}
+				role='progressbar'
+				aria-label={
+					locale === 'pt-BR' ? 'Progresso do conteúdo' : 'Content progress'
+				}
+				aria-valuemin={0}
+				aria-valuemax={100}
+				aria-valuenow={0}
+			>
+				<span aria-hidden='true' />
+			</div>
 
 			<SiteFooter locale={locale} />
 		</div>

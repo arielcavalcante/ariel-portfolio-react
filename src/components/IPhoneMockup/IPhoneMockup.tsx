@@ -16,9 +16,11 @@ import {
 	OrbitControls,
 	useBounds,
 	useGLTF,
+	useTexture,
 } from '@react-three/drei';
 import { Canvas, useThree } from '@react-three/fiber';
 import { MathUtils, PerspectiveCamera, Vector3 } from 'three';
+import { useMediaQuery } from '../../hooks/useMediaQuery';
 import { IPhoneModel } from './IPhoneModel';
 import './iphoneMockup.css';
 
@@ -26,6 +28,7 @@ type Vector3Tuple = [number, number, number];
 
 export type IPhoneMockupProps = {
 	screenImage: string;
+	preloadScreenImages?: readonly string[];
 	modelUrl?: string;
 	className?: string;
 	alt?: string;
@@ -65,10 +68,7 @@ class MockupErrorBoundary extends Component<
 	}
 
 	componentDidUpdate(previousProps: ErrorBoundaryProps) {
-		if (
-			this.state.error &&
-			previousProps.resetKey !== this.props.resetKey
-		) {
+		if (this.state.error && previousProps.resetKey !== this.props.resetKey) {
 			this.setState({ error: null });
 		}
 	}
@@ -84,20 +84,6 @@ function StaticFallback({ src }: { src?: string }) {
 			{src && <img src={src} alt='' decoding='async' />}
 		</div>
 	);
-}
-
-function useMediaQuery(query: string) {
-	const [matches, setMatches] = useState(false);
-
-	useEffect(() => {
-		const mediaQuery = window.matchMedia(query);
-		const update = () => setMatches(mediaQuery.matches);
-		update();
-		mediaQuery.addEventListener('change', update);
-		return () => mediaQuery.removeEventListener('change', update);
-	}, [query]);
-
-	return matches;
 }
 
 function PhoneCameraFit({
@@ -130,9 +116,7 @@ function PhoneCameraFit({
 		if (direction.lengthSq() === 0) direction.copy(new Vector3(0, 0, 1));
 		direction.normalize();
 
-		camera.position
-			.copy(framingCenter)
-			.addScaledVector(direction, distance);
+		camera.position.copy(framingCenter).addScaledVector(direction, distance);
 		camera.near = Math.max(0.01, distance / 100);
 		camera.far = Math.max(100, distance * 100);
 		camera.lookAt(framingCenter);
@@ -165,6 +149,7 @@ function PhoneCameraFit({
 
 export function IPhoneMockup({
 	screenImage,
+	preloadScreenImages,
 	modelUrl = '/assets/3d/models/iphone-17-pro-web.glb',
 	className = '',
 	alt = 'Interactive 3D iPhone mockup',
@@ -218,6 +203,10 @@ export function IPhoneMockup({
 		setSceneReady(false);
 	}, [modelUrl]);
 
+	useEffect(() => {
+		preloadScreenImages?.forEach(image => useTexture.preload(image));
+	}, [preloadScreenImages]);
+
 	const handleLoadError = (error: Error) => {
 		if (!import.meta.env.DEV) return;
 
@@ -252,71 +241,68 @@ export function IPhoneMockup({
 						resetKey={resetKey}
 					>
 						<Suspense fallback={null}>
-						<Canvas
-							aria-hidden='true'
-							tabIndex={-1}
-							camera={{ position: cameraPosition, fov: 34 }}
-							dpr={[1, 2]}
-							frameloop={shouldAutoRotate ? 'always' : 'demand'}
-							gl={{
-								alpha: true,
-								antialias: true,
-								powerPreference: 'high-performance',
-							}}
-							fallback={null}
-						>
-							<ambientLight intensity={0.85} />
-							<directionalLight position={[4, 5, 6]} intensity={2.2} />
-							<directionalLight position={[-4, 1, 3]} intensity={0.7} />
-							<Environment resolution={64}>
-								<Lightformer
-									form='rect'
-									intensity={2}
-									position={[0, 4, 5]}
-									scale={[5, 5, 1]}
-								/>
-								<Lightformer
-									form='rect'
-									intensity={1.2}
-									position={[-4, 0, 2]}
-									rotation={[0, Math.PI / 2, 0]}
-									scale={[3, 5, 1]}
-								/>
-							</Environment>
+							<Canvas
+								aria-hidden='true'
+								tabIndex={-1}
+								camera={{ position: cameraPosition, fov: 34 }}
+								dpr={[1, 2]}
+								frameloop={shouldAutoRotate ? 'always' : 'demand'}
+								gl={{
+									alpha: true,
+									antialias: true,
+									powerPreference: 'high-performance',
+								}}
+								fallback={null}
+							>
+								<ambientLight intensity={0.85} />
+								<directionalLight position={[4, 5, 6]} intensity={2.2} />
+								<directionalLight position={[-4, 1, 3]} intensity={0.7} />
+								<Environment resolution={64}>
+									<Lightformer
+										form='rect'
+										intensity={2}
+										position={[0, 4, 5]}
+										scale={[5, 5, 1]}
+									/>
+									<Lightformer
+										form='rect'
+										intensity={1.2}
+										position={[-4, 0, 2]}
+										rotation={[0, Math.PI / 2, 0]}
+										scale={[3, 5, 1]}
+									/>
+								</Environment>
 
-							<Bounds>
-								<IPhoneModel
-									modelUrl={modelUrl}
-									screenImage={screenImage}
-									position={position}
-									rotation={rotation}
-									scale={scale}
-									animateRotation={!reducedMotion}
-								/>
-								<PhoneCameraFit
-									margin={1.04}
-									onReady={handleSceneReady}
-								/>
-							</Bounds>
+								<Bounds>
+									<IPhoneModel
+										modelUrl={modelUrl}
+										screenImage={screenImage}
+										position={position}
+										rotation={rotation}
+										scale={scale}
+										animateTransforms={!reducedMotion}
+									/>
+									<PhoneCameraFit margin={1.04} onReady={handleSceneReady} />
+								</Bounds>
 
-							{(canInteract || shouldAutoRotate) && (
-								<OrbitControls
-									makeDefault
-									enableDamping
-									dampingFactor={0.08}
-									enablePan={false}
-									enableZoom={false}
-									enableRotate={canInteract}
-									autoRotate={shouldAutoRotate}
-									autoRotateSpeed={0.65}
-									rotateSpeed={0.35}
-									minAzimuthAngle={-0.4}
-									maxAzimuthAngle={0.4}
-									minPolarAngle={Math.PI / 2 - 0.24}
-									maxPolarAngle={Math.PI / 2 + 0.24}
-								/>
-							)}
-						</Canvas>
+								{(canInteract || shouldAutoRotate) && (
+									<OrbitControls
+										makeDefault
+										enableDamping
+										dampingFactor={0.08}
+										enablePan={false}
+										enableZoom={false}
+										enableRotate={canInteract}
+										autoRotate={shouldAutoRotate}
+										autoRotateSpeed={0.65}
+										rotateSpeed={0.35}
+										minAzimuthAngle={-0.4}
+										maxAzimuthAngle={0.4}
+										minPolarAngle={Math.PI / 2 - 0.24}
+										maxPolarAngle={Math.PI / 2 + 0.24}
+									/>
+								)}
+							</Canvas>
 						</Suspense>
 					</MockupErrorBoundary>
 				</>

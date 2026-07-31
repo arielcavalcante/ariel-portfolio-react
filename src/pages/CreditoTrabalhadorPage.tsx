@@ -21,7 +21,7 @@ type CreditoTrabalhadorPageProps = {
 	locale: Locale;
 };
 
-const MOBILE_LAYOUT_QUERY = '(max-width: 900px)';
+const MOBILE_LAYOUT_QUERY = '(max-width: 809px)';
 const COPY_REVEAL_PHASE = 0.58;
 const SCREEN_ANGLES = [0.1, -0.8] as const;
 

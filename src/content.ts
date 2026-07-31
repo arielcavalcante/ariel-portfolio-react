@@ -17,6 +17,9 @@ export const siteContent = {
 			caseTitle: 'Somapay PF · Ariel Cavalcante',
 			caseDescription:
 				'+24% increase in Play Store rating through research and end-to-end product redesign',
+			workerCreditTitle: 'Crédito do Trabalhador · Ariel Cavalcante',
+			workerCreditDescription:
+				'Product design case study for Somapay’s Crédito do Trabalhador experience.',
 			notFoundTitle: '404 · Ariel Cavalcante',
 			notFoundDescription: 'The requested page could not be found.',
 		},
@@ -140,6 +143,9 @@ export const siteContent = {
 			caseTitle: 'Somapay PF · Ariel Cavalcante',
 			caseDescription:
 				'+24% de aumento na nota da Play Store por meio de pesquisa e redesign de produto de ponta a ponta',
+			workerCreditTitle: 'Crédito do Trabalhador · Ariel Cavalcante',
+			workerCreditDescription:
+				'Estudo de caso de design de produto da experiência de Crédito do Trabalhador da Somapay.',
 			notFoundTitle: '404 · Ariel Cavalcante',
 			notFoundDescription: 'A página solicitada não foi encontrada.',
 		},

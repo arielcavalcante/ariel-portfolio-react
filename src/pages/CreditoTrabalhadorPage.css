@@ -188,7 +188,7 @@
 	will-change: transform;
 }
 
-@media (max-width: 900px) {
+@media (max-width: 809px) {
 	.worker-credit-case__hero {
 		padding: 116px 0 80px;
 	}

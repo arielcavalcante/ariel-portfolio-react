@@ -34,18 +34,25 @@ export default function App() {
 
 	useEffect(() => {
 		document.documentElement.lang = route.locale === 'pt-BR' ? 'pt-BR' : 'en';
-		const title =
-			route.page === 'home'
-				? content.seo.homeTitle
-				: route.page === 'somapay' || route.page === 'workerCredit'
-					? content.seo.caseTitle
-					: content.seo.notFoundTitle;
-		const description =
-			route.page === 'somapay' || route.page === 'workerCredit'
-				? content.seo.caseDescription
-				: route.page === 'home'
-					? content.seo.homeDescription
-					: content.seo.notFoundDescription;
+		const pageMetadata: Record<Route['page'], { title: string; description: string }> = {
+			home: {
+				title: content.seo.homeTitle,
+				description: content.seo.homeDescription,
+			},
+			somapay: {
+				title: content.seo.caseTitle,
+				description: content.seo.caseDescription,
+			},
+			workerCredit: {
+				title: content.seo.workerCreditTitle,
+				description: content.seo.workerCreditDescription,
+			},
+			'404': {
+				title: content.seo.notFoundTitle,
+				description: content.seo.notFoundDescription,
+			},
+		};
+		const { title, description } = pageMetadata[route.page];
 
 		document.title = title;
 		const setMeta = (
@@ -102,7 +109,11 @@ export default function App() {
 			'meta[name="robots"]',
 			'name',
 			'robots',
-			route.page === '404' ? 'noindex, follow' : 'index, follow',
+			route.page === 'workerCredit'
+				? 'noindex, nofollow, noarchive, nosnippet'
+				: route.page === '404'
+					? 'noindex, follow'
+					: 'index, follow',
 		);
 		setMeta('meta[property="og:title"]', 'property', 'og:title', title);
 		setMeta(
@@ -195,7 +206,7 @@ export default function App() {
 			.querySelectorAll('link[rel="alternate"][hreflang]')
 			.forEach(link => link.remove());
 
-		if (route.page !== '404') {
+		if (route.page !== '404' && route.page !== 'workerCredit') {
 			const alternatePath =
 				route.page === 'home' ? '/' : localPath;
 			([

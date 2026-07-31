@@ -200,11 +200,14 @@
 
 .sp-intro-title,
 .sp-section-lead > h2,
-.sp-display-title,
-.sp-worker-credit__title {
+.sp-display-title {
 	width: auto;
 	max-width: 100%;
 	font-size: clamp(40px, 8vw, 124px);
+}
+
+.sp-worker-credit__title {
+	font-size: clamp(40px, 8vw, 72px);
 }
 
 .sp-section-title {
@@ -945,7 +948,7 @@
 	background: var(--paper);
 }
 
-@media (max-width: 900px) {
+@media (max-width: 809px) {
 	.sp-shell {
 		width: min(calc(100% - 40px), var(--sp-shell));
 	}

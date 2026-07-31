@@ -44,6 +44,8 @@
 
 .worker-credit-case__phone .worker-credit-case__mockup,
 .worker-credit-case__phone-placeholder {
+	--worker-credit-fallback-scale: 1;
+	--worker-credit-fallback-offset: 0svh;
 	position: absolute;
 	top: 2svh;
 	left: 0;
@@ -51,7 +53,9 @@
 	width: calc((100% - var(--worker-credit-column-gap)) / 2);
 	height: 96svh;
 	aspect-ratio: auto;
-	transition: left 720ms cubic-bezier(0.34, 1.2, 0.64, 1);
+	transition:
+		left 720ms cubic-bezier(0.34, 1.2, 0.64, 1),
+		transform 560ms cubic-bezier(0.22, 1, 0.36, 1);
 }
 
 .worker-credit-case__phone .worker-credit-case__mockup.is-phone-left,
@@ -215,6 +219,12 @@
 		margin-inline: 0;
 	}
 
+	.worker-credit-case__phone-placeholder {
+		transform: translateY(var(--worker-credit-fallback-offset))
+			scale(var(--worker-credit-fallback-scale));
+		transform-origin: center;
+	}
+
 	.worker-credit-case__phone .worker-credit-case__mockup.is-phone-left,
 	.worker-credit-case__phone .worker-credit-case__mockup.is-phone-right,
 	.worker-credit-case__phone-placeholder.is-phone-left,
@@ -223,7 +233,7 @@
 	}
 
 	.worker-credit-case__copy {
-		inset: auto 0 clamp(24px, 6svh, 56px);
+		inset: auto 0 clamp(8px, calc(6svh - 16px), 40px);
 		display: block;
 		height: min(42svh, 380px);
 	}
@@ -282,6 +292,10 @@
 	}
 
 	.worker-credit-case__fallback-image {
+		transition: none;
+	}
+
+	.worker-credit-case__phone-placeholder {
 		transition: none;
 	}
 }

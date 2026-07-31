@@ -24,6 +24,15 @@ type CreditoTrabalhadorPageProps = {
 const MOBILE_LAYOUT_QUERY = '(max-width: 809px)';
 const COPY_REVEAL_PHASE = 0.58;
 const SCREEN_ANGLES = [0.1, -0.8] as const;
+const MOBILE_PHONE_SCALE = {
+	withoutCopy: 0.92,
+	withCopy: 0.62,
+} as const;
+const MOBILE_PHONE_POSITION_Y = {
+	withoutCopy: 4,
+	withCopy: 6,
+} as const;
+const MOBILE_FALLBACK_COPY_OFFSET = '-13.5svh';
 
 const IPhoneMockup = lazy(() =>
 	import('../components/IPhoneMockup/IPhoneMockup').then(module => ({
@@ -49,16 +58,26 @@ function PhoneStaticFallback({
 	activeIndex,
 	side,
 	alt,
+	scale = 1,
+	offset = '0svh',
 }: {
 	activeIndex: number;
 	side: 'left' | 'right';
 	alt: string;
+	scale?: number;
+	offset?: string;
 }) {
+	const style = {
+		'--worker-credit-fallback-scale': scale,
+		'--worker-credit-fallback-offset': offset,
+	} as CSSProperties;
+
 	return (
 		<div
 			className={`worker-credit-case__phone-placeholder is-phone-${side}`}
 			role='img'
 			aria-label={alt}
+			style={style}
 		>
 			<div className='iphone-mockup__fallback' aria-hidden='true'>
 				{workerCreditRenders.map((src, index) => (
@@ -420,9 +439,24 @@ export function CreditoTrabalhadorPage({
 			]
 		: [Math.PI, getScreenAngle(screenIndex), 0];
 	const phonePosition: [number, number, number] = isMobile
-		? [0, copyVisible ? 6 : 4, 0]
+		? [
+				0,
+				copyVisible
+					? MOBILE_PHONE_POSITION_Y.withCopy
+					: MOBILE_PHONE_POSITION_Y.withoutCopy,
+				0,
+			]
 		: [0, 0, 0];
-	const phoneScale = isMobile ? (copyVisible ? 0.62 : 0.92) : 1;
+	const phoneScale = isMobile
+		? copyVisible
+			? MOBILE_PHONE_SCALE.withCopy
+			: MOBILE_PHONE_SCALE.withoutCopy
+		: 1;
+	const fallbackScale = isMobile
+		? phoneScale / MOBILE_PHONE_SCALE.withoutCopy
+		: 1;
+	const fallbackOffset =
+		isMobile && copyVisible ? MOBILE_FALLBACK_COPY_OFFSET : '0svh';
 	const phoneAlt =
 		locale === 'pt-BR'
 			? `Mockup de um iPhone 17 Pro exibindo a tela ${screenIndex + 1} de ${workerCreditScreens.length} do aplicativo Somapay`
@@ -433,6 +467,8 @@ export function CreditoTrabalhadorPage({
 			activeIndex={screenIndex}
 			side={phoneSide}
 			alt={phoneAlt}
+			scale={fallbackScale}
+			offset={fallbackOffset}
 		/>
 	);
 

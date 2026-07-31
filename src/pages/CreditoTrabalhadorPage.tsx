@@ -135,7 +135,7 @@ const workerCreditContent: Record<Locale, WorkerCreditScreenContent[]> = {
 					title: 'Challenges',
 					paragraphs: [
 						'The project timeline was one of its main challenges: we had only seven days to conduct research, gather references, develop the wireframes, and create the final high-fidelity screens, with stakeholder reviews at each stage.',
-						'Requirements definition was another significant challenge. Due to the urgency of the project, there was not enough time to fully refine the requirements before development began, leading to misalignment and rework throughout the process. At critical moments, we set up a war room involving Product, Legal, Regulatory Compliance, and Information Security teams to accelerate decision-making and ensure the solution met all regulatory requirements.',
+						'Requirements definition was another significant challenge. Due to the urgency of the project, there was not enough time to fully refine the requirements before development began, leading to misalignment and rework. To address this, I organized a war room involving Product, Legal, Regulatory Compliance, and InfoSec teams to speed up decision-making and ensure we met all regulatory requirements.',
 					],
 				},
 			],
@@ -145,7 +145,7 @@ const workerCreditContent: Record<Locale, WorkerCreditScreenContent[]> = {
 				{
 					title: 'Business priority',
 					paragraphs: [
-						"One of the stakeholders' priorities was to accelerate the project's financial return. To support this goal, I proposed giving greater visual prominence to the option most strategic for the business right at the start of the sign-up flow. Placing it at the top of the screen and assigning it the primary CTA made it more attractive, yet did not prevent users from comparing other available alternatives or simulating customized amounts and terms.",
+						"One of the stakeholders' priorities was to accelerate the project's financial return. To support this goal, I proposed giving emphasis to option most strategic for the business at the start of the flow. Placing it at the top of and assigning it the primary CTA made it more attractive, yet did not prevent users from comparing other available alternatives or simulating customized amounts and terms.",
 					],
 				},
 			],
@@ -155,8 +155,8 @@ const workerCreditContent: Record<Locale, WorkerCreditScreenContent[]> = {
 				{
 					title: 'Review and choice',
 					paragraphs: [
-						'At the final stage of the application flow, I organised the information into a review screen so users could verify the main loan terms before confirming. Details such as the number and value of instalments, the amount to be received, fees and interest, and the total borrowed were presented with a clear hierarchy. I also reinforced that instalments would be deducted directly from the employee’s payroll, improving transparency throughout the process.',
-						'The insured and uninsured options were not part of the initial requirements. Since stakeholders also had a parallel goal of increasing insurance profitability, I used this stage as an opportunity to propose both alternatives. The insured option received greater visual prominence, while the uninsured option remained accessible, allowing users to make an informed choice before confirming.',
+						'At the final stage of the application flow, I organised the information into a review screen so users could verify the main loan terms before confirming. Number and value of instalments, the amount to be received, fees and interest, and the total borrowed were presented. I also reinforced that instalments would be deducted directly from the employee’s payroll, improving transparency.',
+						'The insured and uninsured options were not part of the initial requirements. Since stakeholders also had a parallel goal of increasing insurance profitability, I used this stage as an opportunity to propose both alternatives. The insured option received greater visual prominence, while the uninsured option remained accessible, allowing users to make an informed choice.',
 					],
 				},
 			],
@@ -186,7 +186,7 @@ const workerCreditContent: Record<Locale, WorkerCreditScreenContent[]> = {
 					title: 'Desafios',
 					paragraphs: [
 						'O cronograma foi um dos principais desafios do projeto: tivemos apenas sete dias para conduzir a pesquisa, reunir referências, desenvolver os wireframes e criar as telas finais em alta fidelidade, com validações dos stakeholders em cada etapa.',
-						'A definição dos requisitos também exigiu atenção. Como a demanda era urgente, não houve tempo suficiente para amadurecê-los antes do início do desenvolvimento, o que gerou desalinhamentos e retrabalho ao longo do processo. Em momentos críticos, foi necessário organizar uma war room envolvendo os times de Produto, Jurídico, Compliance Regulatório e Segurança da Informação para acelerar decisões e garantir a conformidade da solução.',
+						'A definição dos requisitos foi outro grande desafio. Devido à urgência do projeto, não houve tempo suficiente para refiná-los antes do início, o que gerou desalinhamentos e retrabalho. Para atenuar a situação, organizei uma war room com os times de Produto, Jurídico, Compliance Regulatório e InfoSec, acelerando a tomada de decisões e o atendimento a todos os requisitos regulatórios.',
 					],
 				},
 			],
@@ -196,7 +196,7 @@ const workerCreditContent: Record<Locale, WorkerCreditScreenContent[]> = {
 				{
 					title: 'Prioridade do negócio',
 					paragraphs: [
-						'Uma das prioridades dos stakeholders era acelerar o retorno financeiro do projeto. Para apoiar esse objetivo, propus que, logo no início do fluxo de contratação, a opção mais estratégica para o negócio recebesse maior destaque visual. O posicionamento no topo da tela e associada ao CTA primário oferecia maior atratividade mas não impedia que o usuário comparasse as demais alternativas disponíveis ou simulasse valores e condições customizadas.',
+						'Uma das prioridades dos stakeholders era acelerar o retorno financeiro do projeto. Para atingir esse objetivo, propus que a opção mais estratégica para o negócio recebesse maior destaque visual. O posicionamento no topo da tela e associada ao CTA primário oferecia maior atratividade mas não impedia que o usuário comparasse as demais opções disponíveis ou simulasse valores e condições customizadas.',
 					],
 				},
 			],
@@ -206,7 +206,7 @@ const workerCreditContent: Record<Locale, WorkerCreditScreenContent[]> = {
 				{
 					title: 'Revisão e escolha',
 					paragraphs: [
-						'Na etapa final da contratação, organizei as informações em uma tela de revisão para que o usuário pudesse conferir as principais condições antes de confirmar o empréstimo. Dados como número e valor das parcelas, valor a receber, taxas/juros e valor total contratado, além de um reforço de que as parcelas seriam descontadas diretamente da folha de pagamento, foram apresentados de forma hierarquizada, reforçando a transparência da operação.',
+						'Na etapa final da contratação, organizei as informações de revisão para que o usuário pudesse ver as principais condições antes de confirmar o empréstimo. Número e valor das parcelas, valor a receber, taxas/juros e valor total contratado, além de repetir de que as parcelas seriam descontadas diretamente da folha de pagamento, reforçando a transparência da operação.',
 						'As opções de contratação com e sem seguro não existiam nos requisitos iniciais. Como havia uma demanda paralela dos stakeholders para aumentar a rentabilidade dos seguros, aproveitei esta etapa para propor a inclusão das duas alternativas. A opção com seguro recebeu maior destaque visual, enquanto a contratação sem seguro permaneceu acessível, permitindo uma escolha consciente antes da confirmação.',
 					],
 				},

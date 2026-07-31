@@ -53,8 +53,15 @@ export default function App() {
 			},
 		};
 		const { title, description } = pageMetadata[route.page];
+		const themeColor: Record<Route['page'], string> = {
+			home: '#f2f2f1',
+			somapay: '#0c0c0c',
+			workerCredit: '#171a31',
+			'404': '#f2f2f1',
+		};
 
 		document.title = title;
+		document.documentElement.style.backgroundColor = themeColor[route.page];
 		const setMeta = (
 			selector: string,
 			attribute: 'name' | 'property',
@@ -105,6 +112,12 @@ export default function App() {
 			'Ariel Cavalcante logo with a merman illustration and geometric red shapes.';
 
 		setMeta('meta[name="description"]', 'name', 'description', description);
+		setMeta(
+			'meta[name="theme-color"]',
+			'name',
+			'theme-color',
+			themeColor[route.page],
+		);
 		setMeta(
 			'meta[name="robots"]',
 			'name',

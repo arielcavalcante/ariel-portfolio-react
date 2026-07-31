@@ -39,8 +39,6 @@ export type IPhoneMockupProps = {
 	enableInteraction?: boolean;
 	autoRotate?: boolean;
 	fallbackImage?: string;
-	loadingLabel?: string;
-	loadingStartedAt?: number;
 };
 
 type ErrorBoundaryProps = {
@@ -82,27 +80,12 @@ class MockupErrorBoundary extends Component<
 
 function StaticFallback({
 	src,
-	loadingLabel,
-	showLoading,
 }: {
 	src?: string;
-	loadingLabel: string;
-	showLoading: boolean;
 }) {
 	return (
 		<div className='iphone-mockup__fallback' aria-hidden='true'>
-			{src ? (
-				<img src={src} alt='' decoding='async' />
-			) : showLoading ? (
-				<div className='iphone-mockup__loading'>
-					<span>{loadingLabel}</span>
-					<img
-						src='/assets/icons/loading-waves-paper.svg'
-						alt=''
-						decoding='async'
-					/>
-				</div>
-			) : null}
+			{src && <img src={src} alt='' decoding='async' />}
 		</div>
 	);
 }
@@ -277,15 +260,8 @@ export function IPhoneMockup({
 	enableInteraction = true,
 	autoRotate = false,
 	fallbackImage,
-	loadingLabel = 'Loading',
-	loadingStartedAt,
 }: IPhoneMockupProps) {
 	const rootRef = useRef<HTMLDivElement>(null);
-	const loadingStart = useRef(loadingStartedAt ?? Date.now());
-	const readyTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
-	const [showLoading, setShowLoading] = useState(
-		() => Date.now() - loadingStart.current >= 1000,
-	);
 	const [shouldRender, setShouldRender] = useState(false);
 	const [sceneReady, setSceneReady] = useState(false);
 	const reducedMotion = useMediaQuery('(prefers-reduced-motion: reduce)');
@@ -293,37 +269,13 @@ export function IPhoneMockup({
 	const canInteract = enableInteraction && finePointer;
 	const shouldAutoRotate = autoRotate && !reducedMotion;
 	const resetKey = `${modelUrl}|${screenImage}`;
-	const fallback = (
-		<StaticFallback
-			src={fallbackImage}
-			loadingLabel={loadingLabel}
-			showLoading={showLoading}
-		/>
-	);
+	const fallback = <StaticFallback src={fallbackImage} />;
 	const handleSceneReady = useCallback(() => {
-		const elapsed = Date.now() - loadingStart.current;
-		const remaining = elapsed <= 1000 ? 0 : Math.max(0, 3000 - elapsed);
-
-		if (readyTimer.current) clearTimeout(readyTimer.current);
-		readyTimer.current = setTimeout(() => setSceneReady(true), remaining);
+		setSceneReady(true);
 	}, []);
 	const handleSceneWaiting = useCallback(() => {
-		if (readyTimer.current) clearTimeout(readyTimer.current);
 		setSceneReady(false);
 	}, []);
-
-	useEffect(() => {
-		const remaining = Math.max(0, 1000 - (Date.now() - loadingStart.current));
-		const timer = setTimeout(() => setShowLoading(true), remaining);
-		return () => clearTimeout(timer);
-	}, []);
-
-	useEffect(
-		() => () => {
-			if (readyTimer.current) clearTimeout(readyTimer.current);
-		},
-		[],
-	);
 
 	useEffect(() => {
 		const root = rootRef.current;
@@ -398,7 +350,7 @@ export function IPhoneMockup({
 								aria-hidden='true'
 								tabIndex={-1}
 								camera={{ position: cameraPosition, fov: 34 }}
-								dpr={[1, 2]}
+								dpr={2}
 								frameloop={shouldAutoRotate ? 'always' : 'demand'}
 								gl={{
 									alpha: true,

@@ -11,6 +11,7 @@ import { Reveal } from '../components/Reveal';
 import { SiteFooter } from '../components/SiteFooter';
 import { SiteHeader } from '../components/SiteHeader';
 import { siteContent, type Locale } from '../content';
+import { useInteractive3DSupport } from '../hooks/useInteractive3DSupport';
 import { useMediaQuery } from '../hooks/useMediaQuery';
 import '../components/IPhoneMockup/iphoneMockup.css';
 import './SomapayPage.css';
@@ -37,38 +38,42 @@ const workerCreditScreens = [
 	'/assets/3d/images/04.webp',
 ] as const;
 
-function PhoneLoadingFallback({
-	locale,
-	loadingStartedAt,
+const workerCreditRenders = [
+	'/assets/3d/renders/worker-credit-screen-01.webp',
+	'/assets/3d/renders/worker-credit-screen-02.webp',
+	'/assets/3d/renders/worker-credit-screen-03.webp',
+	'/assets/3d/renders/worker-credit-screen-04.webp',
+] as const;
+
+function PhoneStaticFallback({
+	activeIndex,
+	side,
+	alt,
 }: {
-	locale: Locale;
-	loadingStartedAt: number;
+	activeIndex: number;
+	side: 'left' | 'right';
+	alt: string;
 }) {
-	const [showLoading, setShowLoading] = useState(
-		() => Date.now() - loadingStartedAt >= 1000,
-	);
-
-	useEffect(() => {
-		const remaining = Math.max(0, 1000 - (Date.now() - loadingStartedAt));
-		const timer = setTimeout(() => setShowLoading(true), remaining);
-		return () => clearTimeout(timer);
-	}, [loadingStartedAt]);
-
 	return (
 		<div
-			className='worker-credit-case__phone-placeholder iphone-mockup__fallback'
-			aria-hidden='true'
+			className={`worker-credit-case__phone-placeholder is-phone-${side}`}
+			role='img'
+			aria-label={alt}
 		>
-			{showLoading && (
-				<div className='iphone-mockup__loading'>
-					<span>{locale === 'pt-BR' ? 'Carregando' : 'Loading'}</span>
+			<div className='iphone-mockup__fallback' aria-hidden='true'>
+				{workerCreditRenders.map((src, index) => (
 					<img
-						src='/assets/icons/loading-waves-paper.svg'
+						key={src}
+						className={`worker-credit-case__fallback-image ${
+							index === activeIndex ? 'is-active' : ''
+						}`}
+						src={src}
 						alt=''
 						decoding='async'
+						loading='eager'
 					/>
-				</div>
-			)}
+				))}
+			</div>
 		</div>
 	);
 }
@@ -266,8 +271,9 @@ function useWorkerCreditSequence({
 		copyVisible: false,
 	});
 	const progressVisibleRef = useRef(false);
-	const [sequenceState, setSequenceState] =
-		useState<WorkerCreditSequenceState>(stateRef.current);
+	const [sequenceState, setSequenceState] = useState<WorkerCreditSequenceState>(
+		stateRef.current,
+	);
 	const [progressVisible, setProgressVisible] = useState(false);
 	const stepCount = isMobile ? mobileSteps.length : workerCreditScreens.length;
 
@@ -288,8 +294,7 @@ function useWorkerCreditSequence({
 			const progress = Math.min(Math.max(-bounds.top / scrollDistance, 0), 1);
 			const progressPercentage = Math.round(progress * 100);
 			const nextProgressVisible =
-				window.scrollY > 1 &&
-				(progressVisibleRef.current || progress > 0);
+				window.scrollY > 1 && (progressVisibleRef.current || progress > 0);
 
 			if (nextProgressVisible !== progressVisibleRef.current) {
 				progressVisibleRef.current = nextProgressVisible;
@@ -320,9 +325,7 @@ function useWorkerCreditSequence({
 				? mobileSteps[nextStepIndex].screenIndex
 				: nextStepIndex;
 			const phase =
-				sequenceProgress >= stepCount
-					? 1
-					: sequenceProgress - nextStepIndex;
+				sequenceProgress >= stepCount ? 1 : sequenceProgress - nextStepIndex;
 			const nextState: WorkerCreditSequenceState = {
 				screenIndex,
 				mobileStepIndex: nextStepIndex,
@@ -370,9 +373,9 @@ function useWorkerCreditSequence({
 export function CreditoTrabalhadorPage({
 	locale,
 }: CreditoTrabalhadorPageProps) {
-	const modelLoadingStartedAt = useRef(Date.now());
 	const site = siteContent[locale];
 	const isMobile = useMediaQuery(MOBILE_LAYOUT_QUERY);
+	const supports3D = useInteractive3DSupport();
 	const mobileSteps = workerCreditMobileSteps[locale];
 	const {
 		copyVisible,
@@ -420,6 +423,18 @@ export function CreditoTrabalhadorPage({
 		? [0, copyVisible ? 6 : 4, 0]
 		: [0, 0, 0];
 	const phoneScale = isMobile ? (copyVisible ? 0.62 : 0.92) : 1;
+	const phoneAlt =
+		locale === 'pt-BR'
+			? `Mockup de um iPhone 17 Pro exibindo a tela ${screenIndex + 1} de ${workerCreditScreens.length} do aplicativo Somapay`
+			: `iPhone 17 Pro mockup displaying Somapay app screen ${screenIndex + 1} of ${workerCreditScreens.length}`;
+	const phoneSide = screenIndex % 2 === 0 ? 'right' : 'left';
+	const staticPhone = (
+		<PhoneStaticFallback
+			activeIndex={screenIndex}
+			side={phoneSide}
+			alt={phoneAlt}
+		/>
+	);
 
 	return (
 		<div className='page-shell somapay-case worker-credit-case'>
@@ -441,35 +456,23 @@ export function CreditoTrabalhadorPage({
 							style={sequenceStyle}
 						>
 							<figure className='worker-credit-case__phone'>
-								<Suspense
-									fallback={
-										<PhoneLoadingFallback
-											locale={locale}
-											loadingStartedAt={modelLoadingStartedAt.current}
+								{supports3D ? (
+									<Suspense fallback={staticPhone}>
+										<IPhoneMockup
+											key={`iphone-${isMobile ? 'mobile' : 'desktop'}`}
+											className={`worker-credit-case__mockup is-phone-${phoneSide}`}
+											screenImage={workerCreditScreens[screenIndex]}
+											preloadScreenImages={workerCreditScreens}
+											fallbackImage={workerCreditRenders[screenIndex]}
+											position={phonePosition}
+											rotation={phoneRotation}
+											scale={phoneScale}
+											alt={phoneAlt}
 										/>
-									}
-								>
-									<IPhoneMockup
-										key={`iphone-${isMobile ? 'mobile' : 'desktop'}`}
-										className={`worker-credit-case__mockup ${
-											screenIndex % 2 === 0 ? 'is-phone-right' : 'is-phone-left'
-										}`}
-										screenImage={workerCreditScreens[screenIndex]}
-										preloadScreenImages={workerCreditScreens}
-										position={phonePosition}
-										rotation={phoneRotation}
-										scale={phoneScale}
-										loadingLabel={
-											locale === 'pt-BR' ? 'Carregando' : 'Loading'
-										}
-										loadingStartedAt={modelLoadingStartedAt.current}
-										alt={
-											locale === 'pt-BR'
-												? `Mockup 3D interativo de um iPhone 17 Pro exibindo a tela ${screenIndex + 1} de ${workerCreditScreens.length} do aplicativo Somapay`
-												: `Interactive 3D iPhone 17 Pro mockup displaying Somapay app screen ${screenIndex + 1} of ${workerCreditScreens.length}`
-										}
-									/>
-								</Suspense>
+									</Suspense>
+								) : (
+									staticPhone
+								)}
 								<div
 									className={`worker-credit-case__copy ${
 										screenIndex % 2 === 0 ? 'is-copy-left' : 'is-copy-right'

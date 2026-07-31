@@ -54,24 +54,3 @@
 	max-height: 96%;
 	object-fit: contain;
 }
-
-.iphone-mockup__loading {
-	display: grid;
-	place-items: center;
-	aspect-ratio: 1;
-	padding: 32px;
-	background: var(--navy);
-	color: var(--paper);
-	text-align: center;
-}
-
-.iphone-mockup__loading span {
-	font-size: 16px;
-	font-weight: 500;
-	line-height: 1.2;
-}
-
-.iphone-mockup__loading img {
-	width: min(80px, 70%);
-	height: auto;
-}

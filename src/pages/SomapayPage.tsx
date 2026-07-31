@@ -89,9 +89,6 @@ type Copy = {
 		darkAlt: string;
 		lightAlt: string;
 	};
-	ndaLabel: string;
-	nda: string;
-	thanks: string;
 };
 
 const copy: Record<Locale, Copy> = {
@@ -244,9 +241,6 @@ const copy: Record<Locale, Copy> = {
 			darkAlt: 'A phone showing the black and orange Somapay PF banking app.',
 			lightAlt: 'A phone showing the orange and white Somapay PF banking app.',
 		},
-		ndaLabel: 'Disclosure',
-		nda: 'This case study contains information from projects completed under non-disclosure agreements (NDAs). Some sensitive details were changed or omitted to respect those commitments. The content presented here reflects my own analysis and contributions and does not necessarily represent Somapay’s official views or positioning.',
-		thanks: 'Thanks for your time!',
 	},
 	'pt-BR': {
 		hero: {
@@ -399,9 +393,6 @@ const copy: Record<Locale, Copy> = {
 			lightAlt:
 				'Um celular com o aplicativo do banco aberto. É o app laranja e branco do Somapay PF.',
 		},
-		ndaLabel: 'Aviso de confidencialidade',
-		nda: 'Este estudo de caso contém informações de projetos realizados sob acordos de confidencialidade (NDA). Alguns detalhes sensíveis foram alterados ou omitidos para respeitar esses compromissos. O conteúdo apresentado aqui reflete minhas análises e contribuições pessoais, não representando necessariamente a opinião ou posicionamento oficial da Somapay.',
-		thanks: 'Obrigado pelo seu tempo!',
 	},
 };
 
@@ -1827,13 +1818,17 @@ export function SomapayPage({ locale }: SomapayPageProps) {
 					</div>
 				</section>
 
-				<section className='sp-nda' id='nda' aria-label={text.ndaLabel}>
+				<section
+					className='sp-nda'
+					id='nda'
+					aria-label={site.caseDisclosure.label}
+				>
 					<div className='sp-shell sp-nda__inner'>
 						<Reveal>
-							<p>{text.nda}</p>
+							<p>{site.caseDisclosure.text}</p>
 						</Reveal>
 						<Reveal delay={80}>
-							<p className='sp-thanks'>{text.thanks}</p>
+							<p className='sp-thanks'>{site.caseDisclosure.thanks}</p>
 						</Reveal>
 					</div>
 				</section>

@@ -41,6 +41,11 @@ export const siteContent = {
 			projects: 'Projects',
 			home: 'Home',
 		},
+		caseDisclosure: {
+			label: 'Disclosure',
+			text: 'This case study contains information from projects completed under non-disclosure agreements (NDAs). Some sensitive details were changed or omitted to respect those commitments. The content presented here reflects my own analysis and contributions and does not necessarily represent Somapay’s official views or positioning.',
+			thanks: 'Thanks for your time!',
+		},
 		home: {
 			available: 'Available for work',
 			title: 'Product Design &\nDesign Systems',
@@ -167,6 +172,11 @@ export const siteContent = {
 			projects: 'Projetos',
 			contacts: 'Contatos',
 			home: 'Início',
+		},
+		caseDisclosure: {
+			label: 'Aviso de confidencialidade',
+			text: 'Este estudo de caso contém informações de projetos realizados sob acordos de confidencialidade (NDA). Alguns detalhes sensíveis foram alterados ou omitidos para respeitar esses compromissos. O conteúdo apresentado aqui reflete minhas análises e contribuições pessoais, não representando necessariamente a opinião ou posicionamento oficial da Somapay.',
+			thanks: 'Obrigado pelo seu tempo!',
 		},
 		home: {
 			available: 'Disponível para trabalho',

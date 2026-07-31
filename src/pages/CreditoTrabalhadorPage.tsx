@@ -549,6 +549,21 @@ export function CreditoTrabalhadorPage({
 						</div>
 					</div>
 				</section>
+
+				<section
+					className='sp-nda'
+					id='nda'
+					aria-label={site.caseDisclosure.label}
+				>
+					<div className='sp-shell sp-nda__inner'>
+						<Reveal>
+							<p>{site.caseDisclosure.text}</p>
+						</Reveal>
+						<Reveal delay={80}>
+							<p className='sp-thanks'>{site.caseDisclosure.thanks}</p>
+						</Reveal>
+					</div>
+				</section>
 			</main>
 
 			<div

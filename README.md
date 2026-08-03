@@ -1,5 +1,7 @@
 # Ariel Cavalcante — Product Design Portfolio
 
+[![Better Stack Badge](https://uptime.betterstack.com/status-badges/v3/monitor/2u68s.svg)](https://uptime.betterstack.com/?utm_source=status_badge)
+
 Hello! I’m Ariel Cavalcante, a product designer with more than six years of experience across product design, design systems, fintech, and collaboration with front-end teams.
 
 This is my bilingual portfolio, where I share selected work and the thinking behind it. I enjoy bridging design and engineering to create products that are useful, accessible, scalable, and full of personality.
@@ -47,6 +49,17 @@ npm run preview
 ```
 
 The production output is generated in `dist/`.
+
+## Tests and deployment checks
+
+```bash
+npm test
+npm run check
+```
+
+`npm test` runs dependency-free integrity tests for local assets, routes, sitemap contents, private-page indexing protection, Cloudflare SPA routing, and the uptime endpoint. `npm run check` runs those tests followed by the complete production build.
+
+The same safety checks run automatically on pushes and pull requests through GitHub Actions. See [OPERATIONS.md](./OPERATIONS.md) for the uptime-monitoring and rollback checklist.
 
 ## Project structure
 

@@ -2,6 +2,12 @@ import type { Locale } from '../content';
 import { contact, localizedPath, siteContent } from '../content';
 import { FooterCrabGame } from './FooterCrabGame';
 
+const crabGameSounds = {
+	hit: '/assets/soundfx/hit.wav',
+	win: '/assets/soundfx/victory.wav',
+	lose: '/assets/soundfx/defeat.wav',
+};
+
 type SiteFooterProps = {
 	locale: Locale;
 };
@@ -20,7 +26,7 @@ export function SiteFooter({ locale }: SiteFooterProps) {
 					>
 						<img src='/assets/icons/logo/ariel cavalcante logo.svg' alt='' />
 					</a>
-					<FooterCrabGame locale={locale} />
+					<FooterCrabGame locale={locale} sounds={crabGameSounds} />
 				</div>
 
 				<div className='footer-columns'>

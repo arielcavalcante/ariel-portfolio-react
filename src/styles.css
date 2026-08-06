@@ -1109,6 +1109,7 @@ ul {
 }
 
 .site-footer__inner {
+	position: relative;
 	display: flex;
 	justify-content: space-between;
 	flex-wrap: wrap;
@@ -1118,9 +1119,12 @@ ul {
 	min-height: 300px;
 	margin-inline: auto;
 	padding: clamp(40px, 6vw, 88px);
+	isolation: isolate;
 }
 
 .footer-brand {
+	position: relative;
+	z-index: 2;
 	display: flex;
 	align-items: center;
 	gap: 16px;
@@ -1130,6 +1134,19 @@ ul {
 	width: 122px;
 	height: 60px;
 	flex: 0 0 auto;
+}
+
+.footer-crab-game {
+	display: grid;
+	width: 52px;
+	min-height: 42px;
+	align-items: center;
+	flex: 0 0 auto;
+}
+
+.footer-crab-game.is-active,
+.footer-crab-game.has-result {
+	width: min(280px, calc(100vw - 194px));
 }
 
 .footer-crab {
@@ -1147,13 +1164,13 @@ ul {
 }
 
 .footer-crab__jump,
-.footer-crab img {
+.footer-crab__jump > img {
 	display: block;
 	width: 100%;
 	height: 100%;
 }
 
-.footer-crab img {
+.footer-crab__jump > img {
 	position: absolute;
 	inset: 0;
 	object-fit: contain;
@@ -1167,14 +1184,38 @@ ul {
 
 .footer-crab__count {
 	position: absolute;
-	bottom: calc(100% + 4px);
+	bottom: calc(100% - 10px);
 	left: 50%;
+	z-index: 2;
+	display: grid;
+	width: 64px;
+	height: 66px;
+	place-items: center;
 	font-size: 16px;
 	font-weight: 600;
 	line-height: 1;
 	color: inherit;
 	pointer-events: none;
 	animation: crab-combo-count 1s ease-out forwards;
+}
+
+.footer-crab__count-burst {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	display: block;
+	width: 50%;
+	height: 50%;
+	transform: translate(-50%, -50%);
+}
+
+.footer-crab__count > span {
+	position: relative;
+	z-index: 1;
+}
+
+.footer-crab__hint {
+	display: none;
 }
 
 .footer-crab:hover .footer-crab__still,
@@ -1210,6 +1251,78 @@ ul {
 	visibility: hidden;
 }
 
+.footer-crab-result {
+	display: flex;
+	align-items: center;
+	gap: 12px;
+	width: 100%;
+	animation: crab-result-in 420ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.footer-crab-result p {
+	margin: 0;
+	font-size: 12px;
+	font-weight: 500;
+	line-height: 1.3;
+}
+
+.footer-crab-result__replay {
+	display: grid;
+	width: 32px;
+	height: 32px;
+	padding: 0;
+	flex: 0 0 auto;
+	border: 0;
+	border-radius: 50%;
+	place-items: center;
+	background: transparent;
+	color: inherit;
+	font: inherit;
+	cursor: pointer;
+	transition: background-color 180ms ease;
+}
+
+.footer-crab-result__replay:hover,
+.footer-crab-result__replay:focus-visible {
+	background: color-mix(in srgb, currentColor 12%, transparent);
+}
+
+.footer-crab-result__replay > span {
+	display: block;
+	width: 18px;
+	height: 18px;
+	background: currentColor;
+	-webkit-mask: url('/assets/icons/refresh.svg') center / contain no-repeat;
+	mask: url('/assets/icons/refresh.svg') center / contain no-repeat;
+}
+
+.footer-crab-result__source {
+	display: inline-grid;
+	width: 32px;
+	height: 32px;
+	margin: -10px -19px -10px 0;
+	padding-left: 3px;
+	place-items: center start;
+	vertical-align: middle;
+	color: inherit;
+}
+
+.footer-crab-result__source:focus-visible {
+	border-radius: 50%;
+	outline: 2px solid currentColor;
+	outline-offset: -4px;
+}
+
+.footer-crab-result__source > span {
+	display: block;
+	width: 9px;
+	height: 9px;
+	background: currentColor;
+	-webkit-mask: url('/assets/icons/arrow top right.svg') center / contain
+		no-repeat;
+	mask: url('/assets/icons/arrow top right.svg') center / contain no-repeat;
+}
+
 .crab-reward {
 	position: fixed;
 	z-index: 300;
@@ -1224,6 +1337,11 @@ ul {
 	box-shadow: 0 18px 54px color-mix(in srgb, var(--ink) 28%, transparent);
 	animation: crab-reward-in 380ms cubic-bezier(0.22, 1, 0.36, 1) both;
 	outline: none;
+}
+
+.crab-reward.is-victory-entering {
+	animation-duration: var(--crab-reward-intro-duration, 4831ms);
+	animation-timing-function: cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .crab-reward__media,
@@ -1389,11 +1507,41 @@ ul {
 @keyframes crab-reward-in {
 	from {
 		opacity: 0;
-		transform: translateY(18px);
+		transform: translateY(32px) scale(0.96);
+	}
+	18% {
+		opacity: 1;
 	}
 }
 
 @media (min-width: 810px) {
+	.footer-crab {
+		top: -4px;
+	}
+
+	.footer-crab:not(.is-walking):hover .footer-crab__hint,
+	.footer-crab:not(.is-walking):focus-visible .footer-crab__hint {
+		opacity: 1;
+		transform: translate(-50%, 0);
+	}
+
+	.footer-crab__hint {
+		position: absolute;
+		top: calc(100% + 4px);
+		left: 50%;
+		display: block;
+		width: max-content;
+		font-size: 10px;
+		font-weight: 500;
+		line-height: 1;
+		opacity: 0;
+		transform: translate(-50%, -3px);
+		transition:
+			opacity 160ms ease,
+			transform 180ms ease;
+		pointer-events: none;
+	}
+
 	.crab-reward {
 		right: 24px;
 		bottom: 24px;
@@ -1456,7 +1604,16 @@ ul {
 	}
 }
 
+@keyframes crab-result-in {
+	from {
+		opacity: 0;
+		transform: translateX(-8px);
+	}
+}
+
 .footer-columns {
+	position: relative;
+	z-index: 1;
 	display: flex;
 	justify-content: flex-end;
 }
@@ -1585,6 +1742,21 @@ ul {
 }
 
 @media (max-width: 809px) {
+	.site-footer__inner {
+		flex-direction: column;
+		align-items: stretch;
+		justify-content: center;
+	}
+
+	.footer-columns {
+		justify-content: flex-start;
+	}
+
+	.footer-crab-game.is-active,
+	.footer-crab-game.has-result {
+		width: min(280px, calc(100vw - 218px));
+	}
+
 	body.menu-open .site-header {
 		background: var(--paper);
 	}
@@ -2020,6 +2192,58 @@ ul {
 }
 
 @media (max-width: 520px) {
+	.site-footer__inner {
+		gap: 32px;
+	}
+
+	.footer-brand {
+		display: grid;
+		width: 100%;
+		grid-template-columns: 122px 32px minmax(0, 1fr);
+		grid-template-rows: 46px 48px;
+		column-gap: 16px;
+		row-gap: 6px;
+		align-items: center;
+	}
+
+	.footer-mark {
+		grid-column: 1;
+		grid-row: 1;
+		align-self: start;
+	}
+
+	.footer-crab-game:not(.has-result) {
+		width: auto;
+		grid-column: 2 / -1;
+		grid-row: 1;
+	}
+
+	.footer-brand:has(.footer-crab-game.has-result) .footer-mark {
+		--logo-mask: url('/assets/icons/logo/ariel logo.svg');
+		height: 46px;
+		-webkit-mask-position: left top;
+		mask-position: left top;
+	}
+
+	.footer-brand:has(.footer-crab-game.has-result) .footer-crab-game,
+	.footer-brand:has(.footer-crab-game.has-result) .footer-crab-result {
+		display: contents;
+	}
+
+	.footer-brand:has(.footer-crab-game.has-result) .footer-crab-result__replay {
+		grid-column: 2;
+		grid-row: 1;
+		animation: crab-result-in 420ms cubic-bezier(0.22, 1, 0.36, 1) both;
+	}
+
+	.footer-brand:has(.footer-crab-game.has-result) .footer-crab-result__trivia {
+		width: 100%;
+		grid-column: 1 / -1;
+		grid-row: 2;
+		align-self: start;
+		animation: crab-result-in 420ms cubic-bezier(0.22, 1, 0.36, 1) both;
+	}
+
 	.source-case__metadata {
 		grid-template-columns: 1fr;
 	}

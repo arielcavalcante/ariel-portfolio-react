@@ -62,12 +62,12 @@ test('the application keeps its supported English and Portuguese routes', async 
 		"localPath === '/'",
 		"localPath === '/somapay-pf'",
 		"localPath === '/somapay-pf/cred-trabalhador'",
+		"localPath === '/vetpoint'",
 	];
 
 	for (const route of expectedLocalRoutes) {
 		assert.ok(app.includes(route), `App route is missing: ${route}`);
 	}
-
 	assert.match(app, /normalized\.startsWith\('\/br\/'\)/);
 	assert.match(app, /page: '404'/);
 });
@@ -83,6 +83,8 @@ test('the sitemap contains only public, supported pages', async () => {
 		'https://arielcavalcante.com/br/',
 		'https://arielcavalcante.com/somapay-pf',
 		'https://arielcavalcante.com/br/somapay-pf',
+		'https://arielcavalcante.com/vetpoint',
+		'https://arielcavalcante.com/br/vetpoint',
 	]);
 	assert.doesNotMatch(sitemap, /cred-trabalhador/);
 });

@@ -5,10 +5,11 @@ import { HomePage } from './pages/HomePage';
 import { NotFoundPage } from './pages/NotFoundPage';
 import { CreditoTrabalhadorPage } from './pages/CreditoTrabalhadorPage';
 import { SomapayPage } from './pages/SomapayPage';
+import { VetPointPage } from './pages/VetPointPage';
 
 type Route = {
 	locale: Locale;
-	page: 'home' | 'somapay' | 'workerCredit' | '404';
+	page: 'home' | 'somapay' | 'workerCredit' | 'vetpoint' | '404';
 };
 
 function resolveRoute(pathname: string): Route {
@@ -22,6 +23,7 @@ function resolveRoute(pathname: string): Route {
 
 	if (localPath === '/') return { locale, page: 'home' };
 	if (localPath === '/somapay-pf') return { locale, page: 'somapay' };
+	if (localPath === '/vetpoint') return { locale, page: 'vetpoint' };
 	if (localPath === '/somapay-pf/cred-trabalhador') {
 		return { locale, page: 'workerCredit' };
 	}
@@ -47,6 +49,10 @@ export default function App() {
 				title: content.seo.workerCreditTitle,
 				description: content.seo.workerCreditDescription,
 			},
+			vetpoint: {
+				title: content.seo.vetPointTitle,
+				description: content.seo.vetPointDescription,
+			},
 			'404': {
 				title: content.seo.notFoundTitle,
 				description: content.seo.notFoundDescription,
@@ -57,6 +63,7 @@ export default function App() {
 			home: '#f2f2f1',
 			somapay: '#0c0c0c',
 			workerCredit: '#171a31',
+			vetpoint: '#171a31',
 			'404': '#f2f2f1',
 		};
 
@@ -91,17 +98,16 @@ export default function App() {
 		};
 
 		const localPath = pathWithoutLocale(window.location.pathname);
-		const canonicalPath =
-			route.page === 'home'
-				? localizedPath(route.locale, '/')
-				: route.page === 'somapay'
-					? localizedPath(route.locale, '/somapay-pf')
-					: route.page === 'workerCredit'
-						? localizedPath(
-								route.locale,
-								'/somapay-pf/cred-trabalhador',
-							)
-					: window.location.pathname;
+		const canonicalRoutes: Partial<Record<Route['page'], string>> = {
+			home: '/',
+			somapay: '/somapay-pf',
+			workerCredit: '/somapay-pf/cred-trabalhador',
+			vetpoint: '/vetpoint',
+		};
+		const canonicalRoute = canonicalRoutes[route.page];
+		const canonicalPath = canonicalRoute
+			? localizedPath(route.locale, canonicalRoute)
+			: window.location.pathname;
 		const canonicalUrl = new URL(
 			canonicalPath,
 			'https://arielcavalcante.com',
@@ -241,5 +247,6 @@ export default function App() {
 	if (route.page === 'workerCredit') {
 		return <CreditoTrabalhadorPage locale={route.locale} />;
 	}
+	if (route.page === 'vetpoint') return <VetPointPage locale={route.locale} />;
 	return <NotFoundPage locale={route.locale} />;
 }

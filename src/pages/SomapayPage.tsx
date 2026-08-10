@@ -11,6 +11,10 @@ import { localizedPath, siteContent, type Locale } from '../content';
 import { Reveal } from '../components/Reveal';
 import { SiteFooter } from '../components/SiteFooter';
 import { SiteHeader } from '../components/SiteHeader';
+import {
+	AnnotatedText,
+	type GlossaryTerm,
+} from '../components/TermTooltip';
 import './SomapayPage.css';
 
 type SomapayPageProps = {
@@ -215,7 +219,7 @@ const copy: Record<Locale, Copy> = {
 			overline: 'Dive deeper',
 			title: 'Crédito do\nTrabalhador',
 			paragraphs: [
-				'Crédito do Trabalhador is a payroll-deducted loan programme for private-sector employees, with repayments taken directly from their salaries. The project required the creation of a new application flow in just seven days, balancing government regulations, integration with Dataprev (Brazil’s public social security technology provider), business goals and transparency for users.',
+				'Crédito do Trabalhador is a payroll-deducted loan programme for private-sector employees, with repayments taken directly from their salaries. The project required the creation of a new application flow in just seven days, balancing government regulations, integration with Dataprev, business goals and transparency for users.',
 			],
 			imageAlt: 'Interface screens from the Crédito do Trabalhador experience.',
 			cta: 'View full project',
@@ -394,6 +398,85 @@ const copy: Record<Locale, Copy> = {
 				'Um celular com o aplicativo do banco aberto. É o app laranja e branco do Somapay PF.',
 		},
 	},
+};
+
+const somapayGlossary: Record<Locale, readonly GlossaryTerm[]> = {
+	en: [
+		{
+			label: 'Dataprev',
+			definition:
+				"Brazil’s public technology company responsible for processing social-security and employment data.",
+			triggerLabel: 'Learn what Dataprev is',
+		},
+		{
+			label: 'MED Pix',
+			definition:
+				"Pix’s special refund mechanism for transactions involving suspected fraud or operational failure.",
+			triggerLabel: 'Learn what MED Pix means',
+		},
+		{
+			label: 'Pix Automático',
+			definition:
+				'A Pix feature that lets users authorize recurring payments, similar to direct debit.',
+			triggerLabel: 'Learn what Pix Automático means',
+		},
+		{
+			label: 'design tokens',
+			definition:
+				'Reusable names that store visual decisions such as colors, spacing, typography, and borders.',
+			triggerLabel: 'Learn what design tokens are',
+		},
+		{
+			label: 'Primitive tokens',
+			definition:
+				'Primitive tokens store raw values; semantic tokens describe how those values are used in the interface.',
+			triggerLabel: 'Learn the difference between primitive and semantic tokens',
+		},
+		{
+			label: 'semantic tokens',
+			definition:
+				'Primitive tokens store raw values; semantic tokens describe how those values are used in the interface.',
+			triggerLabel: 'Learn the difference between primitive and semantic tokens',
+		},
+	],
+	'pt-BR': [
+		{
+			label: 'Dataprev',
+			definition:
+				'Empresa pública de tecnologia responsável pelo processamento de dados previdenciários e trabalhistas no Brasil.',
+			triggerLabel: 'Saiba o que é a Dataprev',
+		},
+		{
+			label: 'MED Pix',
+			definition:
+				'Mecanismo especial do Pix para devolução de valores em transações com suspeita de fraude ou falha operacional.',
+			triggerLabel: 'Saiba o que significa MED Pix',
+		},
+		{
+			label: 'Pix Automático',
+			definition:
+				'Funcionalidade do Pix que permite autorizar pagamentos recorrentes, de forma semelhante ao débito automático.',
+			triggerLabel: 'Saiba o que é o Pix Automático',
+		},
+		{
+			label: 'design tokens',
+			definition:
+				'Nomes reutilizáveis que armazenam decisões visuais, como cores, espaçamentos, tipografia e bordas.',
+			triggerLabel: 'Saiba o que são design tokens',
+		},
+		{
+			label: 'Tokens primitivos',
+			definition:
+				'Tokens primitivos armazenam valores brutos; tokens semânticos descrevem como esses valores são utilizados na interface.',
+			triggerLabel: 'Entenda a diferença entre tokens primitivos e semânticos',
+		},
+		{
+			label: 'tokens semânticos',
+			definition:
+				'Tokens primitivos armazenam valores brutos; tokens semânticos descrevem como esses valores são utilizados na interface.',
+			triggerLabel: 'Entenda a diferença entre tokens primitivos e semânticos',
+		},
+	],
 };
 
 const media = {
@@ -1613,7 +1696,12 @@ export function SomapayPage({ locale }: SomapayPageProps) {
 										</span>
 										<div>
 											<h3>{item.title}</h3>
-											<p>{item.description}</p>
+											<p>
+												<AnnotatedText
+													text={item.description}
+													terms={somapayGlossary[locale]}
+												/>
+											</p>
 										</div>
 									</Reveal>
 								</li>
@@ -1640,7 +1728,12 @@ export function SomapayPage({ locale }: SomapayPageProps) {
 							<SectionTitle>{text.pix.title}</SectionTitle>
 							<div>
 								{text.pix.intro.map(paragraph => (
-									<p key={paragraph}>{paragraph}</p>
+									<p key={paragraph}>
+										<AnnotatedText
+											text={paragraph}
+											terms={somapayGlossary[locale]}
+										/>
+									</p>
 								))}
 							</div>
 						</Reveal>
@@ -1748,7 +1841,12 @@ export function SomapayPage({ locale }: SomapayPageProps) {
 							<SectionTitle>{text.darkMode.title}</SectionTitle>
 							<div>
 								{text.darkMode.paragraphs.map(paragraph => (
-									<p key={paragraph}>{paragraph}</p>
+									<p key={paragraph}>
+										<AnnotatedText
+											text={paragraph}
+											terms={somapayGlossary[locale]}
+										/>
+									</p>
 								))}
 							</div>
 						</Reveal>
@@ -1791,7 +1889,12 @@ export function SomapayPage({ locale }: SomapayPageProps) {
 						<div className='sp-worker-credit__content'>
 							<Reveal className='sp-worker-credit__copy'>
 								{text.workerCredit.paragraphs.map(paragraph => (
-									<p key={paragraph}>{paragraph}</p>
+									<p key={paragraph}>
+										<AnnotatedText
+											text={paragraph}
+											terms={somapayGlossary[locale]}
+										/>
+									</p>
 								))}
 							</Reveal>
 							<Reveal className='sp-worker-credit__image' delay={80}>

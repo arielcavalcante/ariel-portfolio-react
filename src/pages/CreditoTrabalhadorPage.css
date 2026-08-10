@@ -1,5 +1,7 @@
 .worker-credit-case {
 	--worker-credit-column-gap: 80px;
+	--term-tooltip-background: var(--paper);
+	--term-tooltip-color: var(--navy);
 	--header-text-color: var(--paper);
 	--header-background-color: var(--navy);
 	--language-switch-off-color: var(--ink);

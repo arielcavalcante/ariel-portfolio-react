@@ -10,6 +10,10 @@ import {
 import { Reveal } from '../components/Reveal';
 import { SiteFooter } from '../components/SiteFooter';
 import { SiteHeader } from '../components/SiteHeader';
+import {
+	AnnotatedText,
+	type GlossaryTerm,
+} from '../components/TermTooltip';
 import { siteContent, type Locale } from '../content';
 import { useInteractive3DSupport } from '../hooks/useInteractive3DSupport';
 import { useMediaQuery } from '../hooks/useMediaQuery';
@@ -127,7 +131,7 @@ const workerCreditContent: Record<Locale, WorkerCreditScreenContent[]> = {
 				{
 					title: 'Context',
 					paragraphs: [
-						'Is a payroll-deducted loan programme for private-sector employees, including workers hired under the CLT regime (Brazil’s main formal employment framework). Approval follows government regulations and uses official employment data, accessed through an integration with Dataprev (Brazil’s public social security technology provider), to verify eligibility.',
+						'Is a payroll-deducted loan programme for private-sector employees, including workers hired under the CLT regime. Approval follows government regulations and uses official employment data, accessed through an integration with Dataprev, to verify eligibility.',
 						'Instalments are deducted directly from the employee’s salary, within their payroll-deduction limit. The programme aims to expand access to credit at more competitive rates through platforms connected to Brazilian government systems.',
 					],
 				},
@@ -166,7 +170,7 @@ const workerCreditContent: Record<Locale, WorkerCreditScreenContent[]> = {
 				{
 					title: 'Loan management',
 					paragraphs: [
-						'After completing the application, users can track their payments, review contract and disbursement details, check the outstanding balance, and download their CCB (Brazilian bank credit note). Values are presented clearly, and colour is used to support comprehension without compromising accessibility, since all information is also communicated through text.',
+						'After completing the application, users can track their payments, review contract and disbursement details, check the outstanding balance, and download their CCB. Values are presented clearly, and colour is used to support comprehension without compromising accessibility, since all information is also communicated through text.',
 					],
 				},
 			],
@@ -225,6 +229,61 @@ const workerCreditContent: Record<Locale, WorkerCreditScreenContent[]> = {
 	],
 };
 
+const workerCreditGlossary: Record<Locale, readonly GlossaryTerm[]> = {
+	en: [
+		{
+			label: 'CLT',
+			definition:
+				"Brazil’s primary formal employment framework, which defines employment rights and obligations.",
+			triggerLabel: 'Learn what CLT means',
+		},
+		{
+			label: 'payroll-deduction limit',
+			definition:
+				"The maximum portion of a worker’s salary that can legally be committed to payroll-deducted loan payments.",
+			triggerLabel: 'Learn what payroll-deduction limit means',
+		},
+		{
+			label: 'Dataprev',
+			definition:
+				"Brazil’s public technology company responsible for processing social-security and employment data.",
+			triggerLabel: 'Learn what Dataprev is',
+		},
+		{
+			label: 'CCB',
+			definition:
+				'A Brazilian bank credit note: the legal document that formalizes a loan and its repayment conditions.',
+			triggerLabel: 'Learn what CCB means',
+		},
+	],
+	'pt-BR': [
+		{
+			label: 'CLT',
+			definition:
+				'Principal regime formal de trabalho no Brasil, que define direitos e obrigações nas relações de emprego.',
+			triggerLabel: 'Saiba o que significa CLT',
+		},
+		{
+			label: 'margem consignável',
+			definition:
+				'Parcela máxima do salário de um trabalhador que pode, por lei, ser comprometida com o pagamento de parcelas de empréstimos descontadas em folha.',
+			triggerLabel: 'Saiba o que significa margem consignável',
+		},
+		{
+			label: 'Dataprev',
+			definition:
+				'Empresa pública de tecnologia responsável pelo processamento de dados previdenciários e trabalhistas no Brasil.',
+			triggerLabel: 'Saiba o que é a Dataprev',
+		},
+		{
+			label: 'CCB',
+			definition:
+				'Cédula de Crédito Bancário: documento legal que formaliza um empréstimo e suas condições de pagamento.',
+			triggerLabel: 'Saiba o que significa CCB',
+		},
+	],
+};
+
 function createMobileSteps(
 	screens: WorkerCreditScreenContent[],
 ): WorkerCreditMobileStep[] {
@@ -256,11 +315,15 @@ function getScreenAngle(index: number) {
 
 function WorkerCreditCopySection({
 	section,
+	terms,
 }: {
 	section: WorkerCreditContentSection;
+	terms: readonly GlossaryTerm[];
 }) {
 	const paragraphs = section.paragraphs.map(paragraph => (
-		<p key={paragraph}>{paragraph}</p>
+		<p key={paragraph}>
+			<AnnotatedText text={paragraph} terms={terms} />
+		</p>
 	));
 
 	if (!section.title) {
@@ -477,7 +540,7 @@ export function CreditoTrabalhadorPage({
 			<a className='skip-link' href='#main-content'>
 				{site.common.skipToContent}
 			</a>
-			<SiteHeader locale={locale} currentPage='somapay-pf' />
+			<SiteHeader locale={locale} currentPage='cred-trabalhador' />
 
 			<main id='main-content' tabIndex={-1}>
 				<section className='worker-credit-case__hero'>
@@ -524,7 +587,12 @@ export function CreditoTrabalhadorPage({
 											{activeMobileStep.title && (
 												<h2>{activeMobileStep.title}</h2>
 											)}
-											<p>{activeMobileStep.paragraph}</p>
+											<p>
+												<AnnotatedText
+													text={activeMobileStep.paragraph}
+													terms={workerCreditGlossary[locale]}
+												/>
+											</p>
 										</article>
 									) : (
 										workerCreditContent[locale].map((screen, index) => (
@@ -539,6 +607,7 @@ export function CreditoTrabalhadorPage({
 													<WorkerCreditCopySection
 														key={`${section.title ?? 'copy'}-${sectionIndex}`}
 														section={section}
+														terms={workerCreditGlossary[locale]}
 													/>
 												))}
 											</article>

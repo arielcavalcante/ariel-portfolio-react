@@ -9,7 +9,13 @@ import type { Locale } from '../content';
 import { localizedPath, pathWithoutLocale, siteContent } from '../content';
 import LanguageSwitch from './LanguageSwitch';
 
-type CurrentPage = 'home' | 'projects' | 'somapay-pf' | '404';
+type CurrentPage =
+	| 'home'
+	| 'projects'
+	| 'somapay-pf'
+	| 'cred-trabalhador'
+	| 'vetpoint'
+	| '404';
 
 type SiteHeaderProps = {
 	locale: Locale;
@@ -20,7 +26,7 @@ type SiteHeaderProps = {
 export function SiteHeader({
 	locale,
 	currentPage = 'home',
-	projectCount = 2,
+	projectCount = 3,
 }: SiteHeaderProps) {
 	const [menuOpen, setMenuOpen] = useState(false);
 	const [projectsOpen, setProjectsOpen] = useState(false);
@@ -235,7 +241,10 @@ export function SiteHeader({
 							type='button'
 							data-nav-marker='below'
 							data-nav-current={
-								currentPage === 'projects' || currentPage === 'somapay-pf'
+								currentPage === 'projects' ||
+								currentPage === 'somapay-pf' ||
+								currentPage === 'cred-trabalhador' ||
+								currentPage === 'vetpoint'
 									? ''
 									: undefined
 							}
@@ -276,6 +285,32 @@ export function SiteHeader({
 												<span>{project.name}</span>
 												<span className='project-status'>{project.cta}</span>
 											</span>
+										)}
+										{project.id === 'somapay-pf' && (
+											<ul className='projects-popover__nested'>
+												<li>
+													<a
+														className={
+															currentPage === 'cred-trabalhador'
+																? 'is-active'
+																: undefined
+														}
+														aria-current={
+															currentPage === 'cred-trabalhador'
+																? 'page'
+																: undefined
+														}
+														data-nav-marker='left'
+														href={localizedPath(
+															locale,
+															'/somapay-pf/cred-trabalhador',
+														)}
+														onClick={closeMenu}
+													>
+														{nav.workerCredit}
+													</a>
+												</li>
+											</ul>
 										)}
 									</li>
 								))}

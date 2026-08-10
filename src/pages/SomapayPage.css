@@ -339,6 +339,8 @@
 }
 
 .sp-goals {
+	--term-tooltip-background: var(--paper);
+	--term-tooltip-color: var(--brand-blue);
 	padding: 150px 0 90px;
 	background: var(--brand-blue);
 	color: var(--paper);
@@ -483,6 +485,8 @@
 }
 
 .sp-pix {
+	--term-tooltip-background: var(--paper);
+	--term-tooltip-color: var(--brand-blue);
 	padding: 150px 0;
 	background: var(--brand-blue);
 	color: var(--paper);
@@ -672,6 +676,8 @@
 }
 
 .sp-worker-credit {
+	--term-tooltip-background: var(--paper);
+	--term-tooltip-color: var(--navy);
 	background: var(--navy);
 	color: var(--paper);
 }
@@ -735,6 +741,8 @@
 }
 
 .sp-worker-credit__copy {
+	position: relative;
+	z-index: 2;
 	grid-area: copy;
 }
 
@@ -783,6 +791,8 @@
 }
 
 .sp-dark-mode {
+	--term-tooltip-background: var(--paper);
+	--term-tooltip-color: var(--ink);
 	padding: 0;
 	background: var(--ink);
 	color: var(--paper);

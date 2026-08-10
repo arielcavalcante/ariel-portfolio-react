@@ -21,6 +21,7 @@
 	--yellow: #f9dc89;
 	--gold: #f7a90f;
 	--navy: #171a31;
+	--flag-green: #438a63;
 	--header-text-color: var(--ink);
 	--header-background-color: var(--paper);
 	--page-width: 1600px;
@@ -396,7 +397,7 @@ ul {
 	position: absolute;
 	top: 100%;
 	left: 50%;
-	width: 244px;
+	width: 280px;
 	padding-top: 13px;
 	opacity: 0;
 	pointer-events: none;
@@ -429,6 +430,14 @@ ul {
 
 .projects-popover li {
 	min-width: 0;
+}
+
+.projects-popover__nested {
+	display: grid;
+	gap: 20px;
+	margin: 20px 0 0;
+	padding: 0 0 0 24px;
+	list-style: none;
 }
 
 .projects-popover a,
@@ -481,10 +490,15 @@ ul {
 
 .language-switch__track {
 	position: relative;
+	isolation: isolate;
 	width: 52px;
 	height: 26px;
+	overflow: hidden;
 	border-radius: 999px;
 	background: var(--ink);
+	clip-path: inset(0 round 999px);
+	transform: translateZ(0);
+	backface-visibility: hidden;
 }
 
 .language-switch__thumb {
@@ -495,9 +509,35 @@ ul {
 	height: 22px;
 	border-radius: 50%;
 	background: var(--paper);
+	z-index: 2;
 }
+
 .language-switch.active > .language-switch__track {
-	background: var(--language-switch-on-color, var(--gold));
+	background: var(--flag-green);
+}
+
+.language-switch.active > .language-switch__track::before {
+	position: absolute;
+	top: 0;
+	right: 13px;
+	z-index: 1;
+	width: 28px;
+	height: 26px;
+	background: var(--gold);
+	clip-path: polygon(100% 0, 0 50%, 100% 100%);
+	content: '';
+}
+
+.language-switch.active > .language-switch__track::after {
+	position: absolute;
+	top: 0;
+	right: 0;
+	z-index: 1;
+	width: 26px;
+	height: 26px;
+	border-radius: 50%;
+	background: var(--gold);
+	content: '';
 }
 
 .page-shell:not(.home-page)
@@ -506,9 +546,15 @@ ul {
 	background: var(--language-switch-off-color, var(--ink));
 }
 
-.active > .language-switch__track > .language-switch__thumb {
+.language-switch.active > .language-switch__track > .language-switch__thumb {
+	top: 50%;
 	left: unset;
-	right: 2px;
+	right: 3px;
+	width: 20px;
+	height: 20px;
+	background: var(--brand-blue);
+	transform: translateY(-50%) translateZ(0);
+	backface-visibility: hidden;
 }
 
 .menu-button {
@@ -763,6 +809,10 @@ ul {
 }
 
 .project-card--somapay-pj {
+	border-radius: 8px;
+}
+
+.project-card--vetpoint {
 	border-radius: 8px 8px 28px 28px;
 }
 
@@ -935,7 +985,7 @@ ul {
 	}
 
 	.home-page .desktop-nav .language-switch.active > .language-switch__track {
-		background: var(--language-switch-on-color, var(--gold));
+		background: var(--flag-green);
 	}
 }
 
@@ -1857,6 +1907,11 @@ ul {
 		-webkit-backdrop-filter: none;
 	}
 
+	.projects-popover__nested {
+		gap: 24px;
+		margin-top: 24px;
+	}
+
 	.projects-popover a,
 	.project-link {
 		justify-content: flex-start;
@@ -1880,8 +1935,8 @@ ul {
 		top: 50%;
 		bottom: auto;
 		left: -42px;
-		width: 26px;
-		height: 20px;
+		width: 22px;
+		height: 17px;
 		transform: translateY(-50%);
 	}
 
@@ -2252,4 +2307,72 @@ ul {
 		width: 54px;
 		height: 54px;
 	}
+}
+/* Shared inline definitions used across case-study copy. */
+.term-tooltip {
+	position: relative;
+	display: inline-block;
+	padding-right: 1em;
+	vertical-align: baseline;
+}
+
+.term-tooltip__term {
+	white-space: nowrap;
+}
+
+.term-tooltip__trigger {
+	position: absolute;
+	top: calc(50% - 1px);
+	left: calc(100% - 1.35em);
+	display: grid;
+	width: 32px;
+	height: 32px;
+	padding: 0;
+	border: 0;
+	background: transparent;
+	color: currentColor;
+	place-items: center;
+	transform: translateY(-50%);
+	cursor: pointer;
+}
+
+.term-tooltip__trigger > span {
+	display: block;
+	width: 0.75em;
+	height: 0.75em;
+	background: currentColor;
+	-webkit-mask: url('/assets/icons/info.svg') center / contain no-repeat;
+	mask: url('/assets/icons/info.svg') center / contain no-repeat;
+}
+
+.term-tooltip__surface {
+	position: absolute;
+	z-index: 8;
+	top: calc(100% + 8px);
+	left: 50%;
+	display: block;
+	width: min(320px, calc(100vw - 48px));
+	max-height: calc(100vh - 48px);
+	max-height: calc(100dvh - 48px);
+	padding: 18px 20px;
+	overflow-y: auto;
+	border: 0;
+	border-radius: 14px;
+	background: color-mix(
+		in srgb,
+		var(--term-tooltip-background, var(--navy)) 94%,
+		transparent
+	);
+	color: var(--term-tooltip-color, var(--gold));
+	box-shadow: 0 13px 34px color-mix(in srgb, var(--ink) 16%, transparent);
+	backdrop-filter: blur(13px);
+	-webkit-backdrop-filter: blur(13px);
+	font-size: 16px;
+	font-weight: 400;
+	line-height: 1.45;
+	transform: translate(
+		calc(-50% + var(--term-tooltip-shift-x, 0px)),
+		var(--term-tooltip-shift-y, 0px)
+	);
+	cursor: pointer;
 }

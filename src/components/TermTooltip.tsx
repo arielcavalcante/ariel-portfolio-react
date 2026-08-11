@@ -19,12 +19,29 @@ export type GlossaryTerm = {
 type TermTooltipProps = GlossaryTerm;
 
 type AnnotatedTextProps = {
+	sectionTexts?: readonly string[];
 	terms: readonly GlossaryTerm[];
 	text: string;
+	textIndex?: number;
 };
 
-export function AnnotatedText({ terms, text }: AnnotatedTextProps) {
+export function AnnotatedText({
+	sectionTexts,
+	terms,
+	text,
+	textIndex = 0,
+}: AnnotatedTextProps) {
 	const parts: ReactNode[] = [];
+	const annotatedTerms = new Set<string>();
+	const termsUsedEarlier = new Set(
+		terms
+			.filter(term =>
+				sectionTexts
+					?.slice(0, textIndex)
+					.some(sectionText => sectionText.includes(term.label)),
+			)
+			.map(term => term.label),
+	);
 	let cursor = 0;
 	let occurrence = 0;
 
@@ -47,12 +64,22 @@ export function AnnotatedText({ terms, text }: AnnotatedTextProps) {
 			parts.push(text.slice(cursor, nextTerm.index));
 		}
 
-		parts.push(
-			<TermTooltip
-				key={`${nextTerm.term.label}-${occurrence}`}
-				{...nextTerm.term}
-			/>,
-		);
+		const shouldAnnotate =
+			!termsUsedEarlier.has(nextTerm.term.label) &&
+			!annotatedTerms.has(nextTerm.term.label);
+
+		if (shouldAnnotate) {
+			parts.push(
+				<TermTooltip
+					key={`${nextTerm.term.label}-${occurrence}`}
+					{...nextTerm.term}
+				/>,
+			);
+		} else {
+			parts.push(nextTerm.term.label);
+		}
+
+		annotatedTerms.add(nextTerm.term.label);
 		cursor = nextTerm.index + nextTerm.term.label.length;
 		occurrence += 1;
 	}

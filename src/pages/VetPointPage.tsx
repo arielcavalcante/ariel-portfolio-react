@@ -50,6 +50,7 @@ export function VetPointPage({ locale }: VetPointPageProps) {
 	const pageRef = useRef<HTMLDivElement>(null);
 	const site = siteContent[locale];
 	const text = vetPointContent[locale];
+	const introParagraphs = text.intro.blocks.flatMap(block => block.paragraphs);
 
 	useEffect(() => {
 		document.body.classList.add('somapay-case-open');
@@ -153,6 +154,8 @@ export function VetPointPage({ locale }: VetPointPageProps) {
 											<AnnotatedText
 												text={paragraph}
 												terms={[text.intro.term]}
+												sectionTexts={introParagraphs}
+												textIndex={introParagraphs.indexOf(paragraph)}
 											/>
 										</p>
 									))}
@@ -256,7 +259,7 @@ export function VetPointPage({ locale }: VetPointPageProps) {
 				/>
 				<TextSection
 					id='engineering'
-					className='vetpoint-section--orange'
+					className='vetpoint-section--yellow'
 					section={text.sections.engineering}
 				/>
 
@@ -280,14 +283,16 @@ export function VetPointPage({ locale }: VetPointPageProps) {
 				<section
 					className='vetpoint-disclosure'
 					data-vetpoint-section
-					aria-label={text.sections.outcome.disclosureLabel}
+					aria-label={site.caseDisclosure.label}
 				>
 					<div className='vetpoint-shell vetpoint-disclosure__inner'>
 						<Reveal>
-							<p>{text.sections.outcome.disclosure}</p>
+							<p>{site.caseDisclosure.text}</p>
 						</Reveal>
 						<Reveal delay={70}>
-							<p className='vetpoint-thanks'>{text.thanks}</p>
+							<p className='vetpoint-thanks'>
+								{site.caseDisclosure.thanks}
+							</p>
 						</Reveal>
 					</div>
 				</section>

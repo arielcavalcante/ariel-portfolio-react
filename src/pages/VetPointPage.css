@@ -339,12 +339,6 @@
 	color: var(--paper);
 }
 
-.vetpoint-section--orange {
-	--section-toggle-track-color: var(--ink);
-	background: var(--orange);
-	color: var(--paper);
-}
-
 .vetpoint-role-list {
 	display: grid;
 	grid-template-columns: repeat(3, minmax(0, 1fr));
@@ -374,7 +368,7 @@
 .vetpoint-disclosure {
 	--section-toggle-track-color: var(--paper);
 	padding: clamp(72px, 9vw, 128px) 0;
-	background: var(--brand-blue);
+	background: var(--orange);
 	color: var(--yellow);
 }
 

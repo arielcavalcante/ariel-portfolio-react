@@ -4,10 +4,9 @@ import {
 	useMemo,
 	useRef,
 	useState,
-	type KeyboardEvent as ReactKeyboardEvent,
-	type PointerEvent as ReactPointerEvent,
 } from 'react';
 import { localizedPath, siteContent, type Locale } from '../content';
+import { BeforeAfter } from '../components/BeforeAfter';
 import { Reveal } from '../components/Reveal';
 import { SiteFooter } from '../components/SiteFooter';
 import { SiteHeader } from '../components/SiteHeader';
@@ -480,18 +479,18 @@ const somapayGlossary: Record<Locale, readonly GlossaryTerm[]> = {
 };
 
 const media = {
-	pixModernization: '/assets/somapay-pix-modernization.webp',
-	pixReceiving: '/assets/somapay-pix-receiving.webp',
-	sendPoster: '/assets/somapay-pix-send-poster.jpg',
-	sendVideo: '/assets/somapay-pix-send.webm',
-	receivePoster: '/assets/somapay-pix-receive-poster.jpg',
-	receiveVideo: '/assets/somapay-pix-receive.webm',
-	workerCredit: '/assets/credito do trabalhador.webp',
-	helpBefore: '/assets/somapay-help-before.webp',
-	helpAfter: '/assets/somapay-help-after.webp',
-	tokens: '/assets/somapay-image-grid.svg',
-	dark: '/assets/somapay-dark-mode.webp',
-	light: '/assets/somapay-light-mode.webp',
+	pixModernization: '/assets/somapay/pf/pix-modernization.webp',
+	pixReceiving: '/assets/somapay/pf/pix-receiving.webp',
+	sendPoster: '/assets/somapay/pf/pix-send-poster.jpg',
+	sendVideo: '/assets/somapay/pf/pix-send.webm',
+	receivePoster: '/assets/somapay/pf/pix-receive-poster.jpg',
+	receiveVideo: '/assets/somapay/pf/pix-receive.webm',
+	workerCredit: '/assets/somapay/pf/credito-trabalhador.webp',
+	helpBefore: '/assets/somapay/pf/help-before.webp',
+	helpAfter: '/assets/somapay/pf/help-after.webp',
+	tokens: '/assets/somapay/pf/image-grid.svg',
+	dark: '/assets/somapay/pf/dark-mode.webp',
+	light: '/assets/somapay/pf/light-mode.webp',
 };
 
 function SectionTitle({
@@ -1373,132 +1372,6 @@ function PhoneVideo({
 	);
 }
 
-function BeforeAfter({
-	before,
-	after,
-	beforeAlt,
-	afterAlt,
-	label,
-}: {
-	before: string;
-	after: string;
-	beforeAlt: string;
-	afterAlt: string;
-	label: string;
-}) {
-	const rootRef = useRef<HTMLDivElement>(null);
-	const [position, setPosition] = useState(50);
-	const [dragging, setDragging] = useState(false);
-	const frameRef = useRef(0);
-	const pendingClientXRef = useRef<number | null>(null);
-
-	const update = useCallback((clientX: number) => {
-		pendingClientXRef.current = clientX;
-		if (frameRef.current) return;
-
-		frameRef.current = requestAnimationFrame(() => {
-			frameRef.current = 0;
-			const node = rootRef.current;
-			const pendingClientX = pendingClientXRef.current;
-			if (!node || pendingClientX === null) return;
-
-			const rect = node.getBoundingClientRect();
-			const next = ((pendingClientX - rect.left) / rect.width) * 100;
-			setPosition(Math.min(98, Math.max(2, next)));
-		});
-	}, []);
-
-	useEffect(
-		() => () => {
-			cancelAnimationFrame(frameRef.current);
-		},
-		[],
-	);
-
-	const pointerDown = (event: ReactPointerEvent<HTMLDivElement>) => {
-		setDragging(true);
-		event.currentTarget.setPointerCapture(event.pointerId);
-		update(event.clientX);
-	};
-
-	const pointerMove = (event: ReactPointerEvent<HTMLDivElement>) => {
-		if (dragging || event.pointerType === 'mouse') update(event.clientX);
-	};
-
-	const pointerUp = () => setDragging(false);
-	const keyDown = (event: ReactKeyboardEvent<HTMLDivElement>) => {
-		let nextPosition = position;
-
-		switch (event.key) {
-			case 'ArrowLeft':
-			case 'ArrowDown':
-				nextPosition -= 2;
-				break;
-			case 'ArrowRight':
-			case 'ArrowUp':
-				nextPosition += 2;
-				break;
-			case 'Home':
-				nextPosition = 2;
-				break;
-			case 'End':
-				nextPosition = 98;
-				break;
-			default:
-				return;
-		}
-
-		event.preventDefault();
-		setPosition(Math.min(98, Math.max(2, nextPosition)));
-	};
-
-	return (
-		<div
-			ref={rootRef}
-			className='sp-before-after'
-			role='slider'
-			tabIndex={0}
-			aria-label={label}
-			aria-valuemin={2}
-			aria-valuemax={98}
-			aria-valuenow={Math.round(position)}
-			aria-valuetext={`${Math.round(position)}%`}
-			aria-orientation='horizontal'
-			onKeyDown={keyDown}
-			onPointerDown={pointerDown}
-			onPointerMove={pointerMove}
-			onPointerUp={pointerUp}
-			onPointerCancel={pointerUp}
-			onPointerLeave={() => setDragging(false)}
-		>
-			<img
-				src={before}
-				alt={beforeAlt}
-				draggable={false}
-				loading='lazy'
-				decoding='async'
-			/>
-			<div
-				className='sp-before-after__top'
-				style={{ clipPath: `inset(0 ${100 - position}% 0 0)` }}
-			>
-				<img
-					src={after}
-					alt={afterAlt}
-					draggable={false}
-					loading='lazy'
-					decoding='async'
-				/>
-			</div>
-			<span className='sp-before-after__line' style={{ left: `${position}%` }}>
-				<span className='sp-before-after__handle'>
-					<span className='sp-before-after__handle-icon' />
-				</span>
-			</span>
-		</div>
-	);
-}
-
 export function SomapayPage({ locale }: SomapayPageProps) {
 	const text = copy[locale];
 	const site = siteContent[locale];
@@ -1619,7 +1492,7 @@ export function SomapayPage({ locale }: SomapayPageProps) {
 				<section className='sp-hero' id='start'>
 					<div className='sp-shell sp-hero__inner'>
 						<Reveal className='sp-hero__logo'>
-							<img src='/assets/conta-digital.svg' alt='Somapay PF' />
+							<img src='/assets/somapay/pf/logo.svg' alt='Somapay PF' />
 						</Reveal>
 						<Reveal className='sp-hero__copy' delay={80}>
 							<h1>{text.hero.title}</h1>
@@ -1697,10 +1570,14 @@ export function SomapayPage({ locale }: SomapayPageProps) {
 										<div>
 											<h3>{item.title}</h3>
 											<p>
-												<AnnotatedText
-													text={item.description}
-													terms={somapayGlossary[locale]}
-												/>
+											<AnnotatedText
+												text={item.description}
+												terms={somapayGlossary[locale]}
+												sectionTexts={text.goals.items.map(
+													goal => goal.description,
+												)}
+												textIndex={index}
+											/>
 											</p>
 										</div>
 									</Reveal>
@@ -1727,11 +1604,13 @@ export function SomapayPage({ locale }: SomapayPageProps) {
 						<Reveal className='sp-section-lead sp-section-lead--white sp-pix__lead'>
 							<SectionTitle>{text.pix.title}</SectionTitle>
 							<div>
-								{text.pix.intro.map(paragraph => (
+								{text.pix.intro.map((paragraph, index) => (
 									<p key={paragraph}>
 										<AnnotatedText
 											text={paragraph}
 											terms={somapayGlossary[locale]}
+											sectionTexts={text.pix.intro}
+											textIndex={index}
 										/>
 									</p>
 								))}
@@ -1840,11 +1719,13 @@ export function SomapayPage({ locale }: SomapayPageProps) {
 						<Reveal className='sp-section-lead sp-section-lead--yellow sp-dark-mode__lead'>
 							<SectionTitle>{text.darkMode.title}</SectionTitle>
 							<div>
-								{text.darkMode.paragraphs.map(paragraph => (
+								{text.darkMode.paragraphs.map((paragraph, index) => (
 									<p key={paragraph}>
 										<AnnotatedText
 											text={paragraph}
 											terms={somapayGlossary[locale]}
+											sectionTexts={text.darkMode.paragraphs}
+											textIndex={index}
 										/>
 									</p>
 								))}
@@ -1860,7 +1741,7 @@ export function SomapayPage({ locale }: SomapayPageProps) {
 									decoding='async'
 								/>
 							</Reveal>
-							<Reveal className='sp-comparison' delay={850}>
+							<Reveal className='sp-comparison' delay={600}>
 								<figure>
 									<BeforeAfter
 										before={media.dark}
@@ -1888,11 +1769,13 @@ export function SomapayPage({ locale }: SomapayPageProps) {
 						</Reveal>
 						<div className='sp-worker-credit__content'>
 							<Reveal className='sp-worker-credit__copy'>
-								{text.workerCredit.paragraphs.map(paragraph => (
+								{text.workerCredit.paragraphs.map((paragraph, index) => (
 									<p key={paragraph}>
 										<AnnotatedText
 											text={paragraph}
 											terms={somapayGlossary[locale]}
+											sectionTexts={text.workerCredit.paragraphs}
+											textIndex={index}
 										/>
 									</p>
 								))}

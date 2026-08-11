@@ -14,7 +14,7 @@ import {
 	AnnotatedText,
 	type GlossaryTerm,
 } from '../components/TermTooltip';
-import { siteContent, type Locale } from '../content';
+import { localizedPath, siteContent, type Locale } from '../content';
 import { useInteractive3DSupport } from '../hooks/useInteractive3DSupport';
 import { useMediaQuery } from '../hooks/useMediaQuery';
 import '../components/IPhoneMockup/iphoneMockup.css';
@@ -45,17 +45,17 @@ const IPhoneMockup = lazy(() =>
 );
 
 const workerCreditScreens = [
-	'/assets/3d/images/01.webp',
-	'/assets/3d/images/02.webp',
-	'/assets/3d/images/03.webp',
-	'/assets/3d/images/04.webp',
+	'/assets/somapay/pf/3d/images/01.webp',
+	'/assets/somapay/pf/3d/images/02.webp',
+	'/assets/somapay/pf/3d/images/03.webp',
+	'/assets/somapay/pf/3d/images/04.webp',
 ] as const;
 
 const workerCreditRenders = [
-	'/assets/3d/renders/worker-credit-screen-01.webp',
-	'/assets/3d/renders/worker-credit-screen-02.webp',
-	'/assets/3d/renders/worker-credit-screen-03.webp',
-	'/assets/3d/renders/worker-credit-screen-04.webp',
+	'/assets/somapay/pf/3d/renders/worker-credit-screen-01.webp',
+	'/assets/somapay/pf/3d/renders/worker-credit-screen-02.webp',
+	'/assets/somapay/pf/3d/renders/worker-credit-screen-03.webp',
+	'/assets/somapay/pf/3d/renders/worker-credit-screen-04.webp',
 ] as const;
 
 function PhoneStaticFallback({
@@ -320,9 +320,14 @@ function WorkerCreditCopySection({
 	section: WorkerCreditContentSection;
 	terms: readonly GlossaryTerm[];
 }) {
-	const paragraphs = section.paragraphs.map(paragraph => (
+	const paragraphs = section.paragraphs.map((paragraph, index) => (
 		<p key={paragraph}>
-			<AnnotatedText text={paragraph} terms={terms} />
+			<AnnotatedText
+				text={paragraph}
+				terms={terms}
+				sectionTexts={section.paragraphs}
+				textIndex={index}
+			/>
 		</p>
 	));
 
@@ -456,6 +461,18 @@ export function CreditoTrabalhadorPage({
 	locale,
 }: CreditoTrabalhadorPageProps) {
 	const site = siteContent[locale];
+	const breadcrumbLabels =
+		locale === 'pt-BR'
+			? {
+					ariaLabel: 'Navegação estrutural',
+					projects: 'Projetos',
+					current: 'Crédito do Trabalhador',
+				}
+			: {
+					ariaLabel: 'Breadcrumb',
+					projects: 'Projects',
+					current: 'Workers Credit',
+				};
 	const isMobile = useMediaQuery(MOBILE_LAYOUT_QUERY);
 	const supports3D = useInteractive3DSupport();
 	const mobileSteps = workerCreditMobileSteps[locale];
@@ -546,6 +563,24 @@ export function CreditoTrabalhadorPage({
 				<section className='worker-credit-case__hero'>
 					<div className='sp-shell worker-credit-case__hero-inner'>
 						<Reveal>
+							<nav
+								className='worker-credit-case__breadcrumbs'
+								aria-label={breadcrumbLabels.ariaLabel}
+							>
+								<ol>
+									<li>
+										<a href={`${localizedPath(locale, '/')}#projects`}>
+											{breadcrumbLabels.projects}
+										</a>
+									</li>
+									<li>
+										<a href={localizedPath(locale, '/somapay-pf')}>
+											Somapay PF
+										</a>
+									</li>
+									<li aria-current='page'>{breadcrumbLabels.current}</li>
+								</ol>
+							</nav>
 							<h1>Crédito do Trabalhador</h1>
 						</Reveal>
 
@@ -588,10 +623,12 @@ export function CreditoTrabalhadorPage({
 												<h2>{activeMobileStep.title}</h2>
 											)}
 											<p>
-												<AnnotatedText
-													text={activeMobileStep.paragraph}
-													terms={workerCreditGlossary[locale]}
-												/>
+								<AnnotatedText
+									text={activeMobileStep.paragraph}
+									terms={workerCreditGlossary[locale]}
+									sectionTexts={mobileSteps.map(step => step.paragraph)}
+									textIndex={mobileStepIndex}
+								/>
 											</p>
 										</article>
 									) : (

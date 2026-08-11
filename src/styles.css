@@ -452,6 +452,14 @@ ul {
 	text-decoration: none;
 }
 
+.projects-popover .nav-secondary-link {
+	font-weight: 400;
+}
+
+.projects-popover .nav-tertiary-link {
+	font-weight: 300;
+}
+
 .projects-popover .is-active::after {
 	top: 50%;
 	bottom: auto;
@@ -503,10 +511,11 @@ ul {
 
 .language-switch__thumb {
 	position: absolute;
-	top: 2px;
+	inset-block: 0;
 	left: 2px;
 	width: 22px;
 	height: 22px;
+	margin-block: auto;
 	border-radius: 50%;
 	background: var(--paper);
 	z-index: 2;
@@ -518,11 +527,11 @@ ul {
 
 .language-switch.active > .language-switch__track::before {
 	position: absolute;
-	top: 0;
-	right: 13px;
+	top: -7px;
+	right: 1px;
 	z-index: 1;
-	width: 28px;
-	height: 26px;
+	width: 44px;
+	height: 40px;
 	background: var(--gold);
 	clip-path: polygon(100% 0, 0 50%, 100% 100%);
 	content: '';
@@ -547,13 +556,12 @@ ul {
 }
 
 .language-switch.active > .language-switch__track > .language-switch__thumb {
-	top: 50%;
 	left: unset;
 	right: 3px;
 	width: 20px;
 	height: 20px;
 	background: var(--brand-blue);
-	transform: translateY(-50%) translateZ(0);
+	transform: translateZ(0);
 	backface-visibility: hidden;
 }
 
@@ -1920,6 +1928,13 @@ ul {
 		max-width: 100%;
 		font-family: 'Clash Grotesk', Arial, sans-serif;
 		font-size: clamp(18px, 5.6vw, 25px);
+	}
+
+	.projects-popover .nav-secondary-link {
+		font-weight: 500;
+	}
+
+	.projects-popover .nav-tertiary-link {
 		font-weight: 400;
 	}
 

@@ -13,6 +13,7 @@ type CurrentPage =
 	| 'home'
 	| 'projects'
 	| 'somapay-pf'
+	| 'somapay-pj'
 	| 'cred-trabalhador'
 	| 'vetpoint'
 	| '404';
@@ -243,6 +244,7 @@ export function SiteHeader({
 							data-nav-current={
 								currentPage === 'projects' ||
 								currentPage === 'somapay-pf' ||
+								currentPage === 'somapay-pj' ||
 								currentPage === 'cred-trabalhador' ||
 								currentPage === 'vetpoint'
 									? ''
@@ -268,9 +270,9 @@ export function SiteHeader({
 									<li key={project.id}>
 										{project.available ? (
 											<a
-												className={
-													currentPage === project.id ? 'is-active' : undefined
-												}
+												className={`nav-secondary-link${
+													currentPage === project.id ? ' is-active' : ''
+												}`}
 												aria-current={
 													currentPage === project.id ? 'page' : undefined
 												}
@@ -281,7 +283,7 @@ export function SiteHeader({
 												{project.name}
 											</a>
 										) : (
-											<span className='project-link is-disabled'>
+											<span className='project-link nav-secondary-link is-disabled'>
 												<span>{project.name}</span>
 												<span className='project-status'>{project.cta}</span>
 											</span>
@@ -290,11 +292,11 @@ export function SiteHeader({
 											<ul className='projects-popover__nested'>
 												<li>
 													<a
-														className={
+														className={`nav-tertiary-link${
 															currentPage === 'cred-trabalhador'
-																? 'is-active'
-																: undefined
-														}
+																? ' is-active'
+																: ''
+														}`}
 														aria-current={
 															currentPage === 'cred-trabalhador'
 																? 'page'

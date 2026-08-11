@@ -9,6 +9,8 @@
     />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="Ariel Cavalcante" />
+    <meta property="og:url" content="https://arielcavalcante.com/" />
+    <meta property="og:locale" content="en_US" />
     <meta property="og:title" content="Ariel Cavalcante · Product Designer" />
     <meta
       property="og:description"
@@ -44,6 +46,7 @@
       content="Ariel Cavalcante logo with a merman illustration and geometric red shapes."
     />
     <meta name="theme-color" content="#f2f2f1" />
+    <link rel="canonical" href="https://arielcavalcante.com/" />
     <script>
       (() => {
         const localPath =
@@ -54,7 +57,9 @@
           ? '#171a31'
           : localPath.startsWith('/somapay-pf')
             ? '#0c0c0c'
-            : '#f2f2f1';
+            : localPath === '/somapay-pj' || localPath === '/vetpoint'
+              ? '#171a31'
+              : '#f2f2f1';
 
         document.querySelector('meta[name="theme-color"]').content = themeColor;
         document.documentElement.style.backgroundColor = themeColor;

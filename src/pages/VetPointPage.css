@@ -1,0 +1,482 @@
+.vetpoint-case {
+	--vetpoint-shell: 1280px;
+	--header-text-color: var(--paper);
+	--header-background-color: var(--navy);
+	--language-switch-off-color: var(--gold);
+	--language-switch-on-color: var(--gold);
+	background: var(--navy);
+}
+
+.vetpoint-case .site-header {
+	--projects-menu-bg: var(--header-text-color);
+	--projects-menu-color: var(--header-background-color);
+	color: var(--header-text-color);
+	background: transparent;
+	border: 0;
+	backdrop-filter: none;
+	-webkit-backdrop-filter: none;
+	transition: color 200ms ease;
+}
+
+.vetpoint-case .brand-mark,
+.vetpoint-case .language-switch,
+.vetpoint-case .desktop-nav a {
+	color: inherit;
+}
+
+.vetpoint-case .language-switch__track {
+	background: currentColor;
+}
+
+.vetpoint-shell {
+	width: min(calc(100% - 64px), var(--vetpoint-shell));
+	margin-inline: auto;
+}
+
+.vetpoint-hero {
+	--section-toggle-track-color: var(--gold);
+	height: 98svh;
+	display: flex;
+	align-items: stretch;
+	background: var(--navy);
+	color: var(--paper);
+}
+
+.vetpoint-gallery figcaption {
+	font-size: 13px;
+	font-weight: 600;
+	text-align: center;
+}
+
+.vetpoint-hero__inner {
+	display: flex;
+	flex-direction: column;
+	align-items: self-start;
+	gap: 24px;
+	margin-top: 80px;
+	padding-top: 104px;
+	padding-bottom: 36px;
+}
+
+.vetpoint-hero__logo {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.vetpoint-hero__logo img {
+	width: auto;
+	height: 2rem;
+	filter: brightness(0) invert(1);
+}
+
+.vetpoint-hero__copy {
+	display: flex;
+	flex-direction: column;
+	gap: 22px 72px;
+}
+
+.vetpoint-hero__copy h1 {
+	grid-column: 1;
+	font-family: 'Clash Grotesk', Arial, sans-serif;
+	font-size: clamp(44px, 6.5vw, 92px);
+	font-weight: 600;
+	line-height: 0.98;
+	overflow-wrap: normal;
+	word-break: keep-all;
+	hyphens: none;
+}
+
+.vetpoint-hero__metrics {
+	grid-column: 1;
+	font-family: 'Clash Grotesk', Arial, sans-serif;
+	font-size: 12px;
+	line-height: 1.6;
+	letter-spacing: 0.03em;
+	text-transform: uppercase;
+}
+
+.vetpoint-hero__description {
+	grid-column: 2;
+	grid-row: 1 / span 2;
+	font-size: clamp(17px, 1.55vw, 21px);
+	line-height: 1.58;
+	letter-spacing: 0.01em;
+}
+
+.vetpoint-gallery {
+	--section-toggle-track-color: var(--gold);
+	padding: clamp(48px, 7vw, 104px) 0;
+	background: var(--navy);
+	color: var(--paper);
+}
+
+.vetpoint-gallery__carousel {
+	--vetpoint-gallery-gap: clamp(16px, 2vw, 28px);
+	width: 100%;
+	padding-block: clamp(28px, 4vw, 52px);
+}
+
+.vetpoint-gallery__track {
+	display: flex;
+	width: max-content;
+	animation: vetpoint-gallery-marquee 48s linear infinite;
+	will-change: transform;
+}
+
+.vetpoint-gallery__group {
+	display: flex;
+	flex: 0 0 auto;
+	gap: var(--vetpoint-gallery-gap);
+	padding-right: var(--vetpoint-gallery-gap);
+}
+
+.vetpoint-gallery__item {
+	position: relative;
+	z-index: 1;
+	display: flex;
+	flex: 0 0 clamp(220px, 24vw, 360px);
+	flex-direction: column;
+	gap: 12px;
+	width: clamp(220px, 24vw, 360px);
+	touch-action: pan-y;
+	-webkit-touch-callout: none;
+	user-select: none;
+}
+
+.vetpoint-gallery__item:hover,
+.vetpoint-gallery__item:active,
+.vetpoint-gallery__item:focus-within {
+	z-index: 2;
+}
+
+.vetpoint-gallery__spacer {
+	position: relative;
+	z-index: 0;
+	display: grid;
+	flex: 0 0 clamp(200px, 22vw, 280px);
+	width: clamp(200px, 22vw, 280px);
+	place-items: center;
+}
+
+.vetpoint-gallery__spacer > span {
+	display: block;
+	width: min(80px, 42vw);
+	aspect-ratio: 1;
+	background: var(--gold);
+	-webkit-mask: url('/assets/icons/sun.svg') center / contain no-repeat;
+	mask: url('/assets/icons/sun.svg') center / contain no-repeat;
+}
+
+.vetpoint-gallery__image {
+	min-width: 0;
+	transform-origin: center;
+	transition: transform 360ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.vetpoint-gallery__item img {
+	width: 100%;
+	height: auto;
+	max-height: 96vh;
+	border-radius: 8px;
+	object-fit: contain;
+}
+
+.vetpoint-gallery figcaption {
+	letter-spacing: 0.04em;
+}
+
+@media (hover: hover) and (pointer: fine) {
+	.vetpoint-gallery__carousel:hover .vetpoint-gallery__track {
+		animation-play-state: paused;
+	}
+
+	.vetpoint-gallery__item:hover .vetpoint-gallery__image {
+		transform: scale(1.5);
+	}
+}
+
+@media (hover: none), (pointer: coarse) {
+	.vetpoint-gallery__carousel:has(.vetpoint-gallery__item:active)
+		.vetpoint-gallery__track {
+		animation-play-state: paused;
+	}
+
+	.vetpoint-gallery__item:active .vetpoint-gallery__image {
+		transform: scale(1.08);
+	}
+}
+
+@keyframes vetpoint-gallery-marquee {
+	to {
+		transform: translateX(-50%);
+	}
+}
+
+.vetpoint-section {
+	padding: clamp(88px, 11vw, 176px) 0;
+	background: var(--paper);
+	color: var(--ink);
+}
+
+.vetpoint-section__grid {
+	display: grid;
+	grid-template-columns: repeat(2, minmax(0, 1fr));
+	gap: 80px;
+	align-items: start;
+}
+
+.vetpoint-section--reverse .vetpoint-section__title {
+	grid-column: 2;
+	grid-row: 1;
+	text-align: right;
+}
+
+.vetpoint-section--reverse .vetpoint-section__content {
+	grid-column: 1;
+	grid-row: 1;
+}
+
+.vetpoint-intro__title,
+.vetpoint-section--sticky-title .vetpoint-section__title {
+	position: sticky;
+	top: 112px;
+}
+
+.vetpoint-section__title h2 {
+	max-width: 100%;
+	font-size: clamp(40px, 7vw, 108px);
+	line-height: 0.92;
+	overflow-wrap: normal;
+	word-break: keep-all;
+	hyphens: none;
+}
+
+.vetpoint-section__content {
+	display: grid;
+	gap: clamp(20px, 2.5vw, 34px);
+}
+
+.vetpoint-section__content > p,
+.vetpoint-section__content blockquote {
+	max-width: 880px;
+	font-size: clamp(18px, 1.7vw, 24px);
+	line-height: 1.5;
+}
+
+.vetpoint-section__content blockquote {
+	margin: 8px 0;
+	font-size: clamp(26px, 3vw, 44px);
+	font-weight: 500;
+	line-height: 1.2;
+}
+
+.vetpoint-intro {
+	padding: 160px 0 120px;
+	background: var(--gold);
+	color: var(--navy);
+}
+
+.vetpoint-intro__grid {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr) minmax(250px, 0.55fr);
+	gap: 76px;
+	align-items: start;
+}
+
+.vetpoint-intro__title {
+	grid-column: 2;
+	grid-row: 1;
+	text-align: right;
+}
+
+.vetpoint-intro__content {
+	grid-column: 1;
+	grid-row: 1;
+	display: grid;
+	gap: 70px;
+}
+
+.vetpoint-copy-block h3 {
+	margin-bottom: 18px;
+	font-size: clamp(18px, 2vw, 27px);
+	font-weight: 600;
+	line-height: 1.2;
+	overflow-wrap: normal;
+	word-break: keep-all;
+	hyphens: none;
+}
+
+.vetpoint-copy-block p {
+	font-size: clamp(16px, 1.25vw, 19px);
+	line-height: 1.65;
+}
+
+.vetpoint-copy-block p + p {
+	margin-top: 18px;
+}
+
+.vetpoint-section--yellow {
+	background: var(--yellow);
+	color: var(--navy);
+}
+
+.vetpoint-section--paper,
+.vetpoint-outcome {
+	background: var(--paper);
+	color: var(--ink);
+}
+
+.vetpoint-section--blue {
+	--section-toggle-track-color: var(--gold);
+	background: var(--brand-blue);
+	color: var(--paper);
+}
+
+.vetpoint-section--navy {
+	--section-toggle-track-color: var(--gold);
+	background: var(--navy);
+	color: var(--paper);
+}
+
+.vetpoint-role-list {
+	display: grid;
+	grid-template-columns: repeat(3, minmax(0, 1fr));
+	gap: 18px;
+	list-style: none;
+}
+
+.vetpoint-role-list article {
+	height: 100%;
+}
+
+.vetpoint-role-list .reveal {
+	height: 100%;
+}
+
+.vetpoint-role-list h3 {
+	margin-bottom: 14px;
+	font-size: clamp(20px, 2vw, 26px);
+	line-height: 1.2;
+}
+
+.vetpoint-role-list p {
+	font-size: 16px;
+	line-height: 1.5;
+}
+
+.vetpoint-disclosure {
+	--section-toggle-track-color: var(--paper);
+	padding: clamp(72px, 9vw, 128px) 0;
+	background: var(--orange);
+	color: var(--yellow);
+}
+
+.vetpoint-case .site-footer {
+	--section-toggle-track-color: var(--paper);
+}
+
+.vetpoint-disclosure__inner {
+	display: grid;
+	gap: 64px;
+	justify-items: end;
+}
+
+.vetpoint-disclosure p {
+	max-width: 880px;
+	font-size: clamp(16px, 1.5vw, 20px);
+	line-height: 1.65;
+}
+
+.vetpoint-disclosure .vetpoint-thanks {
+	font-size: 16px;
+	font-weight: 600;
+	line-height: 1.4;
+}
+
+@media (max-width: 1120px) {
+	.vetpoint-role-list {
+		grid-template-columns: minmax(0, 1fr);
+	}
+}
+
+@media (max-width: 809px) {
+	.vetpoint-shell {
+		width: min(calc(100% - 40px), var(--vetpoint-shell));
+	}
+
+	.vetpoint-hero__copy {
+		gap: 18px;
+	}
+
+	.vetpoint-hero h1,
+	.vetpoint-hero__metrics,
+	.vetpoint-hero__description {
+		grid-column: 1;
+		grid-row: auto;
+	}
+
+	.vetpoint-hero__description {
+		max-width: 680px;
+	}
+
+	.vetpoint-section__grid,
+	.vetpoint-intro__grid {
+		grid-template-columns: minmax(0, 1fr);
+	}
+
+	.vetpoint-section__grid {
+		gap: 28px;
+	}
+
+	.vetpoint-section__title,
+	.vetpoint-section--sticky-title .vetpoint-section__title,
+	.vetpoint-section--reverse .vetpoint-section__title,
+	.vetpoint-section--reverse .vetpoint-section__content,
+	.vetpoint-intro__title,
+	.vetpoint-intro__content {
+		position: static;
+		grid-column: 1;
+		grid-row: auto;
+		text-align: left;
+	}
+
+	.vetpoint-section__title h2 {
+		font-size: clamp(44px, 14vw, 76px);
+	}
+
+	.vetpoint-intro {
+		padding: 104px 0 88px;
+	}
+
+	.vetpoint-intro__content {
+		gap: 54px;
+	}
+
+	body.menu-open .vetpoint-case .site-header,
+	.vetpoint-case .desktop-nav.is-open {
+		background: var(--header-background-color);
+		color: var(--header-text-color);
+	}
+}
+
+@media (max-width: 559px) {
+	.vetpoint-gallery__item {
+		flex-basis: min(72vw, 300px);
+		width: min(72vw, 300px);
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.vetpoint-case .site-header {
+		transition: none;
+	}
+
+	.vetpoint-gallery__track {
+		animation-play-state: paused;
+	}
+
+	.vetpoint-gallery__image {
+		transition: none;
+	}
+}

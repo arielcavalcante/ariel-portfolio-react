@@ -4,13 +4,16 @@ import {
 	useMemo,
 	useRef,
 	useState,
-	type KeyboardEvent as ReactKeyboardEvent,
-	type PointerEvent as ReactPointerEvent,
 } from 'react';
 import { localizedPath, siteContent, type Locale } from '../content';
+import { BeforeAfter } from '../components/BeforeAfter';
 import { Reveal } from '../components/Reveal';
 import { SiteFooter } from '../components/SiteFooter';
 import { SiteHeader } from '../components/SiteHeader';
+import {
+	AnnotatedText,
+	type GlossaryTerm,
+} from '../components/TermTooltip';
 import './SomapayPage.css';
 
 type SomapayPageProps = {
@@ -215,7 +218,7 @@ const copy: Record<Locale, Copy> = {
 			overline: 'Dive deeper',
 			title: 'Crédito do\nTrabalhador',
 			paragraphs: [
-				'Crédito do Trabalhador is a payroll-deducted loan programme for private-sector employees, with repayments taken directly from their salaries. The project required the creation of a new application flow in just seven days, balancing government regulations, integration with Dataprev (Brazil’s public social security technology provider), business goals and transparency for users.',
+				'Crédito do Trabalhador is a payroll-deducted loan programme for private-sector employees, with repayments taken directly from their salaries. The project required the creation of a new application flow in just seven days, balancing government regulations, integration with Dataprev, business goals and transparency for users.',
 			],
 			imageAlt: 'Interface screens from the Crédito do Trabalhador experience.',
 			cta: 'View full project',
@@ -396,19 +399,98 @@ const copy: Record<Locale, Copy> = {
 	},
 };
 
+const somapayGlossary: Record<Locale, readonly GlossaryTerm[]> = {
+	en: [
+		{
+			label: 'Dataprev',
+			definition:
+				"Brazil’s public technology company responsible for processing social-security and employment data.",
+			triggerLabel: 'Learn what Dataprev is',
+		},
+		{
+			label: 'MED Pix',
+			definition:
+				"Pix’s special refund mechanism for transactions involving suspected fraud or operational failure.",
+			triggerLabel: 'Learn what MED Pix means',
+		},
+		{
+			label: 'Pix Automático',
+			definition:
+				'A Pix feature that lets users authorize recurring payments, similar to direct debit.',
+			triggerLabel: 'Learn what Pix Automático means',
+		},
+		{
+			label: 'design tokens',
+			definition:
+				'Reusable names that store visual decisions such as colors, spacing, typography, and borders.',
+			triggerLabel: 'Learn what design tokens are',
+		},
+		{
+			label: 'Primitive tokens',
+			definition:
+				'Primitive tokens store raw values; semantic tokens describe how those values are used in the interface.',
+			triggerLabel: 'Learn the difference between primitive and semantic tokens',
+		},
+		{
+			label: 'semantic tokens',
+			definition:
+				'Primitive tokens store raw values; semantic tokens describe how those values are used in the interface.',
+			triggerLabel: 'Learn the difference between primitive and semantic tokens',
+		},
+	],
+	'pt-BR': [
+		{
+			label: 'Dataprev',
+			definition:
+				'Empresa pública de tecnologia responsável pelo processamento de dados previdenciários e trabalhistas no Brasil.',
+			triggerLabel: 'Saiba o que é a Dataprev',
+		},
+		{
+			label: 'MED Pix',
+			definition:
+				'Mecanismo especial do Pix para devolução de valores em transações com suspeita de fraude ou falha operacional.',
+			triggerLabel: 'Saiba o que significa MED Pix',
+		},
+		{
+			label: 'Pix Automático',
+			definition:
+				'Funcionalidade do Pix que permite autorizar pagamentos recorrentes, de forma semelhante ao débito automático.',
+			triggerLabel: 'Saiba o que é o Pix Automático',
+		},
+		{
+			label: 'design tokens',
+			definition:
+				'Nomes reutilizáveis que armazenam decisões visuais, como cores, espaçamentos, tipografia e bordas.',
+			triggerLabel: 'Saiba o que são design tokens',
+		},
+		{
+			label: 'Tokens primitivos',
+			definition:
+				'Tokens primitivos armazenam valores brutos; tokens semânticos descrevem como esses valores são utilizados na interface.',
+			triggerLabel: 'Entenda a diferença entre tokens primitivos e semânticos',
+		},
+		{
+			label: 'tokens semânticos',
+			definition:
+				'Tokens primitivos armazenam valores brutos; tokens semânticos descrevem como esses valores são utilizados na interface.',
+			triggerLabel: 'Entenda a diferença entre tokens primitivos e semânticos',
+		},
+	],
+};
+
 const media = {
-	pixModernization: '/assets/somapay-pix-modernization.webp',
-	pixReceiving: '/assets/somapay-pix-receiving.webp',
-	sendPoster: '/assets/somapay-pix-send-poster.jpg',
-	sendVideo: '/assets/somapay-pix-send.webm',
-	receivePoster: '/assets/somapay-pix-receive-poster.jpg',
-	receiveVideo: '/assets/somapay-pix-receive.webm',
-	workerCredit: '/assets/credito do trabalhador.webp',
-	helpBefore: '/assets/somapay-help-before.webp',
-	helpAfter: '/assets/somapay-help-after.webp',
-	tokens: '/assets/somapay-image-grid.svg',
-	dark: '/assets/somapay-dark-mode.webp',
-	light: '/assets/somapay-light-mode.webp',
+	pixModernization: '/assets/somapay/pf/pix-modernization.webp',
+	pixReceiving: '/assets/somapay/pf/pix-receiving.webp',
+	sendPoster: '/assets/somapay/pf/pix-send-poster.jpg',
+	sendVideo: '/assets/somapay/pf/pix-send.webm',
+	receivePoster: '/assets/somapay/pf/pix-receive-poster.jpg',
+	receiveVideo: '/assets/somapay/pf/pix-receive.webm',
+	workerCredit: '/assets/somapay/pf/credito-trabalhador.webp',
+	helpBefore: '/assets/somapay/pf/help-before.webp',
+	helpAfter: '/assets/somapay/pf/help-after.webp',
+	tokens: '/assets/somapay/pf/image-grid.svg',
+	dark: '/assets/somapay/pf/dark-mode.webp',
+	light: '/assets/somapay/pf/light-mode.webp',
 };
 
 function SectionTitle({
@@ -1290,132 +1372,6 @@ function PhoneVideo({
 	);
 }
 
-function BeforeAfter({
-	before,
-	after,
-	beforeAlt,
-	afterAlt,
-	label,
-}: {
-	before: string;
-	after: string;
-	beforeAlt: string;
-	afterAlt: string;
-	label: string;
-}) {
-	const rootRef = useRef<HTMLDivElement>(null);
-	const [position, setPosition] = useState(50);
-	const [dragging, setDragging] = useState(false);
-	const frameRef = useRef(0);
-	const pendingClientXRef = useRef<number | null>(null);
-
-	const update = useCallback((clientX: number) => {
-		pendingClientXRef.current = clientX;
-		if (frameRef.current) return;
-
-		frameRef.current = requestAnimationFrame(() => {
-			frameRef.current = 0;
-			const node = rootRef.current;
-			const pendingClientX = pendingClientXRef.current;
-			if (!node || pendingClientX === null) return;
-
-			const rect = node.getBoundingClientRect();
-			const next = ((pendingClientX - rect.left) / rect.width) * 100;
-			setPosition(Math.min(98, Math.max(2, next)));
-		});
-	}, []);
-
-	useEffect(
-		() => () => {
-			cancelAnimationFrame(frameRef.current);
-		},
-		[],
-	);
-
-	const pointerDown = (event: ReactPointerEvent<HTMLDivElement>) => {
-		setDragging(true);
-		event.currentTarget.setPointerCapture(event.pointerId);
-		update(event.clientX);
-	};
-
-	const pointerMove = (event: ReactPointerEvent<HTMLDivElement>) => {
-		if (dragging || event.pointerType === 'mouse') update(event.clientX);
-	};
-
-	const pointerUp = () => setDragging(false);
-	const keyDown = (event: ReactKeyboardEvent<HTMLDivElement>) => {
-		let nextPosition = position;
-
-		switch (event.key) {
-			case 'ArrowLeft':
-			case 'ArrowDown':
-				nextPosition -= 2;
-				break;
-			case 'ArrowRight':
-			case 'ArrowUp':
-				nextPosition += 2;
-				break;
-			case 'Home':
-				nextPosition = 2;
-				break;
-			case 'End':
-				nextPosition = 98;
-				break;
-			default:
-				return;
-		}
-
-		event.preventDefault();
-		setPosition(Math.min(98, Math.max(2, nextPosition)));
-	};
-
-	return (
-		<div
-			ref={rootRef}
-			className='sp-before-after'
-			role='slider'
-			tabIndex={0}
-			aria-label={label}
-			aria-valuemin={2}
-			aria-valuemax={98}
-			aria-valuenow={Math.round(position)}
-			aria-valuetext={`${Math.round(position)}%`}
-			aria-orientation='horizontal'
-			onKeyDown={keyDown}
-			onPointerDown={pointerDown}
-			onPointerMove={pointerMove}
-			onPointerUp={pointerUp}
-			onPointerCancel={pointerUp}
-			onPointerLeave={() => setDragging(false)}
-		>
-			<img
-				src={before}
-				alt={beforeAlt}
-				draggable={false}
-				loading='lazy'
-				decoding='async'
-			/>
-			<div
-				className='sp-before-after__top'
-				style={{ clipPath: `inset(0 ${100 - position}% 0 0)` }}
-			>
-				<img
-					src={after}
-					alt={afterAlt}
-					draggable={false}
-					loading='lazy'
-					decoding='async'
-				/>
-			</div>
-			<span className='sp-before-after__line' style={{ left: `${position}%` }}>
-				<span className='sp-before-after__handle'>
-					<span className='sp-before-after__handle-icon' />
-				</span>
-			</span>
-		</div>
-	);
-}
-
 export function SomapayPage({ locale }: SomapayPageProps) {
 	const text = copy[locale];
 	const site = siteContent[locale];
@@ -1536,7 +1492,7 @@ export function SomapayPage({ locale }: SomapayPageProps) {
 				<section className='sp-hero' id='start'>
 					<div className='sp-shell sp-hero__inner'>
 						<Reveal className='sp-hero__logo'>
-							<img src='/assets/conta-digital.svg' alt='Somapay PF' />
+							<img src='/assets/somapay/pf/logo.svg' alt='Somapay PF' />
 						</Reveal>
 						<Reveal className='sp-hero__copy' delay={80}>
 							<h1>{text.hero.title}</h1>
@@ -1613,7 +1569,16 @@ export function SomapayPage({ locale }: SomapayPageProps) {
 										</span>
 										<div>
 											<h3>{item.title}</h3>
-											<p>{item.description}</p>
+											<p>
+											<AnnotatedText
+												text={item.description}
+												terms={somapayGlossary[locale]}
+												sectionTexts={text.goals.items.map(
+													goal => goal.description,
+												)}
+												textIndex={index}
+											/>
+											</p>
 										</div>
 									</Reveal>
 								</li>
@@ -1639,8 +1604,15 @@ export function SomapayPage({ locale }: SomapayPageProps) {
 						<Reveal className='sp-section-lead sp-section-lead--white sp-pix__lead'>
 							<SectionTitle>{text.pix.title}</SectionTitle>
 							<div>
-								{text.pix.intro.map(paragraph => (
-									<p key={paragraph}>{paragraph}</p>
+								{text.pix.intro.map((paragraph, index) => (
+									<p key={paragraph}>
+										<AnnotatedText
+											text={paragraph}
+											terms={somapayGlossary[locale]}
+											sectionTexts={text.pix.intro}
+											textIndex={index}
+										/>
+									</p>
 								))}
 							</div>
 						</Reveal>
@@ -1747,8 +1719,15 @@ export function SomapayPage({ locale }: SomapayPageProps) {
 						<Reveal className='sp-section-lead sp-section-lead--yellow sp-dark-mode__lead'>
 							<SectionTitle>{text.darkMode.title}</SectionTitle>
 							<div>
-								{text.darkMode.paragraphs.map(paragraph => (
-									<p key={paragraph}>{paragraph}</p>
+								{text.darkMode.paragraphs.map((paragraph, index) => (
+									<p key={paragraph}>
+										<AnnotatedText
+											text={paragraph}
+											terms={somapayGlossary[locale]}
+											sectionTexts={text.darkMode.paragraphs}
+											textIndex={index}
+										/>
+									</p>
 								))}
 							</div>
 						</Reveal>
@@ -1762,7 +1741,7 @@ export function SomapayPage({ locale }: SomapayPageProps) {
 									decoding='async'
 								/>
 							</Reveal>
-							<Reveal className='sp-comparison' delay={850}>
+							<Reveal className='sp-comparison' delay={600}>
 								<figure>
 									<BeforeAfter
 										before={media.dark}
@@ -1790,8 +1769,15 @@ export function SomapayPage({ locale }: SomapayPageProps) {
 						</Reveal>
 						<div className='sp-worker-credit__content'>
 							<Reveal className='sp-worker-credit__copy'>
-								{text.workerCredit.paragraphs.map(paragraph => (
-									<p key={paragraph}>{paragraph}</p>
+								{text.workerCredit.paragraphs.map((paragraph, index) => (
+									<p key={paragraph}>
+										<AnnotatedText
+											text={paragraph}
+											terms={somapayGlossary[locale]}
+											sectionTexts={text.workerCredit.paragraphs}
+											textIndex={index}
+										/>
+									</p>
 								))}
 							</Reveal>
 							<Reveal className='sp-worker-credit__image' delay={80}>

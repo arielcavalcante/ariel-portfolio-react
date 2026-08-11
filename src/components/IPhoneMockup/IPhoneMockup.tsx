@@ -250,7 +250,7 @@ function SceneRenderReady({
 export function IPhoneMockup({
 	screenImage,
 	preloadScreenImages,
-	modelUrl = '/assets/3d/models/iphone-17-pro-web.glb',
+	modelUrl = '/assets/somapay/pf/3d/models/iphone-17-pro-web.glb',
 	className = '',
 	alt = 'Interactive 3D iPhone mockup',
 	position = [0, 0, 0],

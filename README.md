@@ -10,7 +10,7 @@ This is my bilingual portfolio, where I share selected work and the thinking beh
 
 - A responsive portfolio available in English and Brazilian Portuguese
 - Detailed product-design case studies
-- The Somapay PF redesign, which contributed to a 24% increase in its Play Store rating
+- The Somapay PF redesign, which contributed to a 28% increase in its Play Store rating
 - Custom motion, microinteractions, data visualizations, and a tiny footer crab game
 - Dedicated layouts for desktop, tablet, and mobile
 
@@ -22,7 +22,7 @@ This is my bilingual portfolio, where I share selected work and the thinking beh
 - Plain CSS with responsive layouts, custom properties, and animations
 - Local SVG, image, font, and video assets
 
-The project intentionally keeps its runtime dependencies small: React handles the interface while the visual system and interactions are implemented directly with TypeScript, CSS, and SVG.
+Most of the interface is implemented directly with React, TypeScript, CSS, and SVG. Three.js and React Three Fiber power the on-demand interactive phone mockup in the private Workers' Credit case study.
 
 ## Routes
 
@@ -30,6 +30,9 @@ The project intentionally keeps its runtime dependencies small: React handles th
 | --- | --- |
 | `/` | `/br/` |
 | `/somapay-pf` | `/br/somapay-pf` |
+| `/somapay-pj` | `/br/somapay-pj` |
+| `/vetpoint` | `/br/vetpoint` |
+| `/somapay-pf/cred-trabalhador` (private, noindex) | `/br/somapay-pf/cred-trabalhador` (privado, noindex) |
 | Unrecognized routes display the 404 page | Rotas não reconhecidas exibem a página 404 |
 
 ## Run locally
@@ -66,7 +69,7 @@ The same safety checks run automatically on pushes and pull requests through Git
 ```text
 src/
 ├── components/   Reusable interface and interaction components
-├── pages/        Homepage, Somapay PF case study, and 404 page
+├── pages/        Homepage, case studies, and 404 page
 ├── content.ts    English and Brazilian Portuguese content
 └── styles.css    Shared visual system and responsive styles
 

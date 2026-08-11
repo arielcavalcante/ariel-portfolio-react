@@ -27,4 +27,28 @@
 		<xhtml:link rel="alternate" hreflang="pt-BR" href="https://arielcavalcante.com/br/somapay-pf" />
 		<xhtml:link rel="alternate" hreflang="x-default" href="https://arielcavalcante.com/somapay-pf" />
 	</url>
+	<url>
+		<loc>https://arielcavalcante.com/somapay-pj</loc>
+		<xhtml:link rel="alternate" hreflang="en" href="https://arielcavalcante.com/somapay-pj" />
+		<xhtml:link rel="alternate" hreflang="pt-BR" href="https://arielcavalcante.com/br/somapay-pj" />
+		<xhtml:link rel="alternate" hreflang="x-default" href="https://arielcavalcante.com/somapay-pj" />
+	</url>
+	<url>
+		<loc>https://arielcavalcante.com/br/somapay-pj</loc>
+		<xhtml:link rel="alternate" hreflang="en" href="https://arielcavalcante.com/somapay-pj" />
+		<xhtml:link rel="alternate" hreflang="pt-BR" href="https://arielcavalcante.com/br/somapay-pj" />
+		<xhtml:link rel="alternate" hreflang="x-default" href="https://arielcavalcante.com/somapay-pj" />
+	</url>
+	<url>
+		<loc>https://arielcavalcante.com/vetpoint</loc>
+		<xhtml:link rel="alternate" hreflang="en" href="https://arielcavalcante.com/vetpoint" />
+		<xhtml:link rel="alternate" hreflang="pt-BR" href="https://arielcavalcante.com/br/vetpoint" />
+		<xhtml:link rel="alternate" hreflang="x-default" href="https://arielcavalcante.com/vetpoint" />
+	</url>
+	<url>
+		<loc>https://arielcavalcante.com/br/vetpoint</loc>
+		<xhtml:link rel="alternate" hreflang="en" href="https://arielcavalcante.com/vetpoint" />
+		<xhtml:link rel="alternate" hreflang="pt-BR" href="https://arielcavalcante.com/br/vetpoint" />
+		<xhtml:link rel="alternate" hreflang="x-default" href="https://arielcavalcante.com/vetpoint" />
+	</url>
 </urlset>

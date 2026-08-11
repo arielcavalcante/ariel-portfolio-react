@@ -16,7 +16,7 @@ export const siteContent = {
 				'2026 portfolio of Product Designer Ariel Cavalcante, with 6+ years of experience across product design, design systems, fintech and more.',
 			caseTitle: 'Somapay PF · Ariel Cavalcante',
 			caseDescription:
-				'+24% increase in Google Play rating through research and an end-to-end product redesign',
+				'+28% increase in Google Play rating through research and an end-to-end product redesign',
 			somapayPjTitle: 'Somapay PJ · Ariel Cavalcante',
 			somapayPjDescription:
 				'How Somapay expanded beyond payroll with a dedicated mobile business account for independent contractors.',
@@ -43,6 +43,9 @@ export const siteContent = {
 		},
 		common: {
 			skipToContent: 'Skip to main content',
+			copyEmail: 'Copy email address',
+			emailCopied: 'Email copied!',
+			dismissNotification: 'Click to dismiss.',
 			client: 'Client',
 			role: 'My role',
 			projects: 'Projects',
@@ -60,7 +63,7 @@ export const siteContent = {
 				'Bridging design and engineering with a touch of that Brazilian sauce.',
 			skills: [
 				'Design Systems',
-				'Estratégia de Produto',
+				'Product Strategy',
 				'Interaction Design',
 				'Front-end Collaboration',
 				'Motion & Microinteractions',
@@ -72,10 +75,10 @@ export const siteContent = {
 					client: 'Somapay',
 					name: 'Somapay PF',
 					title:
-						'+24% increase in Google Play rating through research and an end-to-end product redesign',
+						'+28% increase in Google Play rating through research and an end-to-end product redesign',
 					roles: [
 						'Product Redesign',
-						'Estratégia de Produto',
+						'Product Strategy',
 						'User Interviews + User Tests',
 						'Process Optimization',
 					],
@@ -172,7 +175,7 @@ export const siteContent = {
 				'Portfólio 2026 de Ariel Cavalcante, Designer de Produto com mais de 6 anos de experiência em produto, design systems, fintech e muito mais.',
 			caseTitle: 'Somapay PF · Ariel Cavalcante',
 			caseDescription:
-				'+24% na avaliação da Google Play por meio de pesquisa e redesign de produto de ponta a ponta',
+				'+28% na avaliação da Google Play por meio de pesquisa e redesign de produto de ponta a ponta',
 			somapayPjTitle: 'Somapay PJ · Ariel Cavalcante',
 			somapayPjDescription:
 				'Como a Somapay expandiu sua atuação para além da folha de pagamento com uma conta empresarial mobile para prestadores de serviço.',
@@ -199,6 +202,9 @@ export const siteContent = {
 		},
 		common: {
 			skipToContent: 'Pular para o conteúdo principal',
+			copyEmail: 'Copiar endereço de email',
+			emailCopied: 'Email copiado!',
+			dismissNotification: 'Clique para fechar.',
 			client: 'Cliente',
 			role: 'Meu papel',
 			projects: 'Projetos',
@@ -229,7 +235,7 @@ export const siteContent = {
 					client: 'Somapay',
 					name: 'Somapay PF',
 					title:
-						'+24% na avaliação da Google Play por meio de pesquisa e redesign de produto de ponta a ponta',
+						'+28% na avaliação da Google Play por meio de pesquisa e redesign de produto de ponta a ponta',
 					roles: [
 						'Redesign de Produto',
 						'Estratégia de Produto',

@@ -6,7 +6,13 @@ import {
 	type MouseEvent,
 } from 'react';
 import type { Locale } from '../content';
-import { localizedPath, pathWithoutLocale, siteContent } from '../content';
+import {
+	contact,
+	localizedPath,
+	pathWithoutLocale,
+	siteContent,
+} from '../content';
+import { CopyEmailButton } from './CopyEmailButton';
 import LanguageSwitch from './LanguageSwitch';
 
 type CurrentPage =
@@ -27,7 +33,7 @@ type SiteHeaderProps = {
 export function SiteHeader({
 	locale,
 	currentPage = 'home',
-	projectCount = 3,
+	projectCount,
 }: SiteHeaderProps) {
 	const [menuOpen, setMenuOpen] = useState(false);
 	const [projectsOpen, setProjectsOpen] = useState(false);
@@ -40,6 +46,8 @@ export function SiteHeader({
 	const content = siteContent[locale];
 	const nav = content.nav;
 	const projects = content.home.projects;
+	const displayedProjectCount =
+		projectCount ?? projects.filter(project => project.available).length;
 
 	const homeHref = localizedPath(locale, '/');
 
@@ -257,7 +265,7 @@ export function SiteHeader({
 							{nav.projects}
 
 							<span className='nav-count' aria-hidden='true'>
-								{projectCount}
+								{displayedProjectCount}
 							</span>
 						</button>
 
@@ -339,14 +347,42 @@ export function SiteHeader({
 						</a>
 					</div>
 
-					<a
-						className='nav-primary-link'
-						data-nav-marker='below'
-						href={`${homeHref}#contact`}
-						onClick={handleContactClick}
-					>
-						{nav.contact}
-					</a>
+					<div className='contact-nav'>
+						<a
+							className='nav-primary-link'
+							data-nav-marker='below'
+							href={`${homeHref}#contact`}
+							onClick={handleContactClick}
+						>
+							{nav.contact}
+						</a>
+						<div className='contact-nav__actions'>
+							<CopyEmailButton
+								locale={locale}
+								className='contact-nav__icon contact-nav__icon--mail'
+							>
+								<span aria-hidden='true' />
+							</CopyEmailButton>
+							<a
+								className='contact-nav__icon contact-nav__icon--whatsapp'
+								href={contact.phoneHref}
+								target='_blank'
+								rel='noreferrer'
+								aria-label='WhatsApp'
+							>
+								<span aria-hidden='true' />
+							</a>
+							<a
+								className='contact-nav__icon contact-nav__icon--linkedin'
+								href={contact.linkedinHref}
+								target='_blank'
+								rel='noreferrer'
+								aria-label='LinkedIn'
+							>
+								<span aria-hidden='true' />
+							</a>
+						</div>
+					</div>
 
 					<LanguageSwitch
 						locale={locale}

@@ -1,5 +1,6 @@
 import type { Locale } from '../content';
 import { contact, localizedPath, siteContent } from '../content';
+import { CopyEmailButton } from './CopyEmailButton';
 import { FooterCrabGame } from './FooterCrabGame';
 
 const crabGameSounds = {
@@ -30,14 +31,14 @@ export function SiteFooter({ locale }: SiteFooterProps) {
 				</div>
 
 				<div className='footer-columns'>
-					<section>
-						<a className='footer-contact-link' href={`mailto:${contact.email}`}>
+					<div className='footer-contact-list'>
+						<CopyEmailButton locale={locale} className='footer-contact-link'>
 							<span
 								className='footer-contact-link__icon footer-contact-link__icon--mail'
 								aria-hidden='true'
 							/>
-							<span>{contact.email}</span>
-						</a>
+							<span className='footer-contact-link__label'>{contact.email}</span>
+						</CopyEmailButton>
 						<a
 							className='footer-contact-link'
 							href={contact.phoneHref}
@@ -48,7 +49,9 @@ export function SiteFooter({ locale }: SiteFooterProps) {
 								className='footer-contact-link__icon footer-contact-link__icon--whatsapp'
 								aria-hidden='true'
 							/>
-							{contact.phoneLabel}
+							<span className='footer-contact-link__label'>
+								{contact.phoneLabel}
+							</span>
 						</a>
 						<a
 							className='footer-contact-link'
@@ -60,9 +63,11 @@ export function SiteFooter({ locale }: SiteFooterProps) {
 								className='footer-contact-link__icon footer-contact-link__icon--linkedin'
 								aria-hidden='true'
 							/>
-							{contact.linkedinLabel}
+							<span className='footer-contact-link__label'>
+								{contact.linkedinLabel}
+							</span>
 						</a>
-					</section>
+					</div>
 				</div>
 			</div>
 		</footer>

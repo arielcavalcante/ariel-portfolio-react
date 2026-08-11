@@ -73,6 +73,41 @@ test('the application keeps its supported English and Portuguese routes', async 
 	assert.match(app, /page: '404'/);
 });
 
+test('the pre-render theme bootstrap covers every dark case-study route', async () => {
+	const html = await read('index.html');
+
+	assert.match(html, /localPath === '\/somapay-pj'/);
+	assert.match(html, /localPath === '\/vetpoint'/);
+	assert.match(html, /localPath\.startsWith\('\/somapay-pf'\)/);
+});
+
+test('the navigation project count follows available project data', async () => {
+	const header = await read('src/components/SiteHeader.tsx');
+
+	assert.match(
+		header,
+		/projectCount \?\? projects\.filter\(project => project\.available\)\.length/,
+	);
+	assert.doesNotMatch(header, /projectCount = \d/);
+});
+
+test('email actions use the shared copy interaction and localized feedback', async () => {
+	const footer = await read('src/components/SiteFooter.tsx');
+	const header = await read('src/components/SiteHeader.tsx');
+	const copyButton = await read('src/components/CopyEmailButton.tsx');
+	const content = await read('src/content.ts');
+
+	assert.doesNotMatch(footer, /mailto:/);
+	assert.match(footer, /<CopyEmailButton/);
+	assert.match(header, /contact-nav__icon--mail/);
+	assert.match(header, /contact-nav__icon--whatsapp/);
+	assert.match(header, /contact-nav__icon--linkedin/);
+	assert.match(copyButton, /navigator\.clipboard\?\.writeText/);
+	assert.match(copyButton, /3000/);
+	assert.match(content, /Email copied!/);
+	assert.match(content, /Email copiado!/);
+});
+
 test('the sitemap contains only public, supported pages', async () => {
 	const sitemap = await read('public/sitemap.xml');
 	const urls = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map(

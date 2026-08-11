@@ -149,7 +149,7 @@ const workerCreditContent: Record<Locale, WorkerCreditScreenContent[]> = {
 				{
 					title: 'Business priority',
 					paragraphs: [
-						"One of the stakeholders' priorities was to accelerate the project's financial return. To support this goal, I proposed giving emphasis to option most strategic for the business at the start of the flow. Placing it at the top of and assigning it the primary CTA made it more attractive, yet did not prevent users from comparing other available alternatives or simulating customized amounts and terms.",
+						"One of the stakeholders' priorities was to accelerate the project's financial return. To support this goal, I proposed giving greater emphasis to the option most strategic for the business at the start of the flow. Placing it at the top of the screen and assigning it the primary CTA made it more attractive, while still allowing users to compare other available alternatives or simulate customized amounts and terms.",
 					],
 				},
 			],

@@ -13,7 +13,6 @@ type SomapayPjPageProps = {
 type NarrativeSectionProps = {
 	id: string;
 	className: string;
-	reverse?: boolean;
 	section: {
 		label: string;
 		paragraphs: readonly string[];
@@ -23,14 +22,11 @@ type NarrativeSectionProps = {
 function NarrativeSection({
 	id,
 	className,
-	reverse = false,
 	section,
 }: NarrativeSectionProps) {
 	return (
 		<section
-			className={`spj-section ${className}${
-				reverse ? ' spj-section--reverse' : ''
-			}`}
+			className={`spj-section ${className}`}
 			id={id}
 			data-somapay-pj-section
 		>

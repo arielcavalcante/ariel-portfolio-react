@@ -54,7 +54,9 @@
           ? '#171a31'
           : localPath.startsWith('/somapay-pf')
             ? '#0c0c0c'
-            : '#f2f2f1';
+            : localPath === '/somapay-pj' || localPath === '/vetpoint'
+              ? '#171a31'
+              : '#f2f2f1';
 
         document.querySelector('meta[name="theme-color"]').content = themeColor;
         document.documentElement.style.backgroundColor = themeColor;

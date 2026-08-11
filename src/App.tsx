@@ -1,12 +1,29 @@
-import { useEffect } from 'react';
+import { lazy, Suspense, useEffect } from 'react';
 import type { Locale } from './content';
 import { localizedPath, pathWithoutLocale, siteContent } from './content';
 import { HomePage } from './pages/HomePage';
 import { NotFoundPage } from './pages/NotFoundPage';
-import { CreditoTrabalhadorPage } from './pages/CreditoTrabalhadorPage';
-import { SomapayPage } from './pages/SomapayPage';
-import { SomapayPjPage } from './pages/SomapayPjPage';
-import { VetPointPage } from './pages/VetPointPage';
+
+const CreditoTrabalhadorPage = lazy(() =>
+	import('./pages/CreditoTrabalhadorPage').then(module => ({
+		default: module.CreditoTrabalhadorPage,
+	})),
+);
+const SomapayPage = lazy(() =>
+	import('./pages/SomapayPage').then(module => ({
+		default: module.SomapayPage,
+	})),
+);
+const SomapayPjPage = lazy(() =>
+	import('./pages/SomapayPjPage').then(module => ({
+		default: module.SomapayPjPage,
+	})),
+);
+const VetPointPage = lazy(() =>
+	import('./pages/VetPointPage').then(module => ({
+		default: module.VetPointPage,
+	})),
+);
 
 type Route = {
 	locale: Locale;
@@ -257,13 +274,18 @@ export default function App() {
 	}, [content, route.locale, route.page]);
 
 	if (route.page === 'home') return <HomePage locale={route.locale} />;
-	if (route.page === 'somapay') return <SomapayPage locale={route.locale} />;
-	if (route.page === 'somapayPj') {
-		return <SomapayPjPage locale={route.locale} />;
-	}
-	if (route.page === 'workerCredit') {
-		return <CreditoTrabalhadorPage locale={route.locale} />;
-	}
-	if (route.page === 'vetpoint') return <VetPointPage locale={route.locale} />;
-	return <NotFoundPage locale={route.locale} />;
+	if (route.page === '404') return <NotFoundPage locale={route.locale} />;
+
+	const casePage =
+		route.page === 'somapay' ? (
+			<SomapayPage locale={route.locale} />
+		) : route.page === 'somapayPj' ? (
+			<SomapayPjPage locale={route.locale} />
+		) : route.page === 'workerCredit' ? (
+			<CreditoTrabalhadorPage locale={route.locale} />
+		) : (
+			<VetPointPage locale={route.locale} />
+		);
+
+	return <Suspense fallback={null}>{casePage}</Suspense>;
 }

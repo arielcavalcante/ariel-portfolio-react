@@ -81,6 +81,24 @@ test('the pre-render theme bootstrap covers every dark case-study route', async 
 	assert.match(html, /localPath\.startsWith\('\/somapay-pf'\)/);
 });
 
+test('the initial HTML exposes LinkedIn-compatible Open Graph metadata', async () => {
+	const html = await read('index.html');
+	const requiredTags = [
+		'property="og:title"',
+		'property="og:description"',
+		'property="og:image"',
+		'property="og:url"',
+		'content="https://arielcavalcante.com/assets/social-preview.jpg"',
+		'content="1200"',
+		'content="630"',
+		'rel="canonical" href="https://arielcavalcante.com/"',
+	];
+
+	for (const tag of requiredTags) {
+		assert.ok(html.includes(tag), `Missing social-preview metadata: ${tag}`);
+	}
+});
+
 test('the navigation project count follows available project data', async () => {
 	const header = await read('src/components/SiteHeader.tsx');
 

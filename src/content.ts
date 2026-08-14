@@ -2,8 +2,8 @@ export type Locale = 'en' | 'pt-BR';
 
 export const contact = {
 	email: 'hello@arielcavalcante.com',
-	phoneLabel: '+55 85 9 9918 8678',
-	phoneHref: 'https://wa.me/+5585999188678',
+	phoneLabel: '+55 (85) 99204 6519',
+	phoneHref: 'https://wa.me/5585992046519',
 	linkedinLabel: 'Ariel Cavalcante',
 	linkedinHref: 'https://linkedin.com/in/arielcavalcante',
 };

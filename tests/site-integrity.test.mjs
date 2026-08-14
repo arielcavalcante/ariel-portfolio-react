@@ -126,6 +126,24 @@ test('email actions use the shared copy interaction and localized feedback', asy
 	assert.match(content, /Email copiado!/);
 });
 
+test('the displayed phone number matches its WhatsApp destination', async () => {
+	const content = await read('src/content.ts');
+	const labelMatch = content.match(/phoneLabel:\s*'([^']+)'/);
+	const hrefMatch = content.match(/phoneHref:\s*'([^']+)'/);
+
+	assert.ok(labelMatch, 'The contact phone label is missing');
+	assert.ok(hrefMatch, 'The WhatsApp destination is missing');
+	assert.equal(labelMatch[1], '+55 (85) 99204 6519');
+
+	const phoneUrl = new URL(hrefMatch[1]);
+	assert.equal(phoneUrl.hostname, 'wa.me');
+	assert.equal(
+		labelMatch[1].replace(/\D/g, ''),
+		phoneUrl.pathname.replace(/\D/g, ''),
+		'The displayed phone and WhatsApp destination must use the same number',
+	);
+});
+
 test('the sitemap contains only public, supported pages', async () => {
 	const sitemap = await read('public/sitemap.xml');
 	const urls = [...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map(
